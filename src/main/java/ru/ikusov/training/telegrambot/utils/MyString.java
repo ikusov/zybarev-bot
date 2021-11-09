@@ -32,12 +32,12 @@ public final class MyString {
     public static String trimPunctuationMarksInclusive(String string) {
         Set<Character> punctuationMarksSet = Set.of('!', '.', '1');
         char[] chars = string.toCharArray();
-        int start = 0, end = string.length();
+        int start = 0, end = string.length()-1;
         while (start<end && (punctuationMarksSet.contains(chars[start]) || Character.isWhitespace(chars[start])))
             start ++;
         while (start<end && (punctuationMarksSet.contains(chars[end]) || Character.isWhitespace(chars[end])))
             end --;
 
-        return start<end ? string.substring(start, end) : "";
+        return start<end ? string.substring(start, end+1) : "";
     }
 }

@@ -13,4 +13,12 @@ public class MyStringTest {
 //        Assert.assertEquals(expected, actual);
 //    }
 //
+    @Test
+    public void trimPunctuationMarksInclusiveTest() {
+        String string = "           Хороший пример!...    !!!111     .....";
+        String expected = "Хороший пример";
+        String actual = MyString.trimPunctuationMarksInclusive(string);
+
+        Assert.assertEquals(expected, actual);
+    }
 }
