@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot.utils;
 
+import java.util.Set;
+
 public final class MyString {
     private MyString() {}
 
@@ -25,5 +27,17 @@ public final class MyString {
 
     public static int brutalParseInt(String s) {
         return brutalParseInt(s.strip().toCharArray());
+    }
+
+    public static String trimPunctuationMarksInclusive(String string) {
+        Set<Character> punctuationMarksSet = Set.of('!', '.', '1');
+        char[] chars = string.toCharArray();
+        int start = 0, end = string.length();
+        while (start<end && (punctuationMarksSet.contains(chars[start]) || Character.isWhitespace(chars[start])))
+            start ++;
+        while (start<end && (punctuationMarksSet.contains(chars[end]) || Character.isWhitespace(chars[end])))
+            end --;
+
+        return start<end ? string.substring(start, end) : "";
     }
 }

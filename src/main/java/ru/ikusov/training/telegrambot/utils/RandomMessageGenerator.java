@@ -7,7 +7,8 @@ public final class RandomMessageGenerator {
         GREETING_MESSAGE,
         UNKNOWN_COMMAND_MESSAGE,
         RIGHT_ANSWER_MESSAGE,
-        WRONG_ANSWER_MESSAGE
+        WRONG_ANSWER_MESSAGE,
+        GOOD_EXAMPLE_ANSWER_MESSAGE
     }
 
     private static final String[] GREETINGS = {"Я вас категорически приветствую, %s! Зыбарев бот.",
@@ -30,6 +31,10 @@ public final class RandomMessageGenerator {
                                                     "Точно %s? Попробуй ещё раз, %s!",
                                                     "%s? Серьёзно? А если подумать? %s, ты меня расстраиваешь!"};
 
+    private static final String[] GOOD_EXAMPLE_ANSWERS = {"Рад стараться!",
+                                                            "Премного благодарен! Всё для вас!",
+                                                           "Любой каприз за ваши деньги!"};
+
     private RandomMessageGenerator() {}
 
     public static String generate(MessageType messageType, String... args) {
@@ -41,6 +46,8 @@ public final class RandomMessageGenerator {
             return String.format(RIGHT_ANSWERS[r(RIGHT_ANSWERS.length)], args[0], args[1], args[2]);
         else if(messageType == MessageType.WRONG_ANSWER_MESSAGE)
             return String.format(WRONG_ANSWERS[r(WRONG_ANSWERS.length)], args[0], args[1]);
+        else if(messageType == MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE)
+            return GOOD_EXAMPLE_ANSWERS[r(GOOD_EXAMPLE_ANSWERS.length)];
 
         return "";
     }

@@ -18,6 +18,8 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
     @Override
     public BotReaction handleNonCommand(Message message) {
+        if (exampleGenerator.isAnswered()) return null;
+
         String msgText = message.getText().strip();
         int userAnswer;
 
@@ -27,7 +29,6 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             return null;
         }
 
-        if (exampleGenerator.isAnswered()) return null;
 
         int answer = exampleGenerator.getAnswerInt();
 
