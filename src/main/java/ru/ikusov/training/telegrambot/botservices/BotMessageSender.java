@@ -17,7 +17,9 @@ public class BotMessageSender implements BotReaction {
     @Override
     public void react(Bot bot) {
         try {
-            bot.execute(new SendMessage(chatId, textMessage));
+            SendMessage sendMessage = new SendMessage(chatId, textMessage);
+//            sendMessage.setParseMode("MarkdownV2");
+            bot.execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

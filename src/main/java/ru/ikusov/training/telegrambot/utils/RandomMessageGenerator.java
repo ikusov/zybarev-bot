@@ -34,7 +34,7 @@ public final class RandomMessageGenerator {
 
     private static final String[] GOOD_EXAMPLE_ANSWERS = {"Рад стараться!",
                                                             "Премного благодарен! Всё для вас!",
-                                                           "Любой каприз за ваши деньги!"};
+                                                           "Спасибо, я стараюсь!"};
 
     private static final String[] PAINTING_QUERIES = {"картина левитана",
                                                          "картина шишкина",
