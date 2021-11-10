@@ -21,7 +21,7 @@ import java.util.List;
 @Aspect
 public class LoggingAspect {
     @Before("execution(* *.handleUpdate(*))")
-    public void beforeHandleCommandAdvice(JoinPoint joinPoint) {
+    public void beforeHandleUpdateAdvice(JoinPoint joinPoint) {
 
         Update update = (Update)joinPoint.getArgs()[0];
 //        Arrays.stream(args).forEach(System.out::println);
@@ -49,7 +49,7 @@ public class LoggingAspect {
                         UserNameGetter.getUserName(message.getLeftChatMember()));
             }
             else {
-                logInfo += " Any message with no text";
+                logInfo += " Any message with no text: " + message;
             }
         } else {
             if(update.hasInlineQuery()) {
