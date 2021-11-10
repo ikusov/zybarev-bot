@@ -1,21 +1,17 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.services.RhymeGetter;
-import ru.ikusov.training.telegrambot.services.StalinImageGetter;
+import ru.ikusov.training.telegrambot.services.ImageGetter;
 
 import java.util.Set;
 
 @Component
 @Order(130)
-public class StalinCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/stalin", "/сталин");
-
-    @Autowired
-    private StalinImageGetter stalinImageGetter;
+public class ImageCommandMessageHandler extends CommandMessageHandler {
+    private final Set<String> commandVariants =
+            Set.of("/picture", "/картинка", "/pic", "/пик", "/пикча");
 
     @Override
     protected Set<String> getCommandVariants() {
@@ -25,11 +21,13 @@ public class StalinCommandMessageHandler extends CommandMessageHandler {
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
         if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
+        String searchText = command.getParams();
 
         String photoAnswer;
 
         try {
-            photoAnswer = stalinImageGetter.getStalinImage();
+            ImageGetter imageGetter = new ImageGetter(searchText);
+            photoAnswer = imageGetter.getImage();
         } catch (Exception e) {
             photoAnswer = e.getMessage();
             return new BotMessageSender(command.getChatId(), photoAnswer);

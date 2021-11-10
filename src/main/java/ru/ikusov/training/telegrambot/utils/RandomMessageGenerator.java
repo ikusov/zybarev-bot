@@ -8,7 +8,8 @@ public final class RandomMessageGenerator {
         UNKNOWN_COMMAND_MESSAGE,
         RIGHT_ANSWER_MESSAGE,
         WRONG_ANSWER_MESSAGE,
-        GOOD_EXAMPLE_ANSWER_MESSAGE
+        GOOD_EXAMPLE_ANSWER_MESSAGE,
+        PAINTING_QUERY
     }
 
     private static final String[] GREETINGS = {"Я вас категорически приветствую, %s! Зыбарев бот.",
@@ -35,6 +36,11 @@ public final class RandomMessageGenerator {
                                                             "Премного благодарен! Всё для вас!",
                                                            "Любой каприз за ваши деньги!"};
 
+    private static final String[] PAINTING_QUERIES = {"картина левитана",
+                                                         "картина шишкина",
+                                                        "пейзаж",
+                                                          "картина васнецова"};
+
     private RandomMessageGenerator() {}
 
     public static String generate(MessageType messageType, String... args) {
@@ -48,6 +54,8 @@ public final class RandomMessageGenerator {
             return String.format(WRONG_ANSWERS[r(WRONG_ANSWERS.length)], args[0], args[1]);
         else if(messageType == MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE)
             return GOOD_EXAMPLE_ANSWERS[r(GOOD_EXAMPLE_ANSWERS.length)];
+        else if(messageType == MessageType.PAINTING_QUERY)
+            return PAINTING_QUERIES[r(PAINTING_QUERIES.length)];
 
         return "";
     }
