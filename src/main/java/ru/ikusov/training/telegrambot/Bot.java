@@ -34,6 +34,7 @@ public class Bot extends TelegramLongPollingBot {
         return botToken;
     }
 
+    @Override
     public void onUpdateReceived(Update update) {
         botUpdateHandlers.forEach(botUpdateHandler -> botUpdateHandler.handleUpdate(update));
     }

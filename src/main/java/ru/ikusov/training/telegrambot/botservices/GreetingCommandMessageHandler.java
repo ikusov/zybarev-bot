@@ -12,7 +12,7 @@ import java.util.Set;
 @Component
 @Order(30)
 public class GreetingCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/bot", "/hello", "/пт", "/бот");
+    private final Set<String> commandVariants = Set.of("/bot", "/hello", "/пт", "/бот", "/привет");
 
     @Override
     protected Set<String> getCommandVariants() {

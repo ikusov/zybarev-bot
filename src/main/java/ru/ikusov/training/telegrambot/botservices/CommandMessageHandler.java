@@ -44,12 +44,12 @@ public abstract class CommandMessageHandler implements MessageHandler {
             return;
         }
 
-        tokens[0] = commandParts[0];
+        tokens[0] = commandParts[0].toLowerCase();
         command = new MyBotCommand(tokens[0], tokens.length>1 ? tokens[1] : "", message.getChatId().toString(), message.getFrom());
 
         Set<String> commandVariants = getCommandVariants();
 
-        if (commandVariants.isEmpty() || commandVariants.contains(command.getCommand().toLowerCase())) {
+        if (commandVariants.isEmpty() || commandVariants.contains(command.getCommand())) {
             BotReaction botReaction = handleCommand(command);
             if (botReaction != null)
                 botReaction.react(bot);

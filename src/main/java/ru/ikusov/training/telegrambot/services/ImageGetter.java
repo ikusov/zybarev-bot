@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -39,11 +41,19 @@ public class ImageGetter {
     }
 
     public String getImage() {
+        logImageGetting();
         if (imagesList != null && !imagesList.isEmpty()) {
             int index = r(imagesList.size());
             return imagesList.get(index);
         } else {
             throw new NoSuchElementException("Изображения почему-то не найдены по запросу " + url);
         }
+    }
+
+    private void logImageGetting() {
+        System.out.printf("%s: get %s images by request %s%n",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                imagesList == null ? "null" : String.valueOf(imagesList.size()),
+                url);
     }
 }
