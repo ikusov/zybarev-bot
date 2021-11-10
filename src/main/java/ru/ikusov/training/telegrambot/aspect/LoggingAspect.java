@@ -47,6 +47,8 @@ public class LoggingAspect {
             } else if(message.getLeftChatMember() != null) {
                 logInfo += String.format(", Chat member leaved: %s",
                         UserNameGetter.getUserName(message.getLeftChatMember()));
+            } else if(message.getCaption() != null) {
+                logInfo += String.format(", Sended any document with caption: %s", message.getCaption());
             }
             else {
                 logInfo += " Any message with no text: " + message;
