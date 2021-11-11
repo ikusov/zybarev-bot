@@ -3,7 +3,6 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.services.NewsGetter;
 import ru.ikusov.training.telegrambot.services.QuoteGetter;
 
 import java.util.Set;
@@ -27,7 +26,8 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
 
         try {
             quoteGetter = new QuoteGetter();
-            textAnswer = quoteGetter.getQuote();
+//            textAnswer = quoteGetter.getQuote();
+            textAnswer = quoteGetter.getMarkdownv2FormattedQuote();
         } catch (Exception e) {
             textAnswer = e.getMessage();
         }
@@ -36,6 +36,7 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
 //        System.out.println(textAnswer);
 //        return null;
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+//        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotFormattedMessageSender(command.getChatId(), textAnswer);
     }
 }

@@ -1,5 +1,6 @@
 package ru.ikusov.training.telegrambot;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -24,8 +25,10 @@ public class MainClass {
 
             botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(myBot);
-        } catch (TelegramApiException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            context.close();
         }
     }
 

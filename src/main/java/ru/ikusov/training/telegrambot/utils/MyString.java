@@ -40,4 +40,17 @@ public final class MyString {
 
         return start<end ? string.substring(start, end+1) : "";
     }
+
+    public static String markdownv2Format(String input) {
+        char[] inputChars = input.toCharArray();
+        StringBuilder output = new StringBuilder();
+
+        for (char c : inputChars) {
+            if (c-1<126)
+                output.append('\\');
+            output.append(c);
+        }
+
+        return output.toString();
+    }
 }

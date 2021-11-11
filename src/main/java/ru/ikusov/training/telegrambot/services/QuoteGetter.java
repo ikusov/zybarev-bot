@@ -5,56 +5,53 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.Selector;
+import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
 public class QuoteGetter {
-    private final String URL0 = "https://www.livelib.ru/author/102587/quotes-arkadij-i-boris-strugatskie/~";
-    private final int COUNT = 150;
-    private final Document document;
-    private final String text;
+    private final String url = "https://socratify.net/quotes/random";
+    private String text;
+    private String markdownv2FormattedText;
 
     public QuoteGetter() throws IOException {
-        String url = URL0 + r(COUNT);
+        Document document;
+        boolean suitable = false;
         try {
-            document = Jsoup.connect(url).get();
-            Elements elements = document.select("div.lenta-card");
-            if (elements.isEmpty())
-                throw new NoSuchElementException("Не найден контент с цитатками на сайте цитаток " + url);
+            while (!suitable) {
+                document = Jsoup.connect(url).get();
+                Elements elements = document.select("div.b-quote");
+                if (elements.isEmpty())
+                    throw new NoSuchElementException("Не найден контент с цитатками на сайте цитаток " + url);
+
+                Element div = elements.get(0);
+                String quote = div.select("h1.b-quote__text").html();
+                if (!quote.contains("br"))
+                    suitable = true;
+//                else
+//                    continue;
+
+                String author = div.select("h2.b-quote__category a")
+                                    .html()
+                                    .split(",")[0];
+
+                quote = div.select("h1.b-quote__text").text();
+                text = quote + "\n" + author;
+                markdownv2FormattedText = MyString.markdownv2Format(quote)
+                                + "\n_"
+                                + MyString.markdownv2Format(author)
+                                + "_";
 
 //            //for testing purposes only
-//            text = url + "\n" +
-//                    elements.stream().map(element -> {
-//                        String book = element.select("a.lenta-card__book-title").text();
-//                        String quote = element.select("div#lenta-card__text-quote-escaped p").text();
-//                        return "\n" + book + ":\n" + quote; })
-//                    .filter(s -> s.length()>50
-//                            && s.length()<300
-//                            && !s.toLowerCase().contains("сборник")
-//                            && !s.toLowerCase().contains("собрание"))
-//                    .reduce((s1, s2) -> s1 + "\n" + s2)
-//                    .get();
+//                System.out.printf("%s:%n%s%n",
+//                                    suitable ? "Suitable" : "Unsuitable" + " quote:",
+//                                    text);
+//                System.out.printf("Formatted:\n%s", formattedText);
+            }
 
-                    List<String> quotes =
-                    elements.stream().map(element -> {
-                        String book = element.select("a.lenta-card__book-title").text();
-                        String quote = element.select("div#lenta-card__text-quote-escaped p").text();
-                        return
-//                                book + ":\n" +
-                                quote; })
-                    .filter(s -> s.length()>50
-                            && s.length()<300
-                            && !s.toLowerCase().contains("сборник")
-                            && !s.toLowerCase().contains("собрание"))
-                    .collect(Collectors.toList());
-                    text = quotes.get(r(quotes.size()));
-
-//            text = elements.get(r(elements.size()-1)).text();
         } catch (IOException e) {
             throw new IOException("Не могу подключиться к сайту цитаток " + url);
         } catch (Selector.SelectorParseException e) {
@@ -64,5 +61,9 @@ public class QuoteGetter {
 
     public String getQuote() {
         return text;
+    }
+
+    public String getMarkdownv2FormattedQuote() {
+        return markdownv2FormattedText;
     }
 }
