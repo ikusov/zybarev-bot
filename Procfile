@@ -1,1 +1,1 @@
-worker: java -cp target/classes:target/dependency/* ru.ikusov.training.telegrambot.MainClass
+web: java -cp target/classes:target/dependency/* ru.ikusov.training.telegrambot.MainClass
