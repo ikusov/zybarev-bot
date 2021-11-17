@@ -7,8 +7,8 @@ public class UserNameGetter {
         String firstName = user.getFirstName(),
                 lastName = user.getLastName();
 
-        String userName = firstName.equals("null") ? "" : (firstName + " ");
-        userName += lastName.equals("null") ? "" : lastName;
+        String userName = firstName == null ? "" : (firstName + " ");
+        userName += lastName == null ? "" : lastName;
         userName += userName.equals("") ? user.getUserName() : "";
         userName += userName.equals("") ? "пользователь №" + user.getId() : "";
 

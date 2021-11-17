@@ -1,0 +1,43 @@
+    public static String getResponseString() {
+        String url = "https://api.telegram.org/bot1138729657:AAHvn7BhPp1rrUKmz3eIa90Kwaas_8n9Btk/getupdates";
+        StringBuffer response = new StringBuffer();
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+
+            connection.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response.toString();
+    }
+
+    public static void main_new(String... lkjdsf) throws JsonProcessingException {
+        String responseString = getResponseString();
+        ApiResponse<ArrayList<Update>> response =
+                new ObjectMapper().readValue(responseString, new TypeReference<>() {
+                } );
+
+        List<Update> updates = response.getResult();
+
+        updates.stream()
+                .filter(Update::hasMessage)
+                .map(Update::getMessage)
+                .filter(Message::hasText)
+                .map(message -> String.format("%s %s (%s): %s",
+                        message.getFrom().getFirstName(),
+                        message.getFrom().getLastName(),
+                        message.getFrom().getId(),
+                        message.getText()))
+                .forEach(System.out::println);
+    }
+
