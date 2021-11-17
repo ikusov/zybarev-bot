@@ -12,10 +12,12 @@ import java.util.List;
 @Component("bot")
 public class Bot extends TelegramLongPollingBot {
     //используем здесь аннотацию вялую
-    @Value("${bot.name}")
+//    @Value("${bot.name}")
+    @Value("#{environment.bot_name}")
     private String botUserName;
 
-    @Value("${bot.token}")
+//    @Value("${bot.token}")
+    @Value("#{environment.bot_token}")
     private String botToken;
 
     @Autowired

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ComponentScan("ru.ikusov.training.telegrambot")
-@PropertySource("classpath:bot.properties")
+//@PropertySource("classpath:bot.properties")
 @EnableAspectJAutoProxy
 public class MyConfig {
 }
