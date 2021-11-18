@@ -7,8 +7,8 @@ import ru.ikusov.training.telegrambot.services.ImageGetter;
 
 import java.util.Set;
 
-@Component
-@Order(130)
+//@Component
+//@Order(130)
 public class ImageCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants =
             Set.of("/picture", "/картинка", "/pic", "/пик", "/пикча");
