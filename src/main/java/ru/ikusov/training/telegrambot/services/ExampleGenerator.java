@@ -27,16 +27,20 @@ public class ExampleGenerator {
         List<Integer> operandList = new LinkedList<>();
         int operandLength = 3+r(3);
 
+        for (int i=0; i<operandLength-1; i++) {
+            operatorList.add(
+                    complexity==Complexity.EASY &&
+                            operatorList.contains("×") ?
+                            operators[1+r(operators.length-1)] :
+                            operators[r(operators.length)]
+            );
+        }
+
         for (int i=0; i<operandLength; i++) {
-            operandList.add(r(complexity.range));
-            if (i<operandLength-1) {
-                operatorList.add(
-                        complexity==Complexity.EASY &&
-                        operatorList.contains("×") ?
-                                operators[1+r(operators.length-1)] :
-                                operators[r(operators.length)]
-                );
-            }
+            if(i>0 && operatorList.get(i-1).equals("×"))
+                operandList.add(r(Complexity.EASY.range)+2);
+            else
+                operandList.add(r(complexity.range)+2);
         }
 
         //form example string from operand and operator lists
