@@ -7,6 +7,7 @@ import ru.ikusov.training.telegrambot.services.ImageGetter;
 
 import java.util.Set;
 
+//the handler is not needed, so disable injection
 //@Component
 //@Order(130)
 public class ImageCommandMessageHandler extends CommandMessageHandler {

@@ -30,7 +30,7 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
 
         String textAnswer;
         textAnswer = "Сколько будет " +
-                    (exampleGenerator.isAnswered() ? exampleGenerator.generateExample(complexity) : exampleGenerator.getExample()) +
+                    (exampleGenerator.isAnswered() ? exampleGenerator.generateExampleNew(complexity) : exampleGenerator.getExample()) +
                     "=?";
 
         return new BotMessageSender(command.getChatId(), textAnswer);
