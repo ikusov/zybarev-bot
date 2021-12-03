@@ -7,8 +7,8 @@ import ru.ikusov.training.telegrambot.services.QuoteGetter;
 
 import java.util.Set;
 
-@Component
-@Order(110)
+//@Component
+//@Order(110)
 public class QuoteCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/quote", "/q", "/цитата", "/ц", "/й");
 
@@ -26,17 +26,11 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
 
         try {
             quoteGetter = new QuoteGetter();
-//            textAnswer = quoteGetter.getQuote();
             textAnswer = quoteGetter.getMarkdownv2FormattedQuote();
         } catch (Exception e) {
             textAnswer = e.getMessage();
         }
 
-        //for testing purposes only
-//        System.out.println(textAnswer);
-//        return null;
-
-//        return new BotMessageSender(command.getChatId(), textAnswer);
         return new BotFormattedMessageSender(command.getChatId(), textAnswer);
     }
 }

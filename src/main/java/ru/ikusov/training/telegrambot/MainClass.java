@@ -8,23 +8,20 @@ public class MainClass {
 
     public static void main(String... lksdjf) {
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
-//        //for proxy if needed (no)
+        //        //for proxy if needed (no)
 //        System.getProperties().put( "proxySet", "true" );
 //        System.getProperties().put( "socksProxyHost", "127.0.0.1" );
 //        System.getProperties().put( "socksProxyPort", "9150" );
 
-        TelegramBotsApi botsApi;
-        Bot myBot;
-        try {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class)) {
+            TelegramBotsApi botsApi;
+            Bot myBot;
             myBot = context.getBean("bot", Bot.class);
 
             botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(myBot);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            context.close();
         }
     }
 
