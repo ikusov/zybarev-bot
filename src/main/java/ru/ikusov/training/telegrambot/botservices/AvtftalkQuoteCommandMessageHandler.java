@@ -5,15 +5,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.AvtftalkQuoteGetter;
-import ru.ikusov.training.telegrambot.services.QuoteGetter;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
-@Component
-@Order(120)
+//@Component
+//@Order(120)
 public class AvtftalkQuoteCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/quote", "/q", "/цитата", "/ц", "/й");
 
@@ -33,11 +32,7 @@ public class AvtftalkQuoteCommandMessageHandler extends CommandMessageHandler {
         String params = command.getParams();
 
         try {
-            int number = params.equals("") ? r(72)+1 :
-                    MyString.brutalParseInt(command.getParams());
-            textAnswer = quoteGetter.getMarkdownv2FormattedQuote(number);
-        } catch (NumberFormatException e) {
-            textAnswer = "Не могу понять, что за номер цитаты " + params;
+            textAnswer = quoteGetter.getMarkdownv2FormattedQuote(params);
         } catch (Exception e) {
             textAnswer = e.getMessage();
         }

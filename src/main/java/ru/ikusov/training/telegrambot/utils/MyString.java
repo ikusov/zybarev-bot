@@ -25,7 +25,7 @@ public final class MyString {
         return Integer.parseInt(String.valueOf(number).substring(0, count));
     }
 
-    public static int brutalParseInt(String s) {
+    public static int brutalParseInt(String s) throws NumberFormatException {
         return brutalParseInt(s.strip().toCharArray());
     }
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.ikusov.training.telegrambot.botservices.BotUpdateHandler;
+import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class Bot extends TelegramLongPollingBot {
 //    @Value("${bot.token}")
     @Value("#{environment.bot_token}")
     private String botToken;
+
+    @Autowired
+    DatabaseConnector databaseConnector;
 
     @Autowired
     private List<BotUpdateHandler> botUpdateHandlers;
@@ -39,5 +43,11 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         botUpdateHandlers.forEach(botUpdateHandler -> botUpdateHandler.handleUpdate(update));
+    }
+
+    @Override
+    public void onClosing() {
+        databaseConnector.close();
+        super.onClosing();
     }
 }
