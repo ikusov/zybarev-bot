@@ -24,11 +24,13 @@ public class AvtftalkQuoteGetter implements Markdownv2QuoteGetter {
         SessionFactory sessionFactory = databaseConnector.getSessionFactory();
         String result;
         int number;
-        if(args.length==0 || args[0]=="")
-            number = r(72)+1;
 
         try {
-            number = MyString.brutalParseInt(args[0]);
+            if(args.length==0 || args[0].equals("")) {
+                number = r(72) + 1;
+            } else {
+                number = MyString.brutalParseInt(args[0]);
+            }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Не могу понять, что за номер цитаты " + args[0]);
         }
