@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
+import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.util.Set;
@@ -21,8 +22,12 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler{
     public BotReaction handleCommand(MyBotCommand command) {
         if(registeredCommands.contains(command.getCommand())) return null;
 
-        String textAnswer = RandomMessageGenerator
-                .generate(RandomMessageGenerator.MessageType.UNKNOWN_COMMAND_MESSAGE,
+        String textAnswer =
+//                RandomMessageGenerator
+//                .generate(RandomMessageGenerator.MessageType.UNKNOWN_COMMAND_MESSAGE,
+//                        command.getCommand());
+                String.format(
+                        MessageType.UNKNOWN_COMMAND_MESSAGE.getRandomMessage(),
                         command.getCommand());
         return new BotMessageSender(command.getChatId(), textAnswer);
     }

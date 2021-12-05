@@ -5,6 +5,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
+import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyString;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
@@ -22,7 +23,10 @@ public class GoodExampleMessageHandler extends NonCommandMessageHandler {
         String msgText = MyString.trimPunctuationMarksInclusive(message.getText());
 
         if (msgText.equalsIgnoreCase("хороший пример")) {
-            String textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE);
+            String textAnswer =
+//                    RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE);
+                    MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE.getRandomMessage();
+
             return new BotMessageSender(message.getChatId().toString(), textAnswer);
         } else return null;
     }

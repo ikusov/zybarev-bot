@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.services;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Selector;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.io.IOException;
@@ -21,7 +22,8 @@ public class ImageGetter {
 
     public ImageGetter(String searchText) throws IOException {
         String textToFind = searchText == null || searchText.isEmpty() ?
-                RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.PAINTING_QUERY) :
+//                RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.PAINTING_QUERY)
+                MessageType.PAINTING_QUERY.getRandomMessage() :
                 searchText;
 
         textToFind = textToFind.replaceAll("\\s", "%20");

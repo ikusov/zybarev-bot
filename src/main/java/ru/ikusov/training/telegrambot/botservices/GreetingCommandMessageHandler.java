@@ -5,6 +5,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.Bot;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
+import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.util.Set;
@@ -23,7 +24,11 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
         String userName = command.getUser().getFirstName();
 
-        String textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.GREETING_MESSAGE, userName);
+        String textAnswer =
+//                RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.GREETING_MESSAGE, userName);
+                String.format(
+                    MessageType.GREETING_MESSAGE.getRandomMessage(),
+                    userName);
 
         return new BotMessageSender(command.getChatId(), textAnswer);
     }

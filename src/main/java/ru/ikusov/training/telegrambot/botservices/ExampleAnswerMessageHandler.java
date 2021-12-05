@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
+import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
 import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
@@ -29,25 +30,31 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             return null;
         }
 
-
-        int answer = exampleGenerator.getAnswerInt();
+        String userAnswerString = String.valueOf(userAnswer);
+        int rightAnswer = exampleGenerator.getAnswerInt();
 
         String userName = UserNameGetter.getUserName(message.getFrom());
         long userId = message.getFrom().getId();
 
         String textAnswer;
 
-        if (userAnswer == answer) {
+        if (userAnswer == rightAnswer) {
             String interval = MyMath.toReadableTime(System.nanoTime()-exampleGenerator.getTimer());
-            textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.RIGHT_ANSWER_MESSAGE,
-                                                            String.valueOf(userAnswer),
-                                                            userName,
-                                                            interval);
+            textAnswer = String.format(
+                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(), 
+                    userAnswerString,
+                    userName,
+                    interval);
             exampleGenerator.setAnswered(true);
         } else {
-            textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.WRONG_ANSWER_MESSAGE,
-                                                            String.valueOf(userAnswer),
-                                                            userName);
+//            textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.WRONG_ANSWER_MESSAGE,
+//                                                            String.valueOf(userAnswer),
+//                                                            userName);
+            textAnswer = String.format(
+                    MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
+                    userAnswerString,
+                    userName
+            );
         }
 
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
