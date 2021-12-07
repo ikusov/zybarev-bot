@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.model.Quote;
+import ru.ikusov.training.telegrambot.model.QuoteEntity;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import javax.persistence.Query;
@@ -40,12 +40,12 @@ public class AvtftalkQuoteGetter implements Markdownv2QuoteGetter {
             Transaction transaction = session.beginTransaction();
 
             Query query = session.createQuery("from Quote where channel='#avtftalk' and id=" + number);
-            List<Quote> quotes = query.getResultList();
+            List<QuoteEntity> quotes = query.getResultList();
 
             if (quotes.isEmpty()) {
                 throw new NoSuchElementException("Не найдена цитата за нумером " + number + "!");
             }
-            Quote quote = quotes.get(0);
+            QuoteEntity quote = quotes.get(0);
             result = quote.toMarkdownv2String();
 
             transaction.commit();

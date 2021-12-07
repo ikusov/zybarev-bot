@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
 import ru.ikusov.training.telegrambot.utils.MessageType;
@@ -16,6 +18,9 @@ import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
     @Autowired
     private ExampleGenerator exampleGenerator;
+
+    @Autowired
+    DatabaseConnector databaseConnector;
 
     @Override
     public BotReaction handleNonCommand(Message message) {
@@ -53,8 +58,25 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             textAnswer = String.format(
                     MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
                     userAnswerString,
-                    userName
-            );
+                    userName);
+        }
+
+        try {
+            UserEntity user = databaseConnector.getById(UserEntity.class, userId);
+            if (user==null) {
+                user = new UserEntity(message.getFrom());
+
+                databaseConnector.save(user);
+
+                //for testing purposes only
+                System.out.println("User saved to database: " + user);
+            } else {
+
+                //for testing purposes only
+                System.out.println("User get from database: " + user);
+            }
+        } catch (Exception e) {
+            System.out.println("Exception while serializing example answer to database: " + e.getMessage());
         }
 
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
