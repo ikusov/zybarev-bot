@@ -20,6 +20,8 @@ import java.util.List;
 @Component
 @Aspect
 public class LoggingAspect {
+    //todo: add logging aspect to DatabaseConnector save and get
+
     @Before("execution(* *.handleUpdate(*))")
     public void beforeHandleUpdateAdvice(JoinPoint joinPoint) {
 

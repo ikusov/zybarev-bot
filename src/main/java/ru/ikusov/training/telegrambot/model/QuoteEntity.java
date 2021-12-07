@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "quotes")
-public class QuoteEntity implements DatabaseEntity {
+public class QuoteEntity implements CommonEntity {
     @Id
     @Column(name = "id")
     private int id;

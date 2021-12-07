@@ -5,7 +5,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.model.DatabaseEntity;
+import ru.ikusov.training.telegrambot.model.CommonEntity;
+import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.QuoteEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 
@@ -16,7 +17,8 @@ import java.util.List;
 @Component
 public class DatabaseConnector {
     private final SessionFactory sessionFactory;
-    private final List<Class<? extends DatabaseEntity>> entities = List.of(QuoteEntity.class, UserEntity.class);
+    private final List<Class<? extends CommonEntity>> entities =
+            List.of(QuoteEntity.class, UserEntity.class, ExampleAnswerEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
@@ -49,26 +51,26 @@ public class DatabaseConnector {
         sessionFactory.close();
     }
 
-    public <T extends DatabaseEntity> T getById(Class<T> tClass, long id) {
+    public <T extends CommonEntity> T getById(Class<T> tClass, long id) {
         T entity;
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        try(Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
 
-        entity = session.get(tClass, id);
+            entity = session.get(tClass, id);
 
-        transaction.commit();
-        session.close();
+            transaction.commit();
+        }
 
         return entity;
     }
 
-    public <T extends DatabaseEntity> void save(T entity) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+    public <T extends CommonEntity> void save(T entity) {
+        try(Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
 
-        session.save(entity);
+            session.save(entity);
 
-        transaction.commit();
-        session.close();
+            transaction.commit();
+        }
     }
 }

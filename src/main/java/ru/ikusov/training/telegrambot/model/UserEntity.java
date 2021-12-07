@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class UserEntity implements DatabaseEntity {
+public class UserEntity implements CommonEntity {
     @Id
     @Column(name = "id")
     private long id;

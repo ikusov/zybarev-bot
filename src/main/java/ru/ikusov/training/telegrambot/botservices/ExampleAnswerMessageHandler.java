@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
@@ -24,10 +25,14 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
     @Override
     public BotReaction handleNonCommand(Message message) {
+        long timer = System.nanoTime()-exampleGenerator.getTimer();
+        String interval = MyMath.toReadableTime(timer);
+
         if (exampleGenerator.isAnswered()) return null;
 
         String msgText = message.getText().strip();
         int userAnswer;
+        boolean isRight;
 
         try {
             userAnswer = MyString.brutalParseInt(msgText);
@@ -36,15 +41,14 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         }
 
         String userAnswerString = String.valueOf(userAnswer);
-        int rightAnswer = exampleGenerator.getAnswerInt();
+        isRight = userAnswer == exampleGenerator.getAnswerInt();
 
         String userName = UserNameGetter.getUserName(message.getFrom());
         long userId = message.getFrom().getId();
 
         String textAnswer;
 
-        if (userAnswer == rightAnswer) {
-            String interval = MyMath.toReadableTime(System.nanoTime()-exampleGenerator.getTimer());
+        if (isRight) {
             textAnswer = String.format(
                     MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(), 
                     userAnswerString,
@@ -67,14 +71,16 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
                 user = new UserEntity(message.getFrom());
 
                 databaseConnector.save(user);
-
-                //for testing purposes only
-                System.out.println("User saved to database: " + user);
-            } else {
-
-                //for testing purposes only
-                System.out.println("User get from database: " + user);
             }
+
+            ExampleAnswerEntity exampleAnswer = new ExampleAnswerEntity()
+                    .setTimestamp(System.currentTimeMillis()/1000)
+                    .setChatId(message.getChatId())
+                    .setUser(user)
+                    .setRight(isRight);
+            if (isRight) exampleAnswer.setTimer(timer/1_000_000);
+
+            databaseConnector.save(exampleAnswer);
         } catch (Exception e) {
             System.out.println("Exception while serializing example answer to database: " + e.getMessage());
         }
