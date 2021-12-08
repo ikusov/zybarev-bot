@@ -133,4 +133,8 @@ public class ChatEntity implements CommonEntity {
         this.locationLatitude = locationLatitude;
         return this;
     }
+
+    public String toString() {
+        return type.equals("private") ? firstname + " " + lastname : title;
+    }
 }

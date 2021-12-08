@@ -7,9 +7,11 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.*;
 
+import javax.persistence.Query;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 public class DatabaseConnector {
@@ -69,5 +71,22 @@ public class DatabaseConnector {
 
             transaction.commit();
         }
+    }
+
+    public <T extends CommonEntity> List<T> getByQuery(Class<T> tClass, String query) {
+        List<T> resultList = null;
+
+        try(Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            Query query1 = session.createQuery(query);
+            resultList = query1.getResultList();
+
+            transaction.commit();
+        }
+
+        if (resultList == null || resultList.isEmpty()) throw new NoSuchElementException("No elements for query " + query);
+
+        return resultList;
     }
 }
