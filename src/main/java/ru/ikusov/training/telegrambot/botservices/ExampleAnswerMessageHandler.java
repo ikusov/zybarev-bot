@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
@@ -73,9 +74,17 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
                 databaseConnector.save(user);
             }
 
+            ChatEntity chat = databaseConnector.getById(ChatEntity.class, message.getChatId());
+            if (chat==null) {
+                chat = new ChatEntity(message.getChat());
+
+                databaseConnector.save(chat);
+            }
+
+
             ExampleAnswerEntity exampleAnswer = new ExampleAnswerEntity()
                     .setTimestamp(System.currentTimeMillis()/1000)
-                    .setChatId(message.getChatId())
+                    .setChat(chat)
                     .setUser(user)
                     .setRight(isRight);
             if (isRight) exampleAnswer.setTimer(timer/1_000_000);
@@ -87,4 +96,6 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
     }
+
+
 }

@@ -13,8 +13,9 @@ public class ExampleAnswerEntity implements CommonEntity {
     @Column(name = "timestamp")
     private long timestamp;
 
-    @Column(name = "chat_id")
-    private long chatId;
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private ChatEntity chat;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,14 +28,6 @@ public class ExampleAnswerEntity implements CommonEntity {
     private long timer;
 
     public ExampleAnswerEntity() {
-    }
-
-    public ExampleAnswerEntity(int id, long timestamp, UserEntity user, boolean isRight, long timer) {
-        this.id = id;
-        this.timestamp = timestamp;
-        this.user = user;
-        this.isRight = isRight;
-        if (isRight) this.timer = timer;
     }
 
     public int getId() {
@@ -82,12 +75,12 @@ public class ExampleAnswerEntity implements CommonEntity {
         return this;
     }
 
-    public long getChatId() {
-        return chatId;
+    public ChatEntity getChat() {
+        return chat;
     }
 
-    public ExampleAnswerEntity setChatId(long chatId) {
-        this.chatId = chatId;
+    public ExampleAnswerEntity setChat(ChatEntity chat) {
+        this.chat = chat;
         return this;
     }
 }

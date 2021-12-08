@@ -5,10 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.model.CommonEntity;
-import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
-import ru.ikusov.training.telegrambot.model.QuoteEntity;
-import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.model.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,7 +15,7 @@ import java.util.List;
 public class DatabaseConnector {
     private final SessionFactory sessionFactory;
     private final List<Class<? extends CommonEntity>> entities =
-            List.of(QuoteEntity.class, UserEntity.class, ExampleAnswerEntity.class);
+            List.of(QuoteEntity.class, UserEntity.class, ChatEntity.class, ExampleAnswerEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
