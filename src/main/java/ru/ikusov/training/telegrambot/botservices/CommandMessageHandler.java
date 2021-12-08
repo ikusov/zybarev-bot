@@ -1,11 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.Bot;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +26,6 @@ public abstract class CommandMessageHandler implements MessageHandler {
 
     @Override
     public void handleMessage(Message message) {
-//        System.out.println("CommandMessageHandler.handleMessage()!");
-
         String msgText = message.getText();
 
         if (msgText.charAt(0) != '/') return;
@@ -51,8 +47,7 @@ public abstract class CommandMessageHandler implements MessageHandler {
 
         if (commandVariants.isEmpty() || commandVariants.contains(command.getCommand())) {
             BotReaction botReaction = handleCommand(command);
-            if (botReaction != null)
-                botReaction.react(bot);
+            botReaction.react(bot);
         }
     }
 

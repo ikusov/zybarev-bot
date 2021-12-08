@@ -18,7 +18,7 @@ public class GoodExampleMessageHandler extends NonCommandMessageHandler {
     ExampleGenerator exampleGenerator;
 
     public BotReaction handleNonCommand(Message message) {
-        if (exampleGenerator.isAnswered()) return null;
+        if (exampleGenerator.isAnswered()) return new BotEmptyReaction();
 
         String msgText = MyString.trimPunctuationMarksInclusive(message.getText());
 
@@ -28,6 +28,6 @@ public class GoodExampleMessageHandler extends NonCommandMessageHandler {
                     MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE.getRandomMessage();
 
             return new BotMessageSender(message.getChatId().toString(), textAnswer);
-        } else return null;
+        } else return new BotEmptyReaction();
     }
 }

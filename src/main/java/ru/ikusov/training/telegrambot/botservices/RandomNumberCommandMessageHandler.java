@@ -25,8 +25,8 @@ public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-
+//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
+//
         String paramsString = command.getParams();
         String textAnswer = calculate(paramsString);
 

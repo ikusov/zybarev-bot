@@ -1,51 +1,18 @@
-    public static String getResponseString() {
-        String url = "https://api.telegram.org/bot<token>/getupdates";
-        StringBuffer response = new StringBuffer();
-        try {
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+table example_answers:
+id
+timestamp
+user_id foreign key
+telegram_chat_id
+is_right_answer
+timer
 
-            connection.setRequestMethod("GET");
+entity for users:
+id
+telegram_user_id
+first_name
+last_name
+user_name
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        return response.toString();
-    }
-
-    public static void main_new(String... lkjdsf) throws JsonProcessingException {
-        String responseString = getResponseString();
-        ApiResponse<ArrayList<Update>> response =
-                new ObjectMapper().readValue(responseString, new TypeReference<>() {
-                } );
-
-        List<Update> updates = response.getResult();
-
-        updates.stream()
-                .filter(Update::hasMessage)
-                .map(Update::getMessage)
-                .filter(Message::hasText)
-                .map(message -> String.format("%s %s (%s): %s",
-                        message.getFrom().getFirstName(),
-                        message.getFrom().getLastName(),
-                        message.getFrom().getId(),
-                        message.getText()))
-                .forEach(System.out::println);
-    }
-
-    public static final void main_test(String... lkjlkj) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
-        Bot myBot = context.getBean("bot", Bot.class);
-
-        System.out.println(myBot.getBotUsername());
-        System.out.println(myBot.getBotToken());
-    }
 

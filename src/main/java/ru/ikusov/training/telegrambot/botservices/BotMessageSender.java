@@ -6,8 +6,8 @@ import ru.ikusov.training.telegrambot.Bot;
 
 public class BotMessageSender implements BotReaction {
 
-    private String chatId;
-    private String textMessage;
+    private final String chatId;
+    private final String textMessage;
 
     public BotMessageSender(String chatId, String textMessage) {
         this.chatId = chatId;

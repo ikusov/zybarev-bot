@@ -17,20 +17,8 @@ public class MessageTypeUpdatesHandler implements BotUpdateHandler {
     @Autowired
     List<MessageHandler> messageHandlers;
 
-//    public MessageTypeUpdatesHandler(List<MessageHandler> messageHandlers) {
-//        this.messageHandlers = messageHandlers;
-//    }
-
-//    @PostConstruct
-//    public void init() {
-//        System.out.println("MessageHandlers list contains:");
-//        messageHandlers.forEach(messageHandler -> System.out.println(messageHandler.getClass().getSimpleName()));
-//    }
-
     @Override
     public void handleUpdate(Update update) {
-
-//        System.out.println(this.getClass().getSimpleName() + "." + "handleUpdate()!");
 
         if(!update.hasMessage()) return;
 

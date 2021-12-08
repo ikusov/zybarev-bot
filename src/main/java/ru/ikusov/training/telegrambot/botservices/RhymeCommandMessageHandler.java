@@ -20,8 +20,8 @@ public class RhymeCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-
+//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
+//
         RhymeGetter rhymeGetter;
         String textAnswer;
 

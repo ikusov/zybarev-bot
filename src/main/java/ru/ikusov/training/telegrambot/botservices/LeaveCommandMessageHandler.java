@@ -19,8 +19,8 @@ public class LeaveCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-
+//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
+//
         return new BotChatLeaver(command.getChatId());
     }
 }

@@ -20,7 +20,7 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler{
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        if(registeredCommands.contains(command.getCommand())) return null;
+        if(registeredCommands.contains(command.getCommand())) return new BotEmptyReaction();
 
         String textAnswer =
 //                RandomMessageGenerator

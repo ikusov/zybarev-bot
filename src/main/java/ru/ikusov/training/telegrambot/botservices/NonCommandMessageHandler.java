@@ -15,11 +15,8 @@ public abstract class NonCommandMessageHandler implements MessageHandler {
 
     @Override
     public void handleMessage(Message message) {
-//        System.out.println(this.getClass().getSimpleName() + ".handleMessage()!");
-
         BotReaction botReaction = handleNonCommand(message);
-        if (botReaction != null)
-            botReaction.react(bot);
+        botReaction.react(bot);
     }
 
     public abstract BotReaction handleNonCommand(Message message);

@@ -29,7 +29,7 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         long timer = System.nanoTime()-exampleGenerator.getTimer();
         String interval = MyMath.toReadableTime(timer);
 
-        if (exampleGenerator.isAnswered()) return null;
+        if (exampleGenerator.isAnswered()) return new BotEmptyReaction();
 
         String msgText = message.getText().strip();
         int userAnswer;
@@ -38,7 +38,7 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         try {
             userAnswer = MyString.brutalParseInt(msgText);
         } catch (NumberFormatException e) {
-            return null;
+            return new BotEmptyReaction();
         }
 
         String userAnswerString = String.valueOf(userAnswer);

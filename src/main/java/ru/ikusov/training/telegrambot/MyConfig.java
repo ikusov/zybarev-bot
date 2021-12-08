@@ -6,7 +6,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
 @ComponentScan("ru.ikusov.training.telegrambot")
-//@PropertySource("classpath:bot.properties")
 @EnableAspectJAutoProxy
 public class MyConfig {
 }
