@@ -4,6 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.WeatherGetter;
+import ru.ikusov.training.telegrambot.services.WeatherGetter2;
 
 import java.io.IOException;
 import java.util.Set;
@@ -22,13 +23,13 @@ public class WeatherCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
 //        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
 //
-        WeatherGetter weatherGetter;
+        WeatherGetter2 weatherGetter;
         String textAnswer;
 
         try {
-            weatherGetter = new WeatherGetter();
+            weatherGetter = new WeatherGetter2();
             textAnswer = weatherGetter.getWeather();
-        } catch (IOException e) {
+        } catch (Exception e) {
             textAnswer = e.getMessage();
         }
 
