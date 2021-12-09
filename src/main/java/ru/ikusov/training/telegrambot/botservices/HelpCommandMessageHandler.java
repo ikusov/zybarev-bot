@@ -21,7 +21,7 @@ public class HelpCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
 //        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
 //
-        String textAnswer = registeredCommands.stream().reduce((s, s2) -> s + " " + s2).get();
+        String textAnswer = registeredCommands.stream().reduce((s, s2) -> s + "\n" + s2).get();
 
         return new BotMessageSender(command.getChatId(), textAnswer);
     }

@@ -1,5 +1,8 @@
 package ru.ikusov.training.telegrambot.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -11,12 +14,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WeatherGetter2 {
     private final String url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=54.86&lon=83.09";
     private String forecast;
-    private Map<Object, Object> weather;
+    private JsonNode weatherForecast;
 
     public WeatherGetter2() throws IOException {
         StringBuffer response = new StringBuffer();
@@ -36,7 +40,7 @@ public class WeatherGetter2 {
             }
             in.close();
             forecast = response.toString();
-            weather = parseWeather();
+            weatherForecast = parseWeather();
 
         } catch (IOException e) {
             throw new IOException("Не могу подключиться к сайту погоды " + url);
@@ -48,20 +52,20 @@ public class WeatherGetter2 {
 
     }
 
-    private Map<Object, Object> parseWeather() throws ParseException {
-        JSONObject wJson = (JSONObject) JSONValue.parseWithException(forecast);
-        Map<Object, Object> weather = new HashMap<>((JSONObject) ((JSONObject) (((JSONObject) (((JSONObject) ((JSONArray) ((JSONObject) (wJson.get("properties"))).get("timeseries")).get(0)).get("data"))).get("instant"))).get("details"));
-        weather.putAll((JSONObject)((JSONObject) (((JSONObject) (((JSONObject) ((JSONArray) ((JSONObject) (wJson.get("properties"))).get("timeseries")).get(0)).get("data"))).get("next_1_hours"))).get("summary"));
-        weather.putAll((JSONObject)((JSONObject) (((JSONObject) (((JSONObject) ((JSONArray) ((JSONObject) (wJson.get("properties"))).get("timeseries")).get(0)).get("data"))).get("next_1_hours"))).get("details"));
-        return weather;
+    private JsonNode parseWeather() throws ParseException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode wJsonNode = mapper.readTree(forecast);
+        return wJsonNode.get("properties").get("timeseries");
     }
 
     public String getWeather() {
-        String degrees = weather.get("air_temperature").toString(),
-                description = weather.get("symbol_code").toString();
-
+        String degreesNow = weatherForecast.get(0).get("data").get("instant").get("details").get("air_temperature").asText(),
+                descriptionNow = weatherForecast.get(0).get("data").get("next_1_hours").get("summary").get("symbol_code").asText(),
+                degreesTomorrow = weatherForecast.get(24).get("data").get("instant").get("details").get("air_temperature").asText(),
+                descriptionTomorrow = weatherForecast.get(24).get("data").get("next_1_hours").get("summary").get("symbol_code").asText();
 //        System.out.println("forecast = " + forecast);
-        return String.format("По данным сайта %s, сейчас в Новосибирске %s, температура %s\u00b0 Цельсия.",
-                                            url,                    description,        degrees);
+        return String.format("Если верить норвежцам, сейчас в Новосибирске %s, температура %s\u00b0 Цельсия.\n" +
+                                "В ближайшие сутки будет %s, температура %s\u00b0 Цельсия.",
+                                descriptionNow, degreesNow, descriptionTomorrow, degreesTomorrow);
     }
 }
