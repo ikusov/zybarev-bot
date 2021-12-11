@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
+import ru.ikusov.training.telegrambot.model.LocationEntity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,15 +19,17 @@ import java.util.List;
 import java.util.Map;
 
 public class WeatherGetter2 {
-    private final String url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=54.86&lon=83.09";
+    private final String url = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&appid=b506b71d639ea4ec15576de54fcf650a";
     private String forecast;
     private JsonNode weatherForecast;
 
-    public WeatherGetter2() throws IOException {
+    public WeatherGetter2(LocationEntity location) throws IOException {
         StringBuffer response = new StringBuffer();
+        double lat = location.getLatitude(),
+                lon = location.getLongitude();
 
         try {
-            URL obj = new URL(url);
+            URL obj = new URL(url + "&lat=" + lat + "&lon=" + lon);
             HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
 
             connection.setRequestMethod("GET");
@@ -54,18 +57,15 @@ public class WeatherGetter2 {
 
     private JsonNode parseWeather() throws ParseException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode wJsonNode = mapper.readTree(forecast);
-        return wJsonNode.get("properties").get("timeseries");
+        return mapper.readTree(forecast);
     }
 
     public String getWeather() {
-        String degreesNow = weatherForecast.get(0).get("data").get("instant").get("details").get("air_temperature").asText(),
-                descriptionNow = weatherForecast.get(0).get("data").get("next_1_hours").get("summary").get("symbol_code").asText(),
-                degreesTomorrow = weatherForecast.get(24).get("data").get("instant").get("details").get("air_temperature").asText(),
-                descriptionTomorrow = weatherForecast.get(24).get("data").get("next_1_hours").get("summary").get("symbol_code").asText();
-//        System.out.println("forecast = " + forecast);
-        return String.format("Если верить норвежцам, сейчас в Новосибирске %s, температура %s\u00b0 Цельсия.\n" +
-                                "В ближайшие сутки будет %s, температура %s\u00b0 Цельсия.",
-                                descriptionNow, degreesNow, descriptionTomorrow, degreesTomorrow);
+        String location = weatherForecast.get("name").asText();
+        String description = weatherForecast.get("weather").get(0).get("description").asText();
+        Double temp = weatherForecast.get("main").get("temp").asDouble();
+
+        return String.format("%s: %s, температура %.1f\u00b0C",
+                                location, description, temp);
     }
 }

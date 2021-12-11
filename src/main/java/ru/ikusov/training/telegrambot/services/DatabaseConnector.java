@@ -17,7 +17,11 @@ import java.util.NoSuchElementException;
 public class DatabaseConnector {
     private final SessionFactory sessionFactory;
     private final List<Class<? extends CommonEntity>> entities =
-            List.of(QuoteEntity.class, UserEntity.class, ChatEntity.class, ExampleAnswerEntity.class);
+            List.of(QuoteEntity.class,
+                    UserEntity.class,
+                    ChatEntity.class,
+                    LocationEntity.class,
+                    ExampleAnswerEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {
         URI dbUri = new URI(System.getenv("DATABASE_URL"));

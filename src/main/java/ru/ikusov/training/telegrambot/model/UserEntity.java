@@ -2,10 +2,7 @@ package ru.ikusov.training.telegrambot.model;
 
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +19,10 @@ public class UserEntity implements CommonEntity {
 
     @Column(name = "username")
     private String userName;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private LocationEntity location;
 
     public UserEntity() {
     }
@@ -73,6 +74,15 @@ public class UserEntity implements CommonEntity {
 
     public UserEntity setUserName(String userName) {
         this.userName = userName;
+        return this;
+    }
+
+    public LocationEntity getLocation() {
+        return location;
+    }
+
+    public UserEntity setLocation(LocationEntity location) {
+        this.location = location;
         return this;
     }
 
