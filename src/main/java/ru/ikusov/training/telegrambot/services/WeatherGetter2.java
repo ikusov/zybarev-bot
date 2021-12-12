@@ -19,17 +19,19 @@ import java.util.List;
 import java.util.Map;
 
 public class WeatherGetter2 {
-    private final String url = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&appid=b506b71d639ea4ec15576de54fcf650a";
+    private final String url = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru";
     private String forecast;
     private JsonNode weatherForecast;
 
     public WeatherGetter2(LocationEntity location) throws IOException {
         StringBuffer response = new StringBuffer();
+
+        String apiKey = System.getenv("weather_api_token");
         double lat = location.getLatitude(),
                 lon = location.getLongitude();
 
         try {
-            URL obj = new URL(url + "&lat=" + lat + "&lon=" + lon);
+            URL obj = new URL(url + "&appid=" + apiKey + "&lat=" + lat + "&lon=" + lon);
             HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
 
             connection.setRequestMethod("GET");
@@ -46,9 +48,9 @@ public class WeatherGetter2 {
             weatherForecast = parseWeather();
 
         } catch (IOException e) {
-            throw new IOException("Не могу подключиться к сайту погоды " + url);
+            throw new IOException("Не могу подключиться к сайту погоды");
         } catch (ParseException e) {
-            throw new IOException("Ошибка парсинга JSON по запросу " + url);
+            throw new IOException("Ошибка парсинга JSON по запросу");
         } catch (Exception e) {
             throw new IOException(e.getMessage());
         }
