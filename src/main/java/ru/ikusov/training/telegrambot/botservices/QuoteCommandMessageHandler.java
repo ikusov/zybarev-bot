@@ -7,6 +7,7 @@ import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.AvtftalkQuoteGetter;
 import ru.ikusov.training.telegrambot.services.InternetQuoteGetter;
 import ru.ikusov.training.telegrambot.services.Markdownv2QuoteGetter;
+import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 public class QuoteCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/quote", "/q", "/цитата", "/ц", "/й");
     private final String avtftalkChatId = "-1001306495099";
+            //"349513007";
 
     @Autowired
     AvtftalkQuoteGetter avtftalkQuoteGetter;
@@ -39,7 +41,7 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
             }
             textAnswer = quoteGetter.getMarkdownv2FormattedQuote(command.getParams());
         } catch (Exception e) {
-            textAnswer = e.getMessage();
+            textAnswer = MyString.markdownv2Format(e.getMessage());
         }
 
         return new BotFormattedMessageSender(command.getChatId(), textAnswer);

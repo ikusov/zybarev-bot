@@ -39,7 +39,7 @@ public class AvtftalkQuoteGetter implements Markdownv2QuoteGetter {
 
             Transaction transaction = session.beginTransaction();
 
-            Query query = session.createQuery("from Quote where channel='#avtftalk' and id=" + number);
+            Query query = session.createQuery("from QuoteEntity where channel='#avtftalk' and id=" + number);
             List<QuoteEntity> quotes = query.getResultList();
 
             if (quotes.isEmpty()) {
