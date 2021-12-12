@@ -20,31 +20,36 @@ import java.util.Map;
 
 public class WeatherGetter2 {
     private final String url = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru";
+    private String locationName;
+
     private String forecast;
     private JsonNode weatherForecast;
 
     public WeatherGetter2(LocationEntity location) throws IOException {
-        StringBuffer response = new StringBuffer();
+//        StringBuffer response = new StringBuffer();
 
+        locationName = location.getAddress();
         String apiKey = System.getenv("weather_api_token");
         double lat = location.getLatitude(),
                 lon = location.getLongitude();
 
+        String urlString = url + "&appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+
         try {
-            URL obj = new URL(url + "&appid=" + apiKey + "&lat=" + lat + "&lon=" + lon);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("User-Agent", "ZybarevBot/0.1");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            forecast = response.toString();
+//            URL obj = new URL(url + "&appid=" + apiKey + "&lat=" + lat + "&lon=" + lon);
+//            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+//
+//            connection.setRequestMethod("GET");
+//            connection.setRequestProperty("User-Agent", "ZybarevBot/0.1");
+//
+//            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//            String inputLine;
+//
+//            while ((inputLine = in.readLine()) != null) {
+//                response.append(inputLine);
+//            }
+//            in.close();
+            forecast = new HttpConnector(urlString).getJsonString();
             weatherForecast = parseWeather();
 
         } catch (IOException e) {
@@ -63,7 +68,11 @@ public class WeatherGetter2 {
     }
 
     public String getWeather() {
-        String location = weatherForecast.get("name").asText();
+//        String location = weatherForecast.get("name").asText();
+//        if (location.equals("")) {
+//            location = locationName;
+//        }
+        String location = locationName;
         String description = weatherForecast.get("weather").get(0).get("description").asText();
         Double temp = weatherForecast.get("main").get("temp").asDouble();
 

@@ -5,6 +5,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "locations")
 public class LocationEntity implements CommonEntity {
+    @Transient
+    public static final transient LocationEntity DEFAULT_LOCATION = new LocationEntity()
+            .setAddress("Novosibirsk")
+            .setAliases("Novosibirsk;новосибирск;нск;носопипирск;новосиб;пылесибирск;новосйойорск;толмачево;толмачего;ovb;nsk")
+            .setLatitude(55.0411)
+            .setLongitude(82.9344)
+            .setId(1);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
