@@ -5,6 +5,9 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.ikusov.training.telegrambot.Bot;
 
+/**
+ * botreaction photo sender; now is unused
+ */
 public class BotPhotoSender implements BotReaction {
 
     private final String chatId;

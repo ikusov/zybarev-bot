@@ -4,6 +4,9 @@ import org.telegram.telegrambots.meta.api.methods.groupadministration.LeaveChat;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.ikusov.training.telegrambot.Bot;
 
+/**
+ * class with leaving chat logics
+ */
 public class BotChatLeaver implements BotReaction {
     private final String chatId;
 

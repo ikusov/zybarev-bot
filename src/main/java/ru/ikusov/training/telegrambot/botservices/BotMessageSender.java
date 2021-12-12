@@ -4,6 +4,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.ikusov.training.telegrambot.Bot;
 
+/**
+ * for sending non-formatted messages to chat
+ */
 public class BotMessageSender implements BotReaction {
 
     private final String chatId;
