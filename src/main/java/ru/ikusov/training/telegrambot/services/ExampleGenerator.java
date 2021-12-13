@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
@@ -80,29 +81,16 @@ public class ExampleGenerator {
         return example;
     }
 
-//    public String generateExample(Complexity complexity) {
-//        String operator = operators[r(operators.length)];
-//        int operand1, operand2;
-//
-//        if (complexity == Complexity.EASY) {
-//            operator = "×";
-//            operand1 = 3+r(8);
-//            operand2 = 3+r(8);
-//        } else {
-//            operand1 = r(complexity.range);
-//            operand2 = r(complexity.range);
-//        }
-//
-//        answerInt = operator.equals("+") ? operand1 + operand2 :
-//                    operator.equals("-") ? operand1-operand2 :
-//                    operand1*operand2;
-//        answer = String.valueOf(answerInt);
-//        example = String.format("%s%s%s", operand1, operator, operand2);
-//        setAnswered(false);
-//        timer = System.nanoTime();
-//
-//        return example;
-//    }
+    public String getMessage(int userAnswer) {
+        String message = "";
+
+        if (userAnswer == answerInt) {
+            timer = (System.nanoTime() - timer)/1_000_000;
+
+        }
+
+        return message;
+    }
 
     public String getAnswer() {
         return answer;

@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.*;
 
 import javax.persistence.Query;
@@ -93,4 +95,28 @@ public class DatabaseConnector {
 
         return resultList;
     }
+
+    public UserEntity getOrCreateUser(User chatUser) {
+        UserEntity user = getById(UserEntity.class, chatUser.getId());
+        if (user==null) {
+            user = new UserEntity(chatUser);
+
+            save(user);
+        }
+
+        return user;
+    }
+
+    public ChatEntity getOrCreateChat(Chat telegramChat) {
+        ChatEntity chat = getById(ChatEntity.class, telegramChat.getId());
+        if (chat==null) {
+            chat = new ChatEntity(telegramChat);
+
+            save(chat);
+        }
+
+        return chat;
+    }
+
+
 }

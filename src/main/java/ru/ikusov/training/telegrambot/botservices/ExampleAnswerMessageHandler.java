@@ -41,46 +41,27 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         }
 
-        String userAnswerString = String.valueOf(userAnswer);
         isRight = userAnswer == exampleGenerator.getAnswerInt();
-
         String userName = UserNameGetter.getUserName(message.getFrom());
-        long userId = message.getFrom().getId();
-
         String textAnswer;
 
         if (isRight) {
             textAnswer = String.format(
-                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(), 
-                    userAnswerString,
+                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(),
+                    String.valueOf(userAnswer),
                     userName,
                     interval);
             exampleGenerator.setAnswered(true);
         } else {
-//            textAnswer = RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.WRONG_ANSWER_MESSAGE,
-//                                                            String.valueOf(userAnswer),
-//                                                            userName);
             textAnswer = String.format(
                     MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
-                    userAnswerString,
+                    String.valueOf(userAnswer),
                     userName);
         }
 
         try {
-            UserEntity user = databaseConnector.getById(UserEntity.class, userId);
-            if (user==null) {
-                user = new UserEntity(message.getFrom());
-
-                databaseConnector.save(user);
-            }
-
-            ChatEntity chat = databaseConnector.getById(ChatEntity.class, message.getChatId());
-            if (chat==null) {
-                chat = new ChatEntity(message.getChat());
-
-                databaseConnector.save(chat);
-            }
-
+            UserEntity user = databaseConnector.getOrCreateUser(message.getFrom());
+            ChatEntity chat = databaseConnector.getOrCreateChat(message.getChat());
 
             ExampleAnswerEntity exampleAnswer = new ExampleAnswerEntity()
                     .setTimestamp(System.currentTimeMillis()/1000)
