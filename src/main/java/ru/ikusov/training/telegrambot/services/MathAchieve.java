@@ -1,18 +1,65 @@
 package ru.ikusov.training.telegrambot.services;
 
+import ru.ikusov.training.telegrambot.utils.MyMath;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static ru.ikusov.training.telegrambot.utils.MyMath.r;
+
 public class MathAchieve {
     private Map<Integer, String> achieves = new HashMap<>();
-
+    int number;
+    int solvedExamplesCount;
+    int rightAnswersSeries;
+    int globalSeries;
+    int timer;
 
     private MathAchieve() {
     }
 
-    public void getNumberAchieves(int number) {
+    private void getSpeedBonus() {
+        int speedBonus = 11;
+        int length = String.valueOf(number).length();
+        speedBonus += number<0 ? 4 : 0;
+        speedBonus += length>1 ? 2 : 0;
+        speedBonus += length>2 ? 5 : 0;
+        speedBonus += length>3 ? 7 : 0;
+        speedBonus = Math.max((speedBonus - timer), 0);
+        if (speedBonus>0)
+            achieves.put(speedBonus, "Бонус за скорость");
+    }
+
+    private void getUserAchieves() {
+        if (solvedExamplesCount%100 == 0)
+            achieves.put(10, String.format("Мини-юбилей! Твой решённый пример №%d!", solvedExamplesCount));
+        if (solvedExamplesCount%1000 == 0)
+            achieves.put(20, String.format("Юбилей! Твой решённый пример №%d!", solvedExamplesCount));
+        if (solvedExamplesCount%10_000 == 0)
+            achieves.put(30, String.format("ЮБИЛЕЙ! Твой решённый пример №%d!", solvedExamplesCount));
+        if (solvedExamplesCount%100_000 == 0)
+            achieves.put(50, String.format(">>> ЮБИЛЕЙ!!! <<< Твой решённый пример №%d!", solvedExamplesCount));
+
+        if (rightAnswersSeries >= 3)
+            achieves.put(rightAnswersSeries-2, String.format("Личная серия без ошибок! Длина %d.", rightAnswersSeries));
+        if (globalSeries >= 3)
+            achieves.put(globalSeries-2, String.format("Глобальная серия! Длина %d.", globalSeries));
+    }
+
+    private void getRandomAchieves() {
+        if (r(10) == 1)
+            achieves.put(1, "Лаки! Случайный бонус, шанс 1 из 10.");
+        if (r(100) == 1)
+            achieves.put(10, "Баловень судьбы! Случайный бонус, шанс 1 из 100.");
+        if (r(1000) == 1)
+            achieves.put(20, "Бог рандома! Случайный бонус, шанс 1 из 1000.");
+        if (r(1_000_000) == 1)
+            achieves.put(50, "OMG! YOU - MEGA LUCKER! Случайный бонус, шанс 1 из 1000000!");
+    }
+
+    private void getNumberAchieves() {
         if (number < 0)
             achieves.put(1, "signed int");
         if (String.valueOf(number).length() == 3)
@@ -79,6 +126,18 @@ public class MathAchieve {
             achieves.put(10, "8086 - бонус компьютерной индустрии! Мы помним!");
         if (number == 4004)
             achieves.put(10, "4004 - бонус компьютерной индустрии! Мы помним!");
+        if (number>0 && number%100 == 0)
+            achieves.put(5, "За ровный счёт! Кратно 100.");
+        if (number>0 && number%1000 == 0)
+            achieves.put(10, "За ровный счёт! Кратно 1000.");
+//        if (MyMath.isLadder(number))
+//            achieves.put(ladderLength, String.format("Лесенка! Длина %d.", ladderLength));
+//        if (MyMath.isPrime(number))
+//            achieves.put(primeNumber, String.format("%d баллов за простое число номер %d!", primeNumber));
+//        if (MyMath.isFromOneDigit(number))
+//            achieves.put(5, "Из одной цифры!");
+//        if (MyMath.isPalindrome(number))
+//            achieves.put(palindromeLength, String.format("Палиндром! Длина %d.", palindromeLength));
     }
 
 }
