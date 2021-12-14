@@ -134,6 +134,21 @@ public class MyMath {
     }
 
     /**
+     * checks if number is one digited
+     * @param number number to check
+     * @return if number is one digited
+     */
+    public static boolean isFromOneDigit(long number) {
+        int[] cyphers = getCyphers(number);
+        int cypher0 = cyphers[0];
+        for (int cypher : cyphers) {
+            if(cypher!=cypher0)
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Return cyphers array of the number
      * @param number number for split to cyphers
      * @return cyphers split by number

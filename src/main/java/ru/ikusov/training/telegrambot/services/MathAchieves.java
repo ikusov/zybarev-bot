@@ -3,40 +3,42 @@ package ru.ikusov.training.telegrambot.services;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
-public class MathAchieve {
-    private final static AchievesList achieves = new AchievesList();
-    int number;
-    int ladderLength = MyMath.ladderLength(number);
-    int solvedExamplesCount;
-    int rightAnswersSeries;
-    int globalSeries;
-    int timer;
+public class MathAchieves {
+    private final List<MathAchieve> achieveList = new ArrayList<>();
+    private final MathAchieves achieves = this;
 
-    int bonus;
-    String message;
+    private int number;
+    private int solvedExamplesCount;
+    private int rightAnswersSeries;
+    private int globalSeries;
+    private int timer;
 
-    private MathAchieve(int bonus, String message) {
-        this.bonus = bonus;
-        this.message = message;
+    private final int ladderLength = MyMath.ladderLength(number);
+
+    private void put(int bonus, String message) {
+        achieveList.add(new MathAchieve(bonus, message));
     }
 
-    private static class AchievesList {
-        List<MathAchieve> achieves = new ArrayList<>();
+    public MathAchieves(int number, int solvedExamplesCount, int rightAnswersSeries, int globalSeries, int timer) {
+        this.number = number;
+        this.solvedExamplesCount = solvedExamplesCount;
+        this.rightAnswersSeries = rightAnswersSeries;
+        this.globalSeries = globalSeries;
+        this.timer = timer;
 
-        private void put(int bonus, String message) {
-            achieves.add(new MathAchieve(bonus, message));
-        }
+        getRandomAchieves();
+        getUserAchieves();
+        getSpeedBonus();
+        getNumberAchieves();
+        getBonusAchieves();
+    }
 
-        private MathAchieve get(int index) {
-            return achieves.get(index);
-        }
+    public List<MathAchieve> getAchieveList() {
+        return achieveList;
     }
 
     private void getSpeedBonus() {
@@ -153,10 +155,41 @@ public class MathAchieve {
             achieves.put(ladderLength, String.format("Лесенка! Длина %d.", ladderLength));
         if (MyMath.isPrime(number))
             achieves.put((int)Math.log(number), "За простое число!");
-//        if (MyMath.isFromOneDigit(number))
-//            achieves.put(5, "Из одной цифры!");
+        if (MyMath.isFromOneDigit(number))
+            achieves.put(5, "Из одной цифры!");
         if (MyMath.palindromeLength(number)>0)
             achieves.put(5, "Палиндром!");
     }
 
+    private void getBonusAchieves() {
+        int sum = achieves.achieveList.stream().mapToInt(MathAchieve::getBonus).sum();
+        if (sum>=3)
+            achieves.put(1, "Бонус-магнат! (>=3)");
+        if (sum>=5)
+            achieves.put(3, "Бонус-магнат! (>=5)");
+        if (sum>=8)
+            achieves.put(5, "Бонус-МАГНАТ! (>=8)");
+        if (sum>=10)
+            achieves.put(10, "БОНУС-МАГНАТ! (>=10)");
+        if (sum>=20)
+            achieves.put(20, ">>> БОНУС-МАГНАТ! <<< (>=20)");
+    }
+
+    private static class MathAchieve {
+        int bonus;
+        String message;
+
+        private MathAchieve(int bonus, String message) {
+            this.bonus = bonus;
+            this.message = message;
+        }
+
+        public int getBonus() {
+            return bonus;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }
