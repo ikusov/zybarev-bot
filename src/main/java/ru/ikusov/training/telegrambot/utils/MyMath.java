@@ -23,8 +23,8 @@ public class MyMath {
 
     /**
      * returns random number from 0 to range
-     * @param range
-     * @return
+     * @param range range of random number to return
+     * @return random number from 0 to range
      */
     public static int r(int range) {
         return (int) (Math.random()*range);
@@ -32,7 +32,7 @@ public class MyMath {
 
     /**
      * returns random number from 0 to 100
-     * @return
+     * @return random number from 0 to 100
      */
     public static int r() {
         return r(100);
@@ -71,6 +71,12 @@ public class MyMath {
         return randomArray;
     }
 
+    /**
+     * convert nanos to readable time depends on nanos quantity
+     * from nanos to hours and minutes inclusive
+     * @param nanos nanos quantity to convert
+     * @return readable time string
+     */
     public static String toReadableTime(long nanos) {
         String readableTime;
         if (nanos < 1000)
@@ -85,5 +91,68 @@ public class MyMath {
             return String.format("%dm %ds", nanos/60_000_000_000L, nanos%60_000_000_000L/1_000_000_000);
         else
             return String.format("%dh %dm", nanos/3_600_000_000_000L, nanos%3_600_000_000_000L/60_000_000_000L);
+    }
+
+    /**
+     * check if number is ladder (every next digit different from previous by fixed number)
+     * @param number
+     * @return
+     */
+    public static int ladderLength(long number) {
+        if (number<100) return 0;
+
+        int[] cyphers = getCyphers(number);
+        int dif = cyphers[1] - cyphers[0];
+
+        if (dif == 0) return 0;
+
+        for (int i=2; i<cyphers.length; i++) {
+            if (cyphers[i] - cyphers[i-1] != dif)
+                return 0;
+        }
+
+        return cyphers.length;
+    }
+
+    /**
+     * if number is palindrome, returns its length
+     * else returns zero
+     * @param number number to check palindrome
+     * @return length of number number
+     */
+    public static int palindromeLength(long number) {
+        int[] cyphers = getCyphers(number);
+        int i=0, j=cyphers.length;
+
+        while (i<j) {
+            if (cyphers[i] != cyphers[j])
+                return 0;
+            i++;
+            j--;
+        }
+        return cyphers.length;
+    }
+
+    /**
+     * Return cyphers array of the number
+     * @param number number for split to cyphers
+     * @return cyphers split by number
+     */
+    public static int[] getCyphers(long number) {
+        int[] cyphers = new int[20];
+        int[] cyphersRev;
+        int len;
+
+        for (len=0; number !=0 ; len++) {
+            cyphers[len] = (int)number%10;
+            number /= 10;
+        }
+
+        cyphersRev = new int[len];
+        for (int i=0; i<len; i++) {
+            cyphersRev[i] = cyphers[len-i-1];
+        }
+
+        return cyphersRev;
     }
 }

@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.services;
 
 import ru.ikusov.training.telegrambot.utils.MyMath;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +11,32 @@ import java.util.function.Function;
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
 public class MathAchieve {
-    private Map<Integer, String> achieves = new HashMap<>();
+    private final static AchievesList achieves = new AchievesList();
     int number;
+    int ladderLength = MyMath.ladderLength(number);
     int solvedExamplesCount;
     int rightAnswersSeries;
     int globalSeries;
     int timer;
 
-    private MathAchieve() {
+    int bonus;
+    String message;
+
+    private MathAchieve(int bonus, String message) {
+        this.bonus = bonus;
+        this.message = message;
+    }
+
+    private static class AchievesList {
+        List<MathAchieve> achieves = new ArrayList<>();
+
+        private void put(int bonus, String message) {
+            achieves.add(new MathAchieve(bonus, message));
+        }
+
+        private MathAchieve get(int index) {
+            return achieves.get(index);
+        }
     }
 
     private void getSpeedBonus() {
@@ -130,14 +149,14 @@ public class MathAchieve {
             achieves.put(5, "За ровный счёт! Кратно 100.");
         if (number>0 && number%1000 == 0)
             achieves.put(10, "За ровный счёт! Кратно 1000.");
-//        if (MyMath.isLadder(number))
-//            achieves.put(ladderLength, String.format("Лесенка! Длина %d.", ladderLength));
-//        if (MyMath.isPrime(number))
-//            achieves.put(primeNumber, String.format("%d баллов за простое число номер %d!", primeNumber));
+        if (ladderLength > 0)
+            achieves.put(ladderLength, String.format("Лесенка! Длина %d.", ladderLength));
+        if (MyMath.isPrime(number))
+            achieves.put((int)Math.log(number), "За простое число!");
 //        if (MyMath.isFromOneDigit(number))
 //            achieves.put(5, "Из одной цифры!");
-//        if (MyMath.isPalindrome(number))
-//            achieves.put(palindromeLength, String.format("Палиндром! Длина %d.", palindromeLength));
+        if (MyMath.palindromeLength(number)>0)
+            achieves.put(5, "Палиндром!");
     }
 
 }
