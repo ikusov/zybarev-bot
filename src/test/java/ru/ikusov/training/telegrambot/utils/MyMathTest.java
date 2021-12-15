@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.utils;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class MyMathTest extends TestCase {
@@ -30,6 +31,30 @@ public class MyMathTest extends TestCase {
     }
 
     public void testPalindromeLength() {
-        long num = 33;
+        List<Integer> nums =                         List.of(1, 22, 232, 325, 4444, 5632365, 720, 0, -565);
+        List<Integer> palindromeLengthExpected =    List.of(0, 0,  3  , 0  , 4   , 7      , 0  , 0,  3);
+
+        Iterator<Integer> numIterator = nums.listIterator();
+        Iterator<Integer> palindromeLengthExpectedIterator = palindromeLengthExpected.listIterator();
+
+        while(numIterator.hasNext()) {
+            long num = numIterator.next();
+            long palLengthExpected = palindromeLengthExpectedIterator.next();
+            Assert.assertEquals(palLengthExpected, MyMath.palindromeLength(num));
+        }
+    }
+
+    public void testIsFromOneDigit() {
+        var nums =    List.of(1,      22,     232,    -325,   4444,   -5555555,   7,      111,    -665);
+        var exps =     List.of(false,  true,   false,  false,  true,   true,       false,  true,   false);
+
+        var numsi = nums.listIterator();
+        var expsi = exps.listIterator();
+
+        while(numsi.hasNext()) {
+            long num = numsi.next();
+            boolean exp = expsi.next();
+            Assert.assertEquals(exp, MyMath.isFromOneDigit(num));
+        }
     }
 }

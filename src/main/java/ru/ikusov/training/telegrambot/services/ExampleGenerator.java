@@ -81,17 +81,17 @@ public class ExampleGenerator {
         return example;
     }
 
-    public String getMessage(int userAnswer) {
-        String message = "";
-
-        if (userAnswer == answerInt) {
-            timer = (System.nanoTime() - timer)/1_000_000;
-
-        }
-
-        return message;
-    }
-
+//    public String getMessage(int userAnswer) {
+//        String message = "";
+//
+//        if (userAnswer == answerInt) {
+//            timer = (System.nanoTime() - timer)/1_000_000;
+//
+//        }
+//
+//        return message;
+//    }
+//
     public String getAnswer() {
         return answer;
     }

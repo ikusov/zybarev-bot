@@ -1,8 +1,13 @@
 package ru.ikusov.training.telegrambot.services;
 
+import ru.ikusov.training.telegrambot.model.ChatEntity;
+import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
+import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.utils.Linguistic;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
@@ -15,7 +20,7 @@ public class MathAchieves {
     private int solvedExamplesCount;
     private int rightAnswersSeries;
     private int globalSeries;
-    private int timer;
+    private final int timer;
 
     private final int ladderLength = MyMath.ladderLength(number);
 
@@ -30,6 +35,18 @@ public class MathAchieves {
         this.globalSeries = globalSeries;
         this.timer = timer;
 
+        getAllAchieves();
+    }
+
+    public MathAchieves(DatabaseConnector databaseConnector, UserEntity user, ChatEntity chat, int number, int timer) {
+        this.number = number;
+        this.timer = timer;
+
+        getFromDataBase(databaseConnector, user, chat);
+        getAllAchieves();
+    }
+
+    private void getAllAchieves() {
         getRandomAchieves();
         getUserAchieves();
         getSpeedBonus();
@@ -39,6 +56,57 @@ public class MathAchieves {
 
     public List<MathAchieve> getAchieveList() {
         return achieveList;
+    }
+
+    private void getFromDataBase(DatabaseConnector databaseConnector, UserEntity user, ChatEntity chat) {
+        String query = "from ExampleAnswer";
+        var userId = user.getId();
+        var chatId = chat.getId();
+        List<ExampleAnswerEntity> answers = databaseConnector.getByQuery(ExampleAnswerEntity.class, query);
+        answers.sort(Comparator.reverseOrder());
+
+        solvedExamplesCount = (int) answers.stream()
+                .filter(a -> a.getChat().getId() == chatId)
+                .filter(a -> a.getUser().getId() == userId)
+                .filter(ExampleAnswerEntity::isRight)
+                .count();
+
+        globalSeries = (int) answers.stream()
+                .filter(a -> a.getChat().getId() == chatId)
+                .takeWhile(a -> a.getUser().getId() == userId || !a.isRight())
+                .filter(a -> a.getUser().getId() == userId && a.isRight())
+                .count();
+
+        rightAnswersSeries = (int) answers.stream()
+                .filter(a -> a.getChat().getId() == chatId)
+                .filter(a -> a.getUser().getId() == userId)
+                .takeWhile(ExampleAnswerEntity::isRight)
+                .count();
+    }
+
+    public String getTimeMessage(String userNaming) {
+        String msg = "";
+
+        if (timer<=5)
+            msg = "fast as diarrhea!";
+        if (timer==6)
+            msg = "человек-молния!";
+        if (timer>6 && timer<10)
+            msg = "подобен стремительному ветру!";
+        if (timer>9 && timer<16)
+            msg = "подобен мудрой черепахе!";
+        if (timer>15 && timer<26)
+            msg = "подобен неспешной коале!";
+        if (timer>25 && timer<36)
+            msg = "подобен ленивцу!";
+        if (timer>35 && timer<46)
+            msg = "подобен эстонскому ленивцу!";
+        if (timer>45 && timer<56)
+            msg = "подобен эстонскому ленивцу под транквилизаторами!";
+        if (timer>55)
+            msg = "подобен старой бабУшке!";
+
+        return String.format("(%d %s) %s - %s", timer, Linguistic.getSecondsWord(timer), userNaming, msg);
     }
 
     private void getSpeedBonus() {

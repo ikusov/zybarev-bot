@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "example_answers")
-public class ExampleAnswerEntity implements CommonEntity {
+public class ExampleAnswerEntity implements CommonEntity, Comparable<ExampleAnswerEntity> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -82,5 +82,13 @@ public class ExampleAnswerEntity implements CommonEntity {
     public ExampleAnswerEntity setChat(ChatEntity chat) {
         this.chat = chat;
         return this;
+    }
+
+    @Override
+    public int compareTo(ExampleAnswerEntity o) {
+        int tsCompare = Long.compare(timestamp, o.getTimestamp());
+        int idCompare = Integer.compare(id, o.getId());
+
+        return tsCompare != 0 ? tsCompare : idCompare;
     }
 }

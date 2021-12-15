@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot.utils;
 
+import static java.lang.Math.abs;
+
 /**
  * class for own "math" utilities
  */
@@ -99,6 +101,7 @@ public class MyMath {
      * @return
      */
     public static int ladderLength(long number) {
+        number = Math.abs(number);
         if (number<100) return 0;
 
         int[] cyphers = getCyphers(number);
@@ -121,8 +124,11 @@ public class MyMath {
      * @return length of number number
      */
     public static int palindromeLength(long number) {
+        number = abs(number);
+        if (number<100) return 0;
+
         int[] cyphers = getCyphers(number);
-        int i=0, j=cyphers.length;
+        int i=0, j=cyphers.length-1;
 
         while (i<j) {
             if (cyphers[i] != cyphers[j])
@@ -139,6 +145,9 @@ public class MyMath {
      * @return if number is one digited
      */
     public static boolean isFromOneDigit(long number) {
+        number = Math.abs(number);
+        if (number<10) return false;
+
         int[] cyphers = getCyphers(number);
         int cypher0 = cyphers[0];
         for (int cypher : cyphers) {

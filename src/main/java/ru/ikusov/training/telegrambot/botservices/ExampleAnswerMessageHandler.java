@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
@@ -29,21 +30,56 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         long timer = System.nanoTime()-exampleGenerator.getTimer();
         String interval = MyMath.toReadableTime(timer);
 
-        if (exampleGenerator.isAnswered()) return new BotEmptyReaction();
-
-        String msgText = message.getText().strip();
         int userAnswer;
         boolean isRight;
 
-        try {
-            userAnswer = MyString.brutalParseInt(msgText);
-        } catch (NumberFormatException e) {
+        UserEntity user;
+        ChatEntity chat;
+        ExampleAnswerEntity exampleAnswer;
+
+
+        if (exampleGenerator.isAnswered()) {
             return new BotEmptyReaction();
         }
 
-        isRight = userAnswer == exampleGenerator.getAnswerInt();
+        try {
+            userAnswer = MyString.brutalParseInt(message.getText().strip());
+            isRight = (userAnswer == exampleGenerator.getAnswerInt());
+
+            user = databaseConnector.getOrCreateUser(message.getFrom());
+            chat = databaseConnector.getOrCreateChat(message.getChat());
+            exampleAnswer = new ExampleAnswerEntity()
+                    .setTimestamp(System.currentTimeMillis()/1000)
+                    .setChat(chat)
+                    .setUser(user)
+                    .setRight(isRight);
+            if (isRight) exampleAnswer.setTimer(timer/1_000_000);
+
+            databaseConnector.save(exampleAnswer);
+        } catch (Exception e) {
+            System.out.println("Exception while serializing example answer to database: " + e.getMessage());
+            return new BotEmptyReaction();
+        }
+
+
+        /* todo: Сообщение юзера - число. Это ответ на пример. Он может быть неправильный:
+            значит, надо проверить, насколько он близок к правильному, и выдать сообщение
+            навроде "so close...", "десяточка обиженно смотрит на тебя",
+            "соточка обиженно смотрит на тебя" и т.п.
+            Он может быть правильный: значит выдаём сообщение, мол победитель тот-то, так держать,
+            затем перечисляем бонусы.
+        */
+
+
         String userName = UserNameGetter.getUserName(message.getFrom());
         String textAnswer;
+
+        long userId = user.getId(),
+                chatId = chat.getId();
+
+        if (isRight) {
+
+        }
 
         if (isRight) {
             textAnswer = String.format(
@@ -57,22 +93,6 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
                     MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
                     String.valueOf(userAnswer),
                     userName);
-        }
-
-        try {
-            UserEntity user = databaseConnector.getOrCreateUser(message.getFrom());
-            ChatEntity chat = databaseConnector.getOrCreateChat(message.getChat());
-
-            ExampleAnswerEntity exampleAnswer = new ExampleAnswerEntity()
-                    .setTimestamp(System.currentTimeMillis()/1000)
-                    .setChat(chat)
-                    .setUser(user)
-                    .setRight(isRight);
-            if (isRight) exampleAnswer.setTimer(timer/1_000_000);
-
-            databaseConnector.save(exampleAnswer);
-        } catch (Exception e) {
-            System.out.println("Exception while serializing example answer to database: " + e.getMessage());
         }
 
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
