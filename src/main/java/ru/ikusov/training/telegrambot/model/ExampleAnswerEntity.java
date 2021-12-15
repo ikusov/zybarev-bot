@@ -27,6 +27,9 @@ public class ExampleAnswerEntity implements CommonEntity, Comparable<ExampleAnsw
     @Column(name = "timer")
     private long timer;
 
+    @Column(name = "score")
+    private int score;
+
     public ExampleAnswerEntity() {
     }
 
@@ -81,6 +84,15 @@ public class ExampleAnswerEntity implements CommonEntity, Comparable<ExampleAnsw
 
     public ExampleAnswerEntity setChat(ChatEntity chat) {
         this.chat = chat;
+        return this;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public ExampleAnswerEntity setScore(int score) {
+        this.score = score;
         return this;
     }
 

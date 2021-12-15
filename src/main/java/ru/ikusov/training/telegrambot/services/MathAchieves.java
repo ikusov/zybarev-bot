@@ -46,6 +46,10 @@ public class MathAchieves {
         getAllAchieves();
     }
 
+    public int getSum() {
+        return achieveList.stream().mapToInt(MathAchieve::getBonus).sum()+1;
+    }
+
     private void getAllAchieves() {
         getRandomAchieves();
         getUserAchieves();
@@ -59,7 +63,7 @@ public class MathAchieves {
     }
 
     private void getFromDataBase(DatabaseConnector databaseConnector, UserEntity user, ChatEntity chat) {
-        String query = "from ExampleAnswer";
+        String query = "from ExampleAnswerEntity";
         var userId = user.getId();
         var chatId = chat.getId();
         List<ExampleAnswerEntity> answers = databaseConnector.getByQuery(ExampleAnswerEntity.class, query);
@@ -106,7 +110,7 @@ public class MathAchieves {
         if (timer>55)
             msg = "подобен старой бабУшке!";
 
-        return String.format("(%d %s) %s - %s", timer, Linguistic.getSecondsWord(timer), userNaming, msg);
+        return String.format("(%s) %s - %s\n", MyMath.secondsToReadableTime(timer), userNaming, msg);
     }
 
     private void getSpeedBonus() {
@@ -243,9 +247,9 @@ public class MathAchieves {
             achieves.put(20, ">>> БОНУС-МАГНАТ! <<< (>=20)");
     }
 
-    private static class MathAchieve {
-        int bonus;
-        String message;
+    public static class MathAchieve {
+        private final int bonus;
+        private final String message;
 
         private MathAchieve(int bonus, String message) {
             this.bonus = bonus;

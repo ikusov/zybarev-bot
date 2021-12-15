@@ -9,6 +9,7 @@ import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
+import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
 import ru.ikusov.training.telegrambot.utils.MessageType;
@@ -29,8 +30,10 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
     public BotReaction handleNonCommand(Message message) {
         long timer = System.nanoTime()-exampleGenerator.getTimer();
         String interval = MyMath.toReadableTime(timer);
+        String textAnswer;
+        int score;
 
-        int userAnswer;
+        int userAnswer, rightAnswer;
         boolean isRight;
 
         UserEntity user;
@@ -44,16 +47,30 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
         try {
             userAnswer = MyString.brutalParseInt(message.getText().strip());
-            isRight = (userAnswer == exampleGenerator.getAnswerInt());
+            rightAnswer = exampleGenerator.getAnswerInt();
+
+            isRight = (userAnswer == rightAnswer);
 
             user = databaseConnector.getOrCreateUser(message.getFrom());
             chat = databaseConnector.getOrCreateChat(message.getChat());
+
+            var exampleAnswerMessageGenerator =
+                    new ExampleAnswerMessageGenerator
+                            (databaseConnector, user, chat, userAnswer,
+                                    rightAnswer, (int)(timer/1_000_000_000));
+            textAnswer = exampleAnswerMessageGenerator.generate();
+            score = exampleAnswerMessageGenerator.getSum();
+
             exampleAnswer = new ExampleAnswerEntity()
                     .setTimestamp(System.currentTimeMillis()/1000)
                     .setChat(chat)
                     .setUser(user)
                     .setRight(isRight);
-            if (isRight) exampleAnswer.setTimer(timer/1_000_000);
+
+            if (isRight) {
+                exampleAnswer.setTimer(timer/1_000_000).setScore(score);
+                exampleGenerator.setAnswered(true);
+            }
 
             databaseConnector.save(exampleAnswer);
         } catch (Exception e) {
@@ -62,39 +79,25 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         }
 
 
-        /* todo: Сообщение юзера - число. Это ответ на пример. Он может быть неправильный:
-            значит, надо проверить, насколько он близок к правильному, и выдать сообщение
-            навроде "so close...", "десяточка обиженно смотрит на тебя",
-            "соточка обиженно смотрит на тебя" и т.п.
-            Он может быть правильный: значит выдаём сообщение, мол победитель тот-то, так держать,
-            затем перечисляем бонусы.
-        */
-
-
-        String userName = UserNameGetter.getUserName(message.getFrom());
-        String textAnswer;
-
-        long userId = user.getId(),
-                chatId = chat.getId();
-
-        if (isRight) {
-
-        }
-
-        if (isRight) {
-            textAnswer = String.format(
-                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(),
-                    String.valueOf(userAnswer),
-                    userName,
-                    interval);
-            exampleGenerator.setAnswered(true);
-        } else {
-            textAnswer = String.format(
-                    MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
-                    String.valueOf(userAnswer),
-                    userName);
-        }
-
+//        String userName = UserNameGetter.getUserName(message.getFrom());
+//
+//        long userId = user.getId(),
+//                chatId = chat.getId();
+//
+//        if (isRight) {
+//            textAnswer = String.format(
+//                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(),
+//                    String.valueOf(userAnswer),
+//                    userName,
+//                    interval);
+//            exampleGenerator.setAnswered(true);
+//        } else {
+//            textAnswer = String.format(
+//                    MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
+//                    String.valueOf(userAnswer),
+//                    userName);
+//        }
+//
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
     }
 
