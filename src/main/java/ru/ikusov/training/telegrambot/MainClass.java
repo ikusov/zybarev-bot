@@ -4,9 +4,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-public class MainClass {
+import java.util.Optional;
 
-    public static void main(String... lksdjf) {
+public class MainClass {
+    public static final String AVTFTALK_CHAT_ID = Optional.ofNullable((System.getenv("avtftalk_chat_id"))).orElse("");
+
+    public static void main(String... nomatterhowtocallthisargument) {
 
         //        //for proxy if needed (no)
 //        System.getProperties().put( "proxySet", "true" );

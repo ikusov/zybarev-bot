@@ -12,6 +12,7 @@ import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MessageType;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -38,26 +39,52 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
         long userId = command.getUser().getId(),
                 chatId = command.getChat().getId();
         List<ExampleAnswerEntity> answers;
-        int exampleCount=0, rightCount=0, wrongCount=0;
+        int exampleCount=0, rightCount=0, wrongCount=0, score=0, globalSeries=0, noErrorSeries=0;
         float timeAverage=0f;
 
         try {
             answers = databaseConnector.getByQuery(ExampleAnswerEntity.class,
-                    String.format("from ExampleAnswerEntity where user_id=%d and chat_id=%d", userId, chatId));
+                    String.format("from ExampleAnswerEntity"));
+            answers.sort(Comparator.reverseOrder());
+            boolean noErrorFlag = true, globalSeriesFlag = true;
             for (var answer : answers) {
-                exampleCount++;
-                if (answer.isRight()) rightCount++;
-                timeAverage+=answer.getTimer();
+                if(answer.getChat().getId() == chatId) {
+                    if (answer.getUser().getId() != userId) {
+                        if (answer.isRight())
+                            globalSeriesFlag = false;
+                    } else {
+                        exampleCount++;
+                        timeAverage += answer.getTimer();
+                        if (answer.isRight()) {
+                            rightCount++;
+                            score+=answer.getScore();
+                            if (globalSeriesFlag)
+                                globalSeries++;
+                            if (noErrorFlag)
+                                noErrorSeries++;
+                        } else {
+                            noErrorFlag = false;
+                        }
+                    }
+                }
             }
             wrongCount = exampleCount-rightCount;
             textAnswer += String.format(
                     "\nПопыток решения: %d" +
                     "\nПравильных решений: %d (%.1f%%)" +
-                    "\nНеправильных решений: %d (%.1f%%)\nСреднее время решения: %.1f с",
+                    "\nНеправильных решений: %d (%.1f%%)" +
+                    "\nСреднее время решения: %.1f с" +
+                    "\nМат. баллов заработано: %d" +
+                    "\nГлобальная серия: %d примеров" +
+                    "\nЛичная серия без ошибок: %d примеров.",
                     exampleCount,
                     rightCount, 100.*rightCount/exampleCount,
                     wrongCount, 100.*wrongCount/exampleCount,
-                    timeAverage/exampleCount/1000);
+                    timeAverage/exampleCount/1000,
+                    score,
+                    globalSeries,
+                    noErrorSeries
+            );
         } catch (Exception e) {
             System.out.println("Exception while getting from database: " + e.getMessage());
             textAnswer += " нет данных.";

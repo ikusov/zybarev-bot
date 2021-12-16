@@ -1,9 +1,12 @@
 package ru.ikusov.training.telegrambot.services;
 
-import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
+import ru.ikusov.training.telegrambot.utils.MessageType;
+import ru.ikusov.training.telegrambot.utils.MyMath;
+
+import static ru.ikusov.training.telegrambot.MainClass.AVTFTALK_CHAT_ID;
 
 public class ExampleAnswerMessageGenerator {
     private MathAchieves achieves;
@@ -11,23 +14,31 @@ public class ExampleAnswerMessageGenerator {
     private final int userAnswer;
     private final int rightAnswer;
     private final boolean isRight;
-    private int sum;
+    private final boolean avtftalk;
+    private final int timer;
+    private int exampleScore;
+    private int sumScore;
 
     public ExampleAnswerMessageGenerator(DatabaseConnector databaseConnector, UserEntity user,
                                          ChatEntity chat, int userAnswer, int rightAnswer, int timer) {
+        this.avtftalk = String.valueOf(chat.getId()).equals(AVTFTALK_CHAT_ID);
         this.userAnswer = userAnswer;
         this.rightAnswer = rightAnswer;
         this.isRight = userAnswer==rightAnswer;
-        if (isRight) {
-            this.user = user;
+        this.timer = timer;
+        this.user = user;
+        if (isRight && avtftalk) {
             achieves = new MathAchieves(databaseConnector, user, chat, rightAnswer, timer);
-            sum = achieves.getSum();
+            exampleScore = achieves.getSum();
+            sumScore = achieves.getScore();
         }
     }
 
     public String generate() {
         return isRight ?
+                avtftalk ?
                 generateRightAnswerMessage() :
+                generateSimpleRightAnswerMessage() :
                 generateWrongAnswerMessage();
     }
 
@@ -40,21 +51,29 @@ public class ExampleAnswerMessageGenerator {
         else return "Неправильно! Попробуй ещё раз.";
     }
 
+    private String generateSimpleRightAnswerMessage() {
+        return String.format(
+                MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(),
+                String.valueOf(userAnswer),
+                UserNameGetter.getUserName(user),
+                MyMath.secondsToReadableTime(timer));
+    }
+
     private String generateRightAnswerMessage() {
         String userName = UserNameGetter.getUserName(user);
-        int sum = achieves.getSum();
 
         StringBuilder msgB = new StringBuilder();
 
         msgB.append(String.format("Победитель - %s. Так держать! ", userName));
         msgB.append(achieves.getTimeMessage(userName));
         achieves.getAchieveList().forEach(a -> msgB.append(String.format("+ %d %s%n", a.getBonus(), a.getMessage())));
-        msgB.append(String.format("Итого: %d мат. балл%s", sum, Linguistic.getMaleWordEnding(sum)));
+        msgB.append(String.format("Итого: %d мат. балл%s ", exampleScore, Linguistic.getMaleWordEnding(exampleScore)));
+        msgB.append(String.format("(общая сумма %d мат. балл%s)", sumScore, Linguistic.getMaleWordEnding(sumScore)));
 
         return msgB.toString();
     }
 
-    public int getSum() {
-        return sum;
+    public int getExampleScore() {
+        return exampleScore;
     }
 }

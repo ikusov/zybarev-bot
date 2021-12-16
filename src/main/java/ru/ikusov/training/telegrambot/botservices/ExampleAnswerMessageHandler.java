@@ -4,18 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
-import ru.ikusov.training.telegrambot.services.UserNameGetter;
-import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
-import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 @Component
 @Order(10)
@@ -59,7 +55,7 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
                             (databaseConnector, user, chat, userAnswer,
                                     rightAnswer, (int)(timer/1_000_000_000));
             textAnswer = exampleAnswerMessageGenerator.generate();
-            score = exampleAnswerMessageGenerator.getSum();
+            score = exampleAnswerMessageGenerator.getExampleScore();
 
             exampleAnswer = new ExampleAnswerEntity()
                     .setTimestamp(System.currentTimeMillis()/1000)
