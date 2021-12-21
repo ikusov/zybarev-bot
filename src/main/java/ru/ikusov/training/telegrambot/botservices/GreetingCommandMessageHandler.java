@@ -21,6 +21,13 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - Приветствие от бота.\n";
+        helpString = help + helpString;
+    }
+
+    @Override
     public BotReaction handleCommand(MyBotCommand command) {
         String userName = command.getUser().getFirstName();
 

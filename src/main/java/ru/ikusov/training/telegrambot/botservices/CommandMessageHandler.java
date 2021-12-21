@@ -31,6 +31,9 @@ public abstract class CommandMessageHandler implements MessageHandler {
     //static collection of registered commands
     protected static Set<String> registeredCommands = new HashSet<>();
 
+    //static help string
+    protected static String helpString = "";
+
     @Override
     public void handleMessage(Message message) {
         String msgText = message.getText();
@@ -40,6 +43,9 @@ public abstract class CommandMessageHandler implements MessageHandler {
 
         //add command handler commands to registry
         registerCommands();
+
+        //add help for the command
+        addHelp();
 
         //tokens of message: /command token1 token2 ... token2_000_047 ...
         String[] tokens = msgText.split(" ", 2);
@@ -73,6 +79,8 @@ public abstract class CommandMessageHandler implements MessageHandler {
     }
 
 //todo: add method to describe every command handler for /help command
+
+    protected abstract void addHelp();
 
     protected abstract Set<String> getCommandVariants();
 

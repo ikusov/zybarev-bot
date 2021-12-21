@@ -30,6 +30,14 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - статистика по математическим достижениям.\n";
+        helpString = help + helpString;
+    }
+
+
+    @Override
     public BotReaction handleCommand(MyBotCommand command) {
         UserEntity user = new UserEntity(command.getUser());
         ChatEntity chat = new ChatEntity(command.getChat());

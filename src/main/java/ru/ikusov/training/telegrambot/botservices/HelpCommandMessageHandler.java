@@ -8,7 +8,7 @@ import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import java.util.Set;
 
 @Component
-@Order(100)
+@Order(500)
 public class HelpCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/help", "/h", "/?", "/помощь");
 
@@ -18,10 +18,17 @@ public class HelpCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - Список команд.\n";
+        helpString = help + helpString;
+    }
+
+    @Override
     public BotReaction handleCommand(MyBotCommand command) {
 //        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
 //
-        String textAnswer = registeredCommands.stream().reduce((s, s2) -> s + "\n" + s2).get();
+        String textAnswer = helpString;
 
         return new BotMessageSender(command.getChatId(), textAnswer);
     }

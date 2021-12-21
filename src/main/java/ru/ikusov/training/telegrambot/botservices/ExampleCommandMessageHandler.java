@@ -17,6 +17,13 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
     private ExampleGenerator exampleGenerator;
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - арифметический пример. Разомни мозги!\n";
+        helpString = help + helpString;
+    }
+
+    @Override
     protected Set<String> getCommandVariants() {
         return commandVariants;
     }

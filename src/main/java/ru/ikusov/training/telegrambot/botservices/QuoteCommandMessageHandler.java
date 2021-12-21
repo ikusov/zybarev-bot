@@ -22,6 +22,13 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
     AvtftalkQuoteGetter avtftalkQuoteGetter;
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - умная цитата из интернета или (если вам повезло с чатиком) какая-то цитата из старого IRС-канала. Во втором случае можно передать параметром номер цитаты.\n";
+        helpString = help + helpString;
+    }
+
+    @Override
     protected Set<String> getCommandVariants() {
         return commandVariants;
     }

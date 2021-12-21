@@ -19,6 +19,10 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler{
     }
 
     @Override
+    protected void addHelp() {
+    }
+
+    @Override
     public BotReaction handleCommand(MyBotCommand command) {
         if(registeredCommands.contains(command.getCommand())) return new BotEmptyReaction();
 

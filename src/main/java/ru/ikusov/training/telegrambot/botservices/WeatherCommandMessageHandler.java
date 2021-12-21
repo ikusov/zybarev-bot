@@ -28,6 +28,14 @@ public class WeatherCommandMessageHandler extends CommandMessageHandler {
     LocationDatabaseGetter locationDatabaseGetter;
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - текущая погода в указанной локации. По умолчанию - Новосибирск, но это не точно.\n";
+        helpString = help + helpString;
+    }
+
+
+    @Override
     protected Set<String> getCommandVariants() {
         return commandVariants;
     }

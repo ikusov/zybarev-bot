@@ -18,6 +18,13 @@ public class LeaveCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
+    protected void addHelp() {
+        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
+        help += " - сделать бота покинуть чат.\n";
+        helpString = help + helpString;
+    }
+
+    @Override
     public BotReaction handleCommand(MyBotCommand command) {
 //        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
 //
