@@ -10,6 +10,7 @@ import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
+import ru.ikusov.training.telegrambot.utils.Linguistic;
 import ru.ikusov.training.telegrambot.utils.MessageType;
 
 import java.util.Comparator;
@@ -83,15 +84,15 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
                     "\nНеправильных решений: %d (%.1f%%)" +
                     "\nСреднее время решения: %.1f с" +
                     "\nМат. баллов заработано: %d" +
-                    "\nГлобальная серия: %d примеров" +
-                    "\nЛичная серия без ошибок: %d примеров.",
+                    "\nГлобальная серия: %d пример%s" +
+                    "\nЛичная серия без ошибок: %d пример%s",
                     exampleCount,
                     rightCount, 100.*rightCount/exampleCount,
                     wrongCount, 100.*wrongCount/exampleCount,
                     timeAverage/exampleCount/1000,
                     score,
-                    globalSeries,
-                    noErrorSeries
+                    globalSeries, Linguistic.getMaleWordEnding(globalSeries),
+                    noErrorSeries, Linguistic.getMaleWordEnding(noErrorSeries)
             );
         } catch (Exception e) {
             System.out.println("Exception while getting from database: " + e.getMessage());
