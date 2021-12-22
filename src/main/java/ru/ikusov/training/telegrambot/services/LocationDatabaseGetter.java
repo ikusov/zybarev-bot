@@ -20,7 +20,7 @@ public class LocationDatabaseGetter {
     public LocationDatabaseGetter() {
     }
 
-    public LocationEntity getLocation(User chatUser, String params) {
+    public LocationEntity getLocation(User chatUser, String params) throws IllegalArgumentException {
         LocationEntity location = LocationEntity.DEFAULT_LOCATION;
 
         //if no parameters, try to get user location from da tabase
@@ -54,7 +54,9 @@ public class LocationDatabaseGetter {
                 try {
                     location = new GeocodeGetter(locationRequest).getGeoCode();
                     databaseConnector.save(location);
-                } catch (IOException e) {
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Не найдена локация " + params);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

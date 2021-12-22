@@ -47,9 +47,8 @@ public class WeatherCommandMessageHandler extends CommandMessageHandler {
 
         String params = command.getParams();
 
-        LocationEntity location = locationDatabaseGetter.getLocation(command.getUser(), params);
-
         try {
+            LocationEntity location = locationDatabaseGetter.getLocation(command.getUser(), params);
             weatherGetter = new WeatherGetter2(location);
             textAnswer = weatherGetter.getWeather();
         } catch (Exception e) {
