@@ -61,7 +61,8 @@ public class MathAchieves {
         getUserAchieves();
         getSpeedBonus();
         getNumberAchieves();
-        getBonusAchieves();
+        //commented until clarification
+//        getBonusAchieves();
     }
 
     public List<MathAchieve> getAchieveList() {
