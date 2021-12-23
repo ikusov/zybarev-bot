@@ -62,7 +62,7 @@ public class MathAchieves {
         getSpeedBonus();
         getNumberAchieves();
         //commented until clarification
-//        getBonusAchieves();
+        getBonusAchieves();
     }
 
     public List<MathAchieve> getAchieveList() {
@@ -250,15 +250,23 @@ public class MathAchieves {
     }
 
     private void getBonusAchieves() {
-        int sum = achieves.achieveList.stream().mapToInt(MathAchieve::getBonus).sum();
-        if (sum>=3)
+        long sum = achieves.achieveList.size();
+        if (sum>=3) {
             achieves.put(1, "Бонус-магнат! (>=3)");
-        if (sum>=5)
+            sum++;
+        }
+        if (sum>=5) {
             achieves.put(3, "Бонус-магнат! (>=5)");
-        if (sum>=8)
+            sum++;
+        }
+        if (sum>=8) {
             achieves.put(5, "Бонус-МАГНАТ! (>=8)");
-        if (sum>=10)
+            sum++;
+        }
+        if (sum>=10) {
             achieves.put(10, "БОНУС-МАГНАТ! (>=10)");
+            sum++;
+        }
         if (sum>=20)
             achieves.put(20, ">>> БОНУС-МАГНАТ! <<< (>=20)");
     }
