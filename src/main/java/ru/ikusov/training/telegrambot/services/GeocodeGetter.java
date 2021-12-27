@@ -25,16 +25,21 @@ public final class GeocodeGetter {
         this.urlString = urlSting + "&apikey=" + apiKey + "&geocode=" + geoCodeURLenc;
     }
 
-    public LocationEntity getGeoCode() throws IOException {
+    public LocationEntity getGeoCode() throws Exception {
         String jsonString = new HttpConnector(urlString).getJsonString();
+        JsonNode code;
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode code = mapper.readTree(jsonString)
-                .get("response")
-                .get("GeoObjectCollection")
-                .get("featureMember")
-                .get(0)
-                .get("GeoObject");
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            code = mapper.readTree(jsonString)
+                    .get("response")
+                    .get("GeoObjectCollection")
+                    .get("featureMember")
+                    .get(0)
+                    .get("GeoObject");
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Location not found!");
+        }
 
         String address = code.get("name").asText(),
                 pos = code.get("Point").get("pos").asText();

@@ -33,6 +33,7 @@ public abstract class CommandMessageHandler implements MessageHandler {
 
     //static help string
     protected static String helpString = "";
+    protected static boolean helpFormed = false;
 
     @Override
     public void handleMessage(Message message) {
@@ -45,7 +46,9 @@ public abstract class CommandMessageHandler implements MessageHandler {
         registerCommands();
 
         //add help for the command
-        addHelp();
+        if(!helpFormed) {
+            addHelp();
+        }
 
         //tokens of message: /command token1 token2 ... token2_000_047 ...
         String[] tokens = msgText.split(" ", 2);

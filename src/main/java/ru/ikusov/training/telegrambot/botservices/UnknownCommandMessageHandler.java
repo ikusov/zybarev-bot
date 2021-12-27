@@ -20,6 +20,7 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler{
 
     @Override
     protected void addHelp() {
+        helpFormed = true;
     }
 
     @Override
