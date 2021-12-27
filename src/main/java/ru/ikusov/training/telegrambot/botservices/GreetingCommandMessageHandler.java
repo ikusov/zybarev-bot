@@ -23,7 +23,7 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
     @Override
     protected void addHelp() {
         String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - Приветствие от бота.\n";
+        help += " - приветствие от бота\n";
         helpString = help + helpString;
     }
 

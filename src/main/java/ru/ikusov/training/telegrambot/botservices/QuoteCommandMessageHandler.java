@@ -11,12 +11,12 @@ import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.util.Set;
 
+import static ru.ikusov.training.telegrambot.MainClass.AVTFTALK_CHAT_ID;
+
 @Component
 @Order(110)
 public class QuoteCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/quote", "/q", "/цитата", "/ц", "/й");
-    private final String avtftalkChatId = "-1001306495099";
-            //"349513007";
 
     @Autowired
     AvtftalkQuoteGetter avtftalkQuoteGetter;
@@ -41,7 +41,7 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
         String textAnswer;
 
         try {
-            if(command.getChatId().equals(avtftalkChatId)) {
+            if(command.getChatId().equals(AVTFTALK_CHAT_ID)) {
                 quoteGetter = avtftalkQuoteGetter;
             } else {
                 quoteGetter = new InternetQuoteGetter();
