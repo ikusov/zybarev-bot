@@ -80,19 +80,19 @@ public class MathAchieves {
                 .filter(a -> a.getChat().getId() == chatId)
                 .filter(a -> a.getUser().getId() == userId)
                 .filter(ExampleAnswerEntity::isRight)
-                .count();
+                .count() + 1;
 
         globalSeries = (int) answers.stream()
                 .filter(a -> a.getChat().getId() == chatId)
                 .takeWhile(a -> a.getUser().getId() == userId || !a.isRight())
                 .filter(a -> a.getUser().getId() == userId && a.isRight())
-                .count();
+                .count() + 1;
 
         rightAnswersSeries = (int) answers.stream()
                 .filter(a -> a.getChat().getId() == chatId)
                 .filter(a -> a.getUser().getId() == userId)
                 .takeWhile(ExampleAnswerEntity::isRight)
-                .count();
+                .count() + 1;
 
         score = answers.stream()
                 .filter(a -> a.getChat().getId() == chatId)
