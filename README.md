@@ -2,7 +2,7 @@ Training telegram-bot named Zybarev (too long to explain why this name).
 Based on TelegramLongPollingBot from telegram bot api framework by rubenlagus.
 Abilities:
 - give arithmetical examples and check answers (with counting of users' statistics: time to solve, percentage of right answers)
-- show example solving statistics for user in chat
+- show examples solving statistics for user in chat
 - report current weather for user-defined location
 - tell random news from Yandex news output
 - tell random funny rhyme from Internet
