@@ -3,15 +3,12 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
-import ru.ikusov.training.telegrambot.utils.MessageType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -91,8 +88,8 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
                     wrongCount, 100.*wrongCount/exampleCount,
                     timeAverage/exampleCount/1000,
                     score,
-                    globalSeries, Linguistic.getMaleWordEnding(globalSeries),
-                    noErrorSeries, Linguistic.getMaleWordEnding(noErrorSeries)
+                    globalSeries, Linguistic.getManulWordEnding(globalSeries),
+                    noErrorSeries, Linguistic.getManulWordEnding(noErrorSeries)
             );
         } catch (Exception e) {
             System.out.println("Exception while getting from database: " + e.getMessage());

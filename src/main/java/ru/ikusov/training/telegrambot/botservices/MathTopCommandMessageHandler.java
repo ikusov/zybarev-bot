@@ -5,8 +5,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.MathTopGetter;
-import ru.ikusov.training.telegrambot.services.RhymeGetter;
-import ru.ikusov.training.telegrambot.services.UserNameGetter;
+import ru.ikusov.training.telegrambot.utils.Linguistic;
 
 import java.util.Set;
 
@@ -32,17 +31,18 @@ public class MathTopCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-//
         String textAnswer = "";
 
         try {
             var mathTop = mathTopGetter.getMathTop(command.getChatId());
             for (int i=0; i<mathTop.size(); i++) {
-                textAnswer += String.format("%d. %s - %d баллов\n",
+                var mathTopEntry = mathTop.get(i);
+                long score = mathTopEntry.getValue();
+                textAnswer += String.format("%d. %s - %d балл%s\n",
                         i+1,
-                        mathTop.get(i).getKey(),
-                        mathTop.get(i).getValue());
+                        mathTopEntry.getKey(),
+                        score,
+                        Linguistic.getManulWordEnding((int)score));
             }
         } catch (Exception e) {
             textAnswer = e.getMessage();

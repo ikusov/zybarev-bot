@@ -97,16 +97,16 @@ public class MyMath {
 
     public static String secondsToReadableTime(long seconds) {
         if (seconds<60)
-            return String.format("%d секунд%s", seconds, Linguistic.getFemaleWordEnding((int)seconds));
+            return String.format("%d секунд%s", seconds, Linguistic.getCutletWordEnding((int)seconds));
         if (seconds<60*60)
             return String.format("%d минут%s %d секунд%s",
-                    seconds/60, Linguistic.getFemaleWordEnding((int)seconds/60),
-                    seconds%60, Linguistic.getFemaleWordEnding((int)seconds%60));
+                    seconds/60, Linguistic.getCutletWordEnding((int)seconds/60),
+                    seconds%60, Linguistic.getCutletWordEnding((int)seconds%60));
         else
             return String.format("%d час%s %d минут%s %d секунд%s",
-                    seconds/60/60, Linguistic.getMaleWordEnding((int)seconds/60/60),
-                    seconds/60%60, Linguistic.getFemaleWordEnding((int)seconds/60%60),
-                    seconds%60, Linguistic.getFemaleWordEnding((int)seconds%60));
+                    seconds/60/60, Linguistic.getManulWordEnding((int)seconds/60/60),
+                    seconds/60%60, Linguistic.getCutletWordEnding((int)seconds/60%60),
+                    seconds%60, Linguistic.getCutletWordEnding((int)seconds%60));
     }
 
     /**

@@ -67,8 +67,8 @@ public class ExampleAnswerMessageGenerator {
         msgB.append(String.format("Победитель - %s. Так держать! ", userName));
         msgB.append(achieves.getTimeMessage(userName));
         achieves.getAchieveList().forEach(a -> msgB.append(String.format("+ %d %s%n", a.getBonus(), a.getMessage())));
-        msgB.append(String.format("Итого: %d мат. балл%s ", exampleScore, Linguistic.getMaleWordEnding(exampleScore)));
-        msgB.append(String.format("(общая сумма %d мат. балл%s)", sumScore+exampleScore, Linguistic.getMaleWordEnding(sumScore+exampleScore)));
+        msgB.append(String.format("Итого: %d мат. балл%s ", exampleScore, Linguistic.getManulWordEnding(exampleScore)));
+        msgB.append(String.format("(общая сумма %d мат. балл%s)", sumScore+exampleScore, Linguistic.getManulWordEnding(sumScore+exampleScore)));
 
         return msgB.toString();
     }
