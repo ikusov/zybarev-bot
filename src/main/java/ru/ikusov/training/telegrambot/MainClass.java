@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public class MainClass {
     public static final String AVTFTALK_CHAT_ID = Optional.ofNullable((System.getenv("avtftalk_chat_id"))).orElse("");
+    public static final String WEATHER_API_KEY = Optional.ofNullable((System.getenv("weather_api_token"))).orElse("");
+    public static final String GEOCODE_API_KEY = Optional.ofNullable((System.getenv("geocode_api_key"))).orElse("");
 
     public static void main(String... nomatterhowtocallthisargument) {
 

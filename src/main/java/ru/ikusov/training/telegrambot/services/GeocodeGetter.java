@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.ikusov.training.telegrambot.MainClass;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 
 import java.io.IOException;
@@ -15,13 +16,12 @@ import java.util.Locale;
 public final class GeocodeGetter {
     private final String geoCode;
     private final String urlString;
-    private final String apiKey;
+    private final String apiKey = MainClass.GEOCODE_API_KEY;
 
     public GeocodeGetter(String geoCode) {
         String urlSting = "https://geocode-maps.yandex.ru/1.x?format=json";
         String geoCodeURLenc = URLEncoder.encode(geoCode, StandardCharsets.UTF_8);
         this.geoCode = geoCode;
-        this.apiKey = System.getenv("geocode_api_key");
         this.urlString = urlSting + "&apikey=" + apiKey + "&geocode=" + geoCodeURLenc;
     }
 
