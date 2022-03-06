@@ -85,7 +85,7 @@ public class CaseQuestionGenerator {
 
         if (!isCase && count==1
                 && (ua.contains(answer.get(0))
-                || ua.contains(answerCase.getUnspiritedQuestion()))
+                || ua.contains(answer.get(1)))
         ) {
             setAnswered();
             return 2;
