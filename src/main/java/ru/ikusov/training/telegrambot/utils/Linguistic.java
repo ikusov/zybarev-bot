@@ -23,4 +23,13 @@ public final class Linguistic {
                r10>1 && r10<5 ? "а" :
                "ов";
     }
+
+    public static String getSevereWordEnding(int _case) {
+        return    _case==0 ? "ый"
+                : _case==1 ? "ого"
+                : _case==2 ? "ому"
+                : _case==3 ? "ый"
+                : _case==4 ? "ым"
+                :            "ом";
+    }
 }

@@ -4,12 +4,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.Locale;
 import java.util.Optional;
 
 public class MainClass {
     public static final String AVTFTALK_CHAT_ID = Optional.ofNullable((System.getenv("avtftalk_chat_id"))).orElse("");
     public static final String WEATHER_API_KEY = Optional.ofNullable((System.getenv("weather_api_token"))).orElse("");
     public static final String GEOCODE_API_KEY = Optional.ofNullable((System.getenv("geocode_api_key"))).orElse("");
+    public static final Locale RUS_LOCALE = new Locale("ru", "RU");
 
     public static void main(String... nomatterhowtocallthisargument) {
 

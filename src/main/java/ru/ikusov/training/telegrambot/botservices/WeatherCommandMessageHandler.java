@@ -34,7 +34,6 @@ public class WeatherCommandMessageHandler extends CommandMessageHandler {
         helpString = help + helpString;
     }
 
-
     @Override
     protected Set<String> getCommandVariants() {
         return commandVariants;

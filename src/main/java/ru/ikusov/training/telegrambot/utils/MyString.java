@@ -1,6 +1,9 @@
 package ru.ikusov.training.telegrambot.utils;
 
+import java.util.Locale;
 import java.util.Set;
+
+import static ru.ikusov.training.telegrambot.MainClass.RUS_LOCALE;
 
 public final class MyString {
     private MyString() {}
@@ -39,6 +42,18 @@ public final class MyString {
             end --;
 
         return start<end ? string.substring(start, end+1) : "";
+    }
+
+    public static String brutalProcessing(String string) {
+        Set<Character> punctuationMarksSet = Set.of(',', '!', '.', '1', '"', '?');
+        char[] chars = string.toLowerCase(RUS_LOCALE).replaceAll("ё", "е").toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char c:chars) {
+            if (punctuationMarksSet.contains(c) || Character.isWhitespace(c) || Character.isDigit(c))
+                continue;
+            sb.append(c);
+        }
+        return sb.toString();
     }
 
     public static String markdownv2Format(String input) {

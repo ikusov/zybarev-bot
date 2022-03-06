@@ -1,12 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.Bot;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.utils.MessageType;
-import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.util.Set;
 
