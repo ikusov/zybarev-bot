@@ -25,6 +25,8 @@ public class CaseQuestionGenerator {
     private boolean isCase;
 
     public String getQuestion() {
+
+
         if (!isAnswered) return question;
 
         answerCase = Case.values()[r(Case.values().length)];
@@ -59,12 +61,11 @@ public class CaseQuestionGenerator {
     }
 
     /**
-     * Testing user answer string of being wrong, right or half-right
+     * Testing user answer string of being wrong or right
      * @param userAnswer user answer string to be tested
      * @return less than -1 if userAnswer contains more than required variants
      * -1 if user answer is wrong
      * 0 if user answer contains no variants,
-     * 1 if user answer is half-right
      * 2 if user answer is right
      */
     public int testUserAnswer(String userAnswer) {
@@ -117,7 +118,7 @@ public class CaseQuestionGenerator {
                         MyString.brutalProcessing(
                         value.getSpiritedQuestion() + value.getUnspiritedQuestion()),
                         MyString.brutalProcessing(
-                                value.getUnspiritedQuestion()+value.getSpiritedQuestion())
+                        value.getUnspiritedQuestion() + value.getSpiritedQuestion())
                 )).collect(Collectors.toSet());
     }
 
