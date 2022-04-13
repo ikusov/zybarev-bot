@@ -58,7 +58,7 @@ public final class MyString {
 
     public static String markdownv2Format(String input) {
         char[] inputChars = input.toCharArray();
-        StringBuilder output = new StringBuilder();
+        StringBuilder output = new StringBuilder(input.length()*2);
 
         for (char c : inputChars) {
             if (c-1<126)
