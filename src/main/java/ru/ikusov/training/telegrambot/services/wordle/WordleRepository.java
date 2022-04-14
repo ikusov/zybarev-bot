@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.WordEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
+import java.util.Optional;
+
 @Component
 public class WordleRepository {
     private DatabaseConnector databaseConnector;
@@ -28,6 +30,15 @@ public class WordleRepository {
         } while(ws == WordStatus.USED);
 
         return result.getText();
+    }
+
+    public Optional<WordEntity> getCurrentWord() {
+        var we = databaseConnector
+                .getByQuery(WordEntity.class,
+                        "from WordEntity where status=" + WordStatus.IN_USE.getStatus());
+        return we.isEmpty()
+                ? Optional.empty()
+                : Optional.of(we.get(0));
     }
 
     private enum WordStatus {

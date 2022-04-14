@@ -17,9 +17,14 @@ public class WordleService {
         this.gameStatus = GameStatus.NOT_STARTED;
     }
 
-    public void startGame() {
-        gameStatus = GameStatus.STARTED;
-        currentWord = wordleRepository.getRandomWord();
+    public String startGame() {
+        var currentWE = wordleRepository.getCurrentWord();
+        if (currentWE.isEmpty()) {
+            currentWord = wordleRepository.getRandomWord();
+            return MyString.markdownv2Format("Загадал русское слово из пяти букв!");
+        }
+
+        return "";
     }
 
     public String checkWord(String word) {
