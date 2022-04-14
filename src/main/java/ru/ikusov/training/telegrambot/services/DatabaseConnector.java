@@ -80,12 +80,12 @@ public class DatabaseConnector {
     }
 
     public <T extends CommonEntity> List<T> getByQuery(Class<T> tClass, String query) {
-        List<T> resultList = null;
+        List<T> resultList;
 
         try(Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Query query1 = session.createQuery(query);
+            Query query1 = session.createQuery(query, tClass);
             resultList = query1.getResultList();
 
             transaction.commit();

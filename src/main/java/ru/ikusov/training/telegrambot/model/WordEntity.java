@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "words")
-public class WordEntity {
+public class WordEntity implements CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -12,6 +12,9 @@ public class WordEntity {
 
     @Column(name = "text")
     private String text;
+
+    @Column(name = "status")
+    private int status;
 
     public WordEntity() {
     }
@@ -37,5 +40,13 @@ public class WordEntity {
     public WordEntity setText(String text) {
         this.text = text;
         return this;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
