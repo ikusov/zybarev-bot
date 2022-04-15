@@ -23,7 +23,8 @@ public class DatabaseConnector {
                     UserEntity.class,
                     ChatEntity.class,
                     LocationEntity.class,
-                    ExampleAnswerEntity.class);
+                    ExampleAnswerEntity.class,
+                    WordEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
