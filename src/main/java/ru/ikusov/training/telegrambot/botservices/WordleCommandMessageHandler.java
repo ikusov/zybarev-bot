@@ -1,11 +1,24 @@
 package ru.ikusov.training.telegrambot.botservices;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
+import ru.ikusov.training.telegrambot.services.wordle.WordleService;
 
 import java.util.Set;
 
+@Component
+@Order(180)
 public class WordleCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/wordle", "/вордли");
+    private final Set<String> commandVariants = Set.of("/wordle", "/words", "/слова");
+
+    private final WordleService wordleService;
+
+    @Autowired
+    public WordleCommandMessageHandler(WordleService wordleService) {
+        this.wordleService = wordleService;
+    }
 
     @Override
     protected void addHelp() {
@@ -21,6 +34,7 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        return new BotEmptyReaction();
+        String fMsg = wordleService.startGame();
+        return new BotFormattedMessageSender(command.getChatId(), fMsg);
     }
 }

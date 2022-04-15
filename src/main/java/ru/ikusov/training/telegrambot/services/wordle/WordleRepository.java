@@ -22,12 +22,14 @@ public class WordleRepository {
     }
 
     public String getRandomWord() {
-        WordStatus ws = WordStatus.USED;
         WordEntity result;
         do {
-            result = databaseConnector.getById(WordEntity.class, (int)(Math.random()*100));
-            ws = WordStatus.getByStatus(result.getStatus());
-        } while(ws == WordStatus.USED);
+            result = databaseConnector.getById(WordEntity.class, (int)(Math.random()*726)+1);
+        } while(result == null || WordStatus.getByStatus(result.getStatus()) == WordStatus.USED);
+
+        result.setTimeStamp(System.currentTimeMillis()/1000);
+        result.setStatus(WordStatus.IN_USE.getStatus());
+        databaseConnector.save(result);
 
         return result.getText();
     }
@@ -36,6 +38,49 @@ public class WordleRepository {
         var we = databaseConnector
                 .getByQuery(WordEntity.class,
                         "from WordEntity where status=" + WordStatus.IN_USE.getStatus());
+        return we.isEmpty()
+                ? Optional.empty()
+                : Optional.of(we.get(0));
+    }
+
+    public Optional<WordEntity> getLastTriedWord() {
+        var we = databaseConnector
+                .getByQuery(WordEntity.class,
+                        "from WordEntity where (status is null or status=" +
+                                WordStatus.NOT_USED.getStatus() +
+                                ") and timestamp=(select max(timestamp) from WordEntity)"
+                        );
+        return we.isEmpty()
+                ? Optional.empty()
+                : Optional.of(we.get(0));
+    }
+
+    public Optional<WordEntity> getLastGuessedWord() {
+        var we = databaseConnector
+                .getByQuery(WordEntity.class,
+                        "from WordEntity where status=" +
+                                WordStatus.USED.getStatus() +
+                                " and timestamp=(select max(timestamp) from WordEntity)"
+                );
+        return we.isEmpty()
+                ? Optional.empty()
+                : Optional.of(we.get(0));
+    }
+
+    public void setLastGuessedWord(WordEntity we) {
+        databaseConnector.save(we);
+    }
+
+    public void setLastTriedWord(WordEntity we) {
+        databaseConnector.save(we);
+    }
+
+    public Optional<WordEntity> getWordByText(String word) {
+        var we = databaseConnector
+                .getByQuery(WordEntity.class,
+                        "from WordEntity where text='" +
+                                word + "'"
+                );
         return we.isEmpty()
                 ? Optional.empty()
                 : Optional.of(we.get(0));

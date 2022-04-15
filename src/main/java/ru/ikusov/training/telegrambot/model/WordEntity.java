@@ -16,6 +16,9 @@ public class WordEntity implements CommonEntity {
     @Column(name = "status")
     private int status;
 
+    @Column(name = "timestamp")
+    private long timeStamp;
+
     public WordEntity() {
     }
 
@@ -48,5 +51,13 @@ public class WordEntity implements CommonEntity {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }
