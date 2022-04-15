@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.WordEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -56,12 +58,16 @@ public class WordleRepository {
     }
 
     public Optional<WordEntity> getLastGuessedWord() {
-        var we = databaseConnector
+        List<WordEntity> we = List.of();
+        try {
+            we = databaseConnector
                 .getByQuery(WordEntity.class,
                         "from WordEntity where status=" +
                                 WordStatus.USED.getStatus() +
                                 " and timestamp=(select max(timestamp) from WordEntity)"
                 );
+        } catch (NoSuchElementException ignored) {
+        }
         return we.isEmpty()
                 ? Optional.empty()
                 : Optional.of(we.get(0));
