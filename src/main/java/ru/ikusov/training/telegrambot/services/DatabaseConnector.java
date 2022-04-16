@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
 public class DatabaseConnector {
@@ -57,17 +58,19 @@ public class DatabaseConnector {
         sessionFactory.close();
     }
 
-    public <T extends CommonEntity> T getById(Class<T> tClass, long id) {
-        T entity;
+    public <T extends CommonEntity> Optional<T> getById(Class<T> tClass, long id) {
+        T entity = null;
         try(Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
             entity = session.get(tClass, id);
 
             transaction.commit();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
 
-        return entity;
+        return Optional.ofNullable(entity);
     }
 
     public <T extends CommonEntity> void save(T entity) {
@@ -80,8 +83,18 @@ public class DatabaseConnector {
         }
     }
 
+    public <T extends CommonEntity> void saveOrUpdate(T entity) {
+        try(Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            session.saveOrUpdate(entity);
+
+            transaction.commit();
+        }
+    }
+
     public <T extends CommonEntity> List<T> getByQuery(Class<T> tClass, String query) {
-        List<T> resultList;
+        List<T> resultList = null;
 
         try(Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -90,6 +103,8 @@ public class DatabaseConnector {
             resultList = query1.getResultList();
 
             transaction.commit();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
 
         if (resultList == null || resultList.isEmpty()) throw new NoSuchElementException("No elements for query " + query);
@@ -98,22 +113,28 @@ public class DatabaseConnector {
     }
 
     public UserEntity getOrCreateUser(User chatUser) {
-        UserEntity user = getById(UserEntity.class, chatUser.getId());
-        if (user==null) {
+        UserEntity user;
+        var userEntityOptional= getById(UserEntity.class, chatUser.getId());
+        if (userEntityOptional.isEmpty()) {
             user = new UserEntity(chatUser);
 
             save(user);
+        } else {
+            user = userEntityOptional.get();
         }
 
         return user;
     }
 
     public ChatEntity getOrCreateChat(Chat telegramChat) {
-        ChatEntity chat = getById(ChatEntity.class, telegramChat.getId());
-        if (chat==null) {
+        ChatEntity chat;
+        var chatEntityOptional= getById(ChatEntity.class, telegramChat.getId());
+        if (chatEntityOptional.isEmpty()) {
             chat = new ChatEntity(telegramChat);
 
             save(chat);
+        } else {
+            chat = chatEntityOptional.get();
         }
 
         return chat;

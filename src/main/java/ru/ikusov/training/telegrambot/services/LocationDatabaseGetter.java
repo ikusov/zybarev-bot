@@ -25,9 +25,9 @@ public class LocationDatabaseGetter {
 
         //if no parameters, try to get user location from da tabase
         if (params.equals("")) {
-            UserEntity user = databaseConnector.getById(UserEntity.class, chatUser.getId());
-            if (user!=null && user.getLocation()!=null) {
-                location = user.getLocation();
+            var userEntityOptional = databaseConnector.getById(UserEntity.class, chatUser.getId());
+            if (userEntityOptional.isPresent() && userEntityOptional.get().getLocation()!=null) {
+                location = userEntityOptional.get().getLocation();
             }
         } else {        //if have parameters, try to find location in da tabase
             String locationRequest = MyString.trimPunctuationMarksInclusive(params)

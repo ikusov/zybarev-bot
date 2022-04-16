@@ -8,56 +8,64 @@ public class WordEntity implements CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "text")
     private String text;
 
     @Column(name = "status")
-    private int status;
+    private Integer status;
 
     @Column(name = "timestamp")
-    private long timeStamp;
+    private Long timeStamp;
 
     public WordEntity() {
     }
 
-    public WordEntity(int id, String text) {
+    public WordEntity(Long id, String text) {
         this.id = id;
         this.text = text;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public WordEntity setId(int id) {
+    public void setId(Long id) {
         this.id = id;
-        return this;
     }
 
     public String getText() {
         return text;
     }
 
-    public WordEntity setText(String text) {
+    public void setText(String text) {
         this.text = text;
-        return this;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public long getTimeStamp() {
+    public Long getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(long timeStamp) {
+    public void setTimeStamp(Long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    @Override
+    public String toString() {
+        return "WordEntity{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", status=" + status +
+                ", timeStamp=" + timeStamp +
+                '}';
     }
 }

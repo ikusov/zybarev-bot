@@ -52,5 +52,6 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
         }
 
         return new BotFormattedMessageSender(command.getChatId(), textAnswer);
+//        return new BotMessageSender(command.getChatId(), textAnswer);
     }
 }

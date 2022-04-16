@@ -34,8 +34,17 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
         }
 
         text = text.toLowerCase();
-        String textAnswer = wordleService.checkWord(text);
+        String textAnswer;
+        try {
+            textAnswer =
+                    wordleService.checkWord(text);
+        } catch (Exception e) {
+            System.err.println("Any exception: " + e.getMessage());
+            return new BotEmptyReaction();
+        }
 
-        return new BotMessageSender(message.getChatId().toString(), textAnswer);
+        return textAnswer.equals("")
+                ? new BotEmptyReaction()
+                : new BotFormattedMessageSender(message.getChatId().toString(), textAnswer);
     }
 }

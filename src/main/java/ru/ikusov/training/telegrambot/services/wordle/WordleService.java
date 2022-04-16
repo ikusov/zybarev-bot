@@ -22,6 +22,7 @@ public class WordleService {
 
     public String startGame() {
         var currentWE = wordleRepository.getCurrentWord();
+        System.out.println("start game: current word from DB: " + currentWE.isPresent());
 
         //слово уже загадано
         if (currentWE.isPresent()) {
@@ -29,7 +30,7 @@ public class WordleService {
             var lastGuessWordWE = wordleRepository.getLastTriedWord();
             String s;
             if (lastGuessWordWE.isEmpty()) {
-                s = "кукуц";
+                s = "";
             } else {
                 s = lastGuessWordWE.get().getText();
             }
@@ -54,6 +55,13 @@ public class WordleService {
     }
 
     public String checkWord(String word) {
+        var weOpt= wordleRepository.getCurrentWord();
+
+        if (weOpt.isEmpty()) {
+            return "";
+        }
+
+        var we = weOpt.get();
         var triedWord = wordleRepository.getWordByText(word);
 
         //слова нету в базе данных, орём, что нету мол
@@ -62,20 +70,19 @@ public class WordleService {
         }
 
         //слово таки есть в базе данных, сравняем с правильным
-        var we= wordleRepository.getCurrentWord().orElseThrow();
         currentWord = we.getText();
         var guessResult = compareWords(word, currentWord);
         var formattedWord = formatToMarkdownV2(word, guessResult);
 
         //если не совпадает с правильным
-        if (isFullOfTwos(guessResult)) {
+        if (!isFullOfTwos(guessResult)) {
             wordleRepository.setLastTriedWord(triedWord.get());
             return formattedWord;
         }
 
         //если всё правильно
         wordleRepository.setLastGuessedWord(triedWord.get());
-        return "Совершенно верно! Правильный ответ - " + formattedWord;
+        return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
     }
 
     private int[] compareWords(String tested, String right) {
@@ -85,7 +92,14 @@ public class WordleService {
         for (int i = 0; i < t.length; i++) {
             result[i] = t[i] == r[i]
                     ? 2
-                    : right.indexOf(t[i]) >= 0
+                    : 0;
+        }
+
+        for (int i = 0; i < t.length; i++) {
+            if (result[i] == 2) continue;
+
+            int ind = right.indexOf(t[i]);
+            result[i] = ind >= 0 && result[ind] != 2
                     ? 1
                     : 0;
         }
