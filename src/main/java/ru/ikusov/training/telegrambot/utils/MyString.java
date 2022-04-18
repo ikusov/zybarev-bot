@@ -69,18 +69,12 @@ public final class MyString {
         return output.toString();
     }
 
-    public static boolean isWordleAnswer(String input) {
-        if (input.length() != 5) return false;
-        char[] chars = input.toCharArray();
-        boolean wasBig = false,
-                wasSmall = false;
-
-        for (char c : chars) {
-            if ((c < 'А' || c > 'я') && (c != 'ё' && c != 'Ё')) return false;
-            if (c >= 'А' && c <= 'Я' || c == 'Ё') wasBig = true;
-            if (c >= 'а' && c <= 'я' || c == 'ё') wasSmall = true;
+    public static int countChars(String s, char c) {
+        int count = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == c) count++;
         }
 
-        return !wasBig || !wasSmall;
+        return count;
     }
 }

@@ -5,9 +5,12 @@ import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
+import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.*;
+
 @Component
 public class WordleService {
     private static final long WORDS_INTERVAL = 24 * 3600;
+//    private static final long WORDS_INTERVAL = 6;
     private String currentWord;
     private String lastGuessWord;
     private GameStatus gameStatus;
@@ -83,51 +86,6 @@ public class WordleService {
         //если всё правильно
         wordleRepository.setLastGuessedWord(triedWord.get());
         return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
-    }
-
-    private int[] compareWords(String tested, String right) {
-        int[] result = new int[tested.length()];
-        char[] t = tested.toCharArray();
-        char[] r = right.toCharArray();
-        for (int i = 0; i < t.length; i++) {
-            result[i] = t[i] == r[i]
-                    ? 2
-                    : 0;
-        }
-
-        for (int i = 0; i < t.length; i++) {
-            if (result[i] == 2) continue;
-
-            int ind = right.indexOf(t[i]);
-            result[i] = ind >= 0 && result[ind] != 2
-                    ? 1
-                    : 0;
-        }
-
-        return result;
-    }
-
-    private boolean isFullOfTwos(int[] numbers) {
-        for (int n : numbers) {
-            if (n != 2) return false;
-        }
-        return true;
-    }
-
-    private String formatToMarkdownV2(String s, int[] wordComparingResult) {
-        StringBuilder sb = new StringBuilder(s.length() * 5);
-        for (int i = 0; i < s.length(); i++) {
-            var c = Character.toUpperCase(s.charAt(i));
-            sb.append(
-                    wordComparingResult[i] == 2
-                            ? "*" + c + "*"
-                            : wordComparingResult[i] == 1
-                            ? "_" + c + "_"
-                            : "~" + c + "~"
-            );
-        }
-
-        return sb.toString();
     }
 
     private boolean wordIsInDB(String word) {

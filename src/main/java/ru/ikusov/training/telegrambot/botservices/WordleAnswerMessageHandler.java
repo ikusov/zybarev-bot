@@ -4,17 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.ikusov.training.telegrambot.model.ChatEntity;
-import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
-import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.services.DatabaseConnector;
-import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
-import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.services.wordle.WordleService;
-import ru.ikusov.training.telegrambot.utils.MyMath;
-import ru.ikusov.training.telegrambot.utils.MyString;
-
-import java.util.Locale;
+import ru.ikusov.training.telegrambot.services.wordle.WordleUtils;
 
 @Component
 @Order(20)
@@ -29,7 +20,7 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
     @Override
     public BotReaction handleNonCommand(Message message) {
         String text = message.getText();
-        if (!MyString.isWordleAnswer(text)) {
+        if (!WordleUtils.isWordleAnswer(text)) {
             return new BotEmptyReaction();
         }
 
