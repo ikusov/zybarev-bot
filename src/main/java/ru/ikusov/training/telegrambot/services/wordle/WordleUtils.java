@@ -20,13 +20,19 @@ public final class WordleUtils {
 
         for (int i = 0; i < t.length; i++) {
             int lcI = t[i] - 'А';
-            if (lettersCounter[lcI] > 0) {
-                result[i] = t[i] == r[i]
-                        ? 2
-                        : 1;
+            if (t[i] == r[i]) {
+                result[i] = 2;
                 lettersCounter[lcI]--;
             } else {
                 result[i] = 0;
+            }
+        }
+
+        for (int i = 0; i < t.length; i++) {
+            int lcI = t[i] - 'А';
+            if (result[i] != 2 && lettersCounter[lcI] > 0) {
+                result[i] = 1;
+                lettersCounter[lcI]--;
             }
         }
 
