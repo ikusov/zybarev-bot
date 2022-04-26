@@ -25,6 +25,7 @@ public class DatabaseConnector {
                     ChatEntity.class,
                     LocationEntity.class,
                     ExampleAnswerEntity.class,
+                    WordAttempt.class,
                     WordEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {

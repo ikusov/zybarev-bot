@@ -27,5 +27,22 @@ public class WordAttempt implements CommonEntity {
     public WordAttempt(Long wordId, Long userId) {
         this.wordId = wordId;
         this.userId = userId;
+        this.attemptsCount = 0;
+    }
+
+    public Integer getAttemptsCount() {
+        return attemptsCount;
+    }
+
+    public void setAttemptsCount(Integer attemptsCount) {
+        this.attemptsCount = attemptsCount;
+    }
+
+    public boolean isGuessed() {
+        return isGuessed;
+    }
+
+    public void setGuessed(boolean guessed) {
+        isGuessed = guessed;
     }
 }

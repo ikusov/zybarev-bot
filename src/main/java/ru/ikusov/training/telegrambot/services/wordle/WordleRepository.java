@@ -149,7 +149,7 @@ public class WordleRepository {
     }
 
     //TODO: get or create word attempt including get or create user
-    public Optional<WordAttempt> getOrCreateWordAttempt(String word, User chatUser) {
+    public Optional<WordAttempt> getOrCreateWordAttempt(User chatUser) {
         var wordOptional = getCurrentWord();
         if (wordOptional.isEmpty()) {
             return Optional.empty();
@@ -173,12 +173,16 @@ public class WordleRepository {
 
         if (wordAttemptsList.isEmpty()) {
             wordAttempt = new WordAttempt(wordId, userId);
+            databaseConnector.saveOrUpdate(wordAttempt);
         } else {
             wordAttempt = wordAttemptsList.get(0);
         }
-        return wordAttemptsList.isEmpty()
-                ? Optional.empty()
-                : Optional.of(wordAttemptsList.get(0));
+
+        return Optional.of(wordAttempt);
+    }
+
+    public void saveWordAttempt(WordAttempt wordAttempt) {
+        databaseConnector.saveOrUpdate(wordAttempt);
     }
 
     private enum WordStatus {

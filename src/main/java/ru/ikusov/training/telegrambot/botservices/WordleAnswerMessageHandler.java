@@ -28,7 +28,7 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
         String textAnswer;
         try {
             textAnswer =
-                    wordleService.checkWord(text);
+                    wordleService.checkWord(text, message.getFrom());
         } catch (Exception e) {
             System.err.println("Any exception: " + e.getMessage());
             return new BotEmptyReaction();
