@@ -2,6 +2,8 @@ package ru.ikusov.training.telegrambot.services.wordle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.User;
+import ru.ikusov.training.telegrambot.model.WordAttempt;
 import ru.ikusov.training.telegrambot.model.WordEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
@@ -144,6 +146,39 @@ public class WordleRepository {
         return we.isEmpty()
                 ? Optional.empty()
                 : Optional.of(we.get(0));
+    }
+
+    //TODO: get or create word attempt including get or create user
+    public Optional<WordAttempt> getOrCreateWordAttempt(String word, User chatUser) {
+        var wordOptional = getCurrentWord();
+        if (wordOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var userId = databaseConnector.getOrCreateUser(chatUser).getId();
+        var wordId = wordOptional.get().getId();
+        WordAttempt wordAttempt;
+
+        List<WordAttempt> wordAttemptsList = List.of();
+        try {
+            wordAttemptsList = databaseConnector
+                    .getByQuery(WordAttempt.class,
+                            "from WordAttempt where word_id='" +
+                                    wordId + "' and user_id='" +
+                                    userId + "'"
+                    );
+        } catch (Exception e) {
+            System.err.println("Error while finding word_attempt in da ta base: " + e);
+        }
+
+        if (wordAttemptsList.isEmpty()) {
+            wordAttempt = new WordAttempt(wordId, userId);
+        } else {
+            wordAttempt = wordAttemptsList.get(0);
+        }
+        return wordAttemptsList.isEmpty()
+                ? Optional.empty()
+                : Optional.of(wordAttemptsList.get(0));
     }
 
     private enum WordStatus {

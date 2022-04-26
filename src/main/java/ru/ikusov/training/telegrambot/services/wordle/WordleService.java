@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.services.wordle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
@@ -55,6 +56,17 @@ public class WordleService {
         //слово не загадано, отгаданных слов нет либо прошло больше интервала времени между предыдущей загадкой
         currentWord = wordleRepository.getRandomWord();
         return MyString.markdownv2Format("Загадал русское слово из пяти букв!");
+    }
+
+    public String checkWord(String word, User chatUser) {
+        var currentWordOptional = wordleRepository.getCurrentWord();
+        if (currentWordOptional.isEmpty()) {
+            return "";
+        }
+
+
+
+        return checkWord(word);
     }
 
     public String checkWord(String word) {
