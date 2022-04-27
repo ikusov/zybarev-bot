@@ -8,11 +8,12 @@ import ru.ikusov.training.telegrambot.model.WordEntity;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
 public class WordleRepository {
+    private final int MIN_WORD_ID = 1;
+    private final int MAX_WORD_ID = 333;
     private final DatabaseConnector databaseConnector;
 
     @Autowired
@@ -30,7 +31,7 @@ public class WordleRepository {
         int resultStatus = 0;
 
         do {
-            long randomId = (long) (Math.random()*726 + 1);
+            long randomId = (long) (Math.random() * MAX_WORD_ID + MIN_WORD_ID);
             System.out.println("Try to get word from database with id = " + randomId);
             var resultOpt = databaseConnector.getById(WordEntity.class, randomId);
             if (resultOpt.isEmpty()) {
@@ -149,7 +150,7 @@ public class WordleRepository {
     }
 
     //TODO: get or create word attempt including get or create user
-    public Optional<WordAttempt> getOrCreateWordAttempt(User chatUser) {
+    public Optional<WordAttempt> getOrCreateWordAttempt(User chatUser, int attemptsCount) {
         var wordOptional = getCurrentWord();
         if (wordOptional.isEmpty()) {
             return Optional.empty();
@@ -172,7 +173,7 @@ public class WordleRepository {
         }
 
         if (wordAttemptsList.isEmpty()) {
-            wordAttempt = new WordAttempt(wordId, userId);
+            wordAttempt = new WordAttempt(wordId, userId, attemptsCount);
             databaseConnector.saveOrUpdate(wordAttempt);
         } else {
             wordAttempt = wordAttemptsList.get(0);
@@ -181,9 +182,56 @@ public class WordleRepository {
         return Optional.of(wordAttempt);
     }
 
+    public boolean isUserFirstWhoTriedToGuess(User chatUser, Long wordId) {
+        List<WordAttempt> wordAttemptsList = List.of();
+        Long userId = chatUser == null ? 0 :
+                chatUser.getId();
+
+        try {
+            wordAttemptsList = databaseConnector
+                    .getByQuery(WordAttempt.class,
+                            "from WordAttempt where word_id='" + wordId + "'"
+                    );
+        } catch (Exception e) {
+            System.err.println("Error while finding word_attempt in da ta base: " + e);
+        }
+
+        if (wordAttemptsList.isEmpty()) {
+            return true;
+        }
+
+        return
+                wordAttemptsList.stream()
+                        .mapToLong(WordAttempt::getId)
+                        .min()
+
+                        ==
+
+                        wordAttemptsList.stream()
+                                .filter(wa -> wa.getUserId().equals(userId))
+                                .mapToLong(WordAttempt::getId)
+                                .findFirst();
+    }
+
+    public boolean isAnyWordAttempts(Long wordId) {
+        List<WordAttempt> wordAttemptsList = List.of();
+
+        try {
+            wordAttemptsList = databaseConnector
+                    .getByQuery(WordAttempt.class,
+                            "from WordAttempt where word_id='" + wordId + "'"
+                    );
+        } catch (Exception e) {
+            System.err.println("Error while finding word_attempt in da ta base: " + e);
+        }
+
+        return !wordAttemptsList.isEmpty();
+    }
+
     public void saveWordAttempt(WordAttempt wordAttempt) {
         databaseConnector.saveOrUpdate(wordAttempt);
     }
+
 
     private enum WordStatus {
         NOT_USED(0),

@@ -11,9 +11,12 @@ import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.*;
 
 @Component
 public class WordleService {
-    private static final int MAX_ALLOWED_ATTEMPTS = 3;
-    private static final long WORDS_INTERVAL = 24 * 3600;
-//        private static final long WORDS_INTERVAL = 6;
+    private static final int MAX_ALLOWED_ATTEMPTS = 2;
+        private static final long WORDS_INTERVAL = 24 * 3600;
+//    private static final long WORDS_INTERVAL = 6;
+
+    private static final String BEE = "\uD83D\uDC1D";
+
     private String currentWord;
     private String lastGuessWord;
     private GameStatus gameStatus;
@@ -76,19 +79,22 @@ public class WordleService {
         }
 
         //слово таки есть в базе данных, проверяем, не превысил ли пользователь количество попытков
-        var optionalWordAttempt = wordleRepository.getOrCreateWordAttempt(chatUser);
+        //для первого угадывающего фора в +1 попытку
+        int currentAllowedAttempts = !wordleRepository.isAnyWordAttempts(currentWordEntity.getId())
+                ? MAX_ALLOWED_ATTEMPTS + 1
+                : MAX_ALLOWED_ATTEMPTS;
+
+        var optionalWordAttempt = wordleRepository.getOrCreateWordAttempt(chatUser, currentAllowedAttempts);
         if (optionalWordAttempt.isEmpty()) {
             return "";
         }
 
         var wordAttempt = optionalWordAttempt.get();
-        var wordAttemptsCount = wordAttempt.getAttemptsCount();
+        var wordAttemptsCount = wordAttempt.getRemainingAttemptsCount();
 
-        if (wordAttemptsCount >= MAX_ALLOWED_ATTEMPTS) {
+        if (wordAttemptsCount <= 0) {
             return MyString.markdownv2Format(
-                    "Достигнуто максимальное количество попыток ("
-                            + MAX_ALLOWED_ATTEMPTS
-                            + ") для пользователя "
+                    "Достигнуто максимальное количество попыток для пользователя "
                             + UserNameGetter.getUserName(chatUser) +
                             "!"
             );
@@ -101,7 +107,7 @@ public class WordleService {
 
         //если не совпадает с правильным
         if (!isFullOfTwos(guessResult)) {
-            wordAttempt.setAttemptsCount(++wordAttemptsCount);
+            wordAttempt.setRemainingAttemptsCount(--wordAttemptsCount);
             wordleRepository.saveWordAttempt(wordAttempt);
             wordleRepository.setLastTriedWord(triedWord.get());
             return formattedWord +
@@ -109,15 +115,18 @@ public class WordleService {
                             "\nДля пользователя "
                                     + UserNameGetter.getUserName(chatUser)
                                     + " осталось попыток: "
-                                    + (MAX_ALLOWED_ATTEMPTS - wordAttemptsCount)
+                                    + (wordAttemptsCount)
                     );
         }
 
         //если всё правильно
         wordAttempt.setGuessed(true);
-        wordAttempt.setAttemptsCount(wordAttemptsCount + 1);
+        wordAttempt.setRemainingAttemptsCount(wordAttemptsCount + 1);
         wordleRepository.saveWordAttempt(wordAttempt);
         wordleRepository.setLastGuessedWord(triedWord.get());
+        if (currentWord.equals("пчела")) {
+            formattedWord = formattedWord + " " + BEE;
+        }
         return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
     }
 

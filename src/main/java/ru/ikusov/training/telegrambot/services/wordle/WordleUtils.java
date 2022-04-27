@@ -36,22 +36,6 @@ public final class WordleUtils {
             }
         }
 
-//        for (int i = 0; i < t.length; i++) {
-//            if (result[i] == 2) continue;
-//
-//            int ind = right.indexOf(t[i]);
-//            result[i] = ind >= 0 && result[ind] != 2
-//                    ? 1
-//                    : 0;
-//        }
-//
-//
-//        for (int i = t.length - 1; i >= 0; i--) {
-//            if (result[i] == 1 && countOnes(result) > MyString.countChars(right, t[i])) {
-//                result[i] = 0;
-//            }
-//        }
-//
         return result;
     }
 

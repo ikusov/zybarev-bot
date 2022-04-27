@@ -16,7 +16,7 @@ public class WordAttempt implements CommonEntity {
     private Long userId;
 
     @Column(name = "attempts_count")
-    private Integer attemptsCount;
+    private Integer remainingAttemptsCount;
 
     @Column(name = "is_guessed")
     private boolean isGuessed;
@@ -27,15 +27,21 @@ public class WordAttempt implements CommonEntity {
     public WordAttempt(Long wordId, Long userId) {
         this.wordId = wordId;
         this.userId = userId;
-        this.attemptsCount = 0;
+        this.remainingAttemptsCount = 0;
     }
 
-    public Integer getAttemptsCount() {
-        return attemptsCount;
+    public WordAttempt(Long wordId, Long userId, Integer remainingAttemptsCount) {
+        this.wordId = wordId;
+        this.userId = userId;
+        this.remainingAttemptsCount = remainingAttemptsCount;
     }
 
-    public void setAttemptsCount(Integer attemptsCount) {
-        this.attemptsCount = attemptsCount;
+    public Integer getRemainingAttemptsCount() {
+        return remainingAttemptsCount;
+    }
+
+    public void setRemainingAttemptsCount(Integer remainingAttemptsCount) {
+        this.remainingAttemptsCount = remainingAttemptsCount;
     }
 
     public boolean isGuessed() {
@@ -44,5 +50,13 @@ public class WordAttempt implements CommonEntity {
 
     public void setGuessed(boolean guessed) {
         isGuessed = guessed;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 }
