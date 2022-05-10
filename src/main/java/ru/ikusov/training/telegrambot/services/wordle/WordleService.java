@@ -54,7 +54,7 @@ public class WordleService {
             var interval = System.currentTimeMillis() / 1000 - currentWE.get().getTimeStamp();
             if (interval < WORDS_INTERVAL) {
                 var pendingTime = WORDS_INTERVAL - interval;
-                return MyString.markdownv2Format("Следующее слово будет доступно через " + MyMath.secondsToReadableTime(pendingTime) + "!");
+                return MyString.markdownv2Format("Следующее слово будет доступно через " + MyMath.secondsToReadableTimeVin(pendingTime) + "!");
             }
         }
 

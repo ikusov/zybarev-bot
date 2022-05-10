@@ -109,6 +109,20 @@ public class MyMath {
                     seconds%60, Linguistic.getCutletWordEnding((int)seconds%60));
     }
 
+    public static String secondsToReadableTimeVin(long seconds) {
+        if (seconds<60)
+            return String.format("%d секунд%s", seconds, Linguistic.getCutletWordEndingVin((int)seconds));
+        if (seconds<60*60)
+            return String.format("%d минут%s %d секунд%s",
+                    seconds/60, Linguistic.getCutletWordEndingVin((int)seconds/60),
+                    seconds%60, Linguistic.getCutletWordEndingVin((int)seconds%60));
+        else
+            return String.format("%d час%s %d минут%s %d секунд%s",
+                    seconds/60/60, Linguistic.getManulWordEnding((int)seconds/60/60),
+                    seconds/60%60, Linguistic.getCutletWordEndingVin((int)seconds/60%60),
+                    seconds%60, Linguistic.getCutletWordEndingVin((int)seconds%60));
+    }
+
     /**
      * check if number is ladder (every next digit different from previous by fixed number)
      * @param number

@@ -57,4 +57,76 @@ public class MyMathTest extends TestCase {
             Assert.assertEquals(exp, MyMath.isFromOneDigit(num));
         }
     }
+
+    public void testSecondsToReadableTime_IfAllOnes() {
+        int hours = 1;
+        int minutes = 1;
+        int seconds = 1;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d час %d минута %d секунда", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTime(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    public void testSecondsToReadableTime_IfTwos() {
+        int hours = 2;
+        int minutes = 2;
+        int seconds = 2;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d часа %d минуты %d секунды", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTime(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    public void testSecondsToReadableTimeVin_IfAllOnes() {
+        int hours = 1;
+        int minutes = 1;
+        int seconds = 1;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d час %d минуту %d секунду", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    public void testSecondsToReadableTimeVin_IfTwos() {
+        int hours = 2;
+        int minutes = 2;
+        int seconds = 2;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d часа %d минуты %d секунды", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    public void testSecondsToReadableTimeVin_IfFives() {
+        int hours = 5;
+        int minutes = 5;
+        int seconds = 5;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d часов %d минут %d секунд", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    public void testSecondsToReadableTimeVin_IfTwentyOnes() {
+        int hours = 21;
+        int minutes = 21;
+        int seconds = 21;
+        int timeIntervalInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        String expected = String.format("%d час %d минуту %d секунду", hours, minutes, seconds);
+        String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
+
+        Assert.assertEquals(expected, actual);
+    }
 }
