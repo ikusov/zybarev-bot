@@ -24,7 +24,8 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         }
 
-        text = text.toLowerCase();
+//        text = text.toLowerCase();
+        text = WordleUtils.toWordleString(text);
         String textAnswer;
         try {
             textAnswer =

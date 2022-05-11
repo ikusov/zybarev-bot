@@ -2,6 +2,8 @@ package ru.ikusov.training.telegrambot.services.wordle;
 
 import ru.ikusov.training.telegrambot.utils.MyString;
 
+import java.util.Locale;
+
 public final class WordleUtils {
     private WordleUtils() {
     }
@@ -80,5 +82,9 @@ public final class WordleUtils {
         }
 
         return true;
+    }
+
+    public static String toWordleString(String s) {
+        return s.replaceAll("[ёЁ]", "е").toLowerCase();
     }
 }

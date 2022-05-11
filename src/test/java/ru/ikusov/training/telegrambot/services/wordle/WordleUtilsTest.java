@@ -131,4 +131,40 @@ public class WordleUtilsTest extends TestCase {
 
         assertEquals(expected, actual);
     }
+
+    public void testToWordleString_replaceOneBigYo() {
+        String s = "рУжьЁ";
+
+        String expected = "ружье";
+        String actual = WordleUtils.toWordleString(s);
+
+        assertEquals(expected, actual);
+    }
+
+    public void testToWordleString_replaceOneSmallYo() {
+        String s = "Бельё";
+
+        String expected = "белье";
+        String actual = WordleUtils.toWordleString(s);
+
+        assertEquals(expected, actual);
+    }
+
+    public void testToWordleString_replaceSomeBigYo() {
+        String s = "КЁСЁМ";
+
+        String expected = "кесем";
+        String actual = WordleUtils.toWordleString(s);
+
+        assertEquals(expected, actual);
+    }
+
+    public void testToWordleString_replaceSomeSmallYo() {
+        String s = "БёЛёк";
+
+        String expected = "белек";
+        String actual = WordleUtils.toWordleString(s);
+
+        assertEquals(expected, actual);
+    }
 }
