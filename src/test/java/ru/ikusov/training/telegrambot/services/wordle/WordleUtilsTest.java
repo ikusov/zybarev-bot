@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.services.wordle;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.compareWords;
@@ -166,5 +167,29 @@ public class WordleUtilsTest extends TestCase {
         String actual = WordleUtils.toWordleString(s);
 
         assertEquals(expected, actual);
+    }
+
+    public void testIsWordExists_ifExistingWord() {
+        boolean actual = false;
+
+        try {
+            actual = WordleUtils.isWordExistsOnGramotaRu("словообразование");
+        } catch (IOException e) {
+            System.out.println("У меня проблэма! Ламба или фэра! " + e.getMessage());
+        }
+
+        assertTrue(actual);
+    }
+
+    public void testIsWordExists_ifNotExistingWord() {
+        boolean actual = true;
+
+        try {
+            actual = WordleUtils.isWordExistsOnGramotaRu("апуапвааыпывппыккви");
+        } catch (IOException e) {
+            System.out.println("У меня проблэма! Ламба или фэра! " + e.getMessage());
+        }
+
+        assertFalse(actual);
     }
 }

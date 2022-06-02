@@ -29,7 +29,7 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
         String textAnswer;
         try {
             textAnswer =
-                    wordleService.checkWord(text, message.getFrom());
+                    wordleService.checkWord(text, message.getFrom(), message.getChatId());
         } catch (Exception e) {
             System.err.println("Any exception: " + e.getMessage());
             return new BotEmptyReaction();

@@ -1,8 +1,14 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
-import ru.ikusov.training.telegrambot.utils.MyString;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Selector;
 
-import java.util.Locale;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public final class WordleUtils {
     private WordleUtils() {
@@ -86,5 +92,26 @@ public final class WordleUtils {
 
     public static String toWordleString(String s) {
         return s.replaceAll("[ёЁ]", "е").toLowerCase();
+    }
+
+    public static boolean isWordExistsOnGramotaRu(String s) throws IOException {
+        final String WORD_ABSENT_TEXT = "искомое слово отсутствует";
+        final String url = "http://gramota.ru/slovari/dic/?lop=x&word=" + URLEncoder.encode(s, StandardCharsets.UTF_8.toString());
+        Document document;
+        try {
+            document = Jsoup.connect(url).get();
+            Elements elements = document.select("div[style=padding-left:50px]");
+            for (Element element : elements) {
+                if (element.text().equals(WORD_ABSENT_TEXT)) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            throw new IOException("Не могу подключиться к базе русских слов " + url);
+        } catch (Selector.SelectorParseException e) {
+            throw new IOException("Невалидный CSS запрос в методе парсинга базы русских слов " + url);
+        }
+
+        return true;
     }
 }

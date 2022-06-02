@@ -34,7 +34,7 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String fMsg = wordleService.startGame();
+        String fMsg = wordleService.startGame(Long.valueOf(command.getChatId()));
         return new BotFormattedMessageSender(command.getChatId(), fMsg);
     }
 }
