@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.WordAttempt;
 import ru.ikusov.training.telegrambot.model.WordEntity;
+import ru.ikusov.training.telegrambot.model.WordEntity2;
+import ru.ikusov.training.telegrambot.model.WordsHistory;
 import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 
 import java.util.List;
@@ -230,6 +232,30 @@ public class WordleRepository {
 
     public void saveWordAttempt(WordAttempt wordAttempt) {
         databaseConnector.saveOrUpdate(wordAttempt);
+    }
+
+    public Optional<String> getCurrentWordForChat(Long chatId) {
+        Optional<String> currentWordOpt = Optional.empty();
+
+        var wordsHistory = databaseConnector.getByQuery(WordsHistory.class,
+                "from WordsHistory where chatId=" + chatId
+                + " and isGuessed=false");
+
+        if (wordsHistory.size() == 1) {
+            var currentWordGame = wordsHistory.get(0);
+            var currentWordId = currentWordGame.getWordId();
+            var currentWord= databaseConnector.getById(WordEntity2.class, currentWordId);
+            if (currentWord.isPresent()) {
+                currentWordOpt = Optional.of(currentWord.get().getText());
+            }
+        }
+
+        return currentWordOpt;
+    }
+
+    //TODO: создать таблицу last_tried_words(word varchar, chat_id integer)
+    public Optional<String> getLastTriedWordForChat(Long chatId) {
+        return null;
     }
 
 

@@ -32,20 +32,21 @@ public class WordleService3 implements WordleService {
     public String startGame(Long chatId) {
         //TODO: wordleRepository.getCurrentWord2
         //TODO: отдельная таблица words_history: word_id, chat_id, is_guessed, guesser_id
-        var currentWE = wordleRepository.getCurrentWord();
+        //create table words_history(word_id integer, chat_id integer, is_guessed bool, guesser_id integer);
+        var currentWE = wordleRepository.getCurrentWordForChat(chatId);
         System.out.println("start game: current word from DB: " + currentWE.isPresent());
 
         //слово уже загадано
         if (currentWE.isPresent()) {
-            currentWord = currentWE.get().getText();
+            currentWord = currentWE.get();
 
             //TODO: подумать, надо ли вообще это Last Tried Word; так как слова для проверки будут браться с gramota.ru
-            var lastGuessWordWE = wordleRepository.getLastTriedWord();
+            var lastGuessWordWE = wordleRepository.getLastTriedWordForChat(chatId);
             String s;
             if (lastGuessWordWE.isEmpty()) {
                 s = "";
             } else {
-                s = lastGuessWordWE.get().getText();
+                s = lastGuessWordWE.get();
             }
 
             lastGuessWord = formatToMarkdownV2(s, compareWords(s, currentWord));
