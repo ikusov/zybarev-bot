@@ -21,10 +21,10 @@ public class WordleService3 implements WordleService {
     private String lastGuessWord;
     private GameStatus gameStatus;
 
-    private WordleRepository wordleRepository;
+    private WordleRepository2 wordleRepository;
 
     @Autowired
-    public WordleService3(WordleRepository wordleRepository) {
+    public WordleService3(WordleRepository2 wordleRepository) {
         this.wordleRepository = wordleRepository;
         this.gameStatus = GameStatus.NOT_STARTED;
     }
@@ -33,40 +33,26 @@ public class WordleService3 implements WordleService {
         //TODO: wordleRepository.getCurrentWord2
         //TODO: отдельная таблица words_history: word_id, chat_id, is_guessed, guesser_id
         //create table words_history(word_id integer, chat_id integer, is_guessed bool, guesser_id integer);
-        var currentWE = wordleRepository.getCurrentWordForChat(chatId);
-        System.out.println("start game: current word from DB: " + currentWE.isPresent());
+        var currentWord = wordleRepository.getCurrentWordForChat(chatId);
 
         //слово уже загадано
-        if (currentWE.isPresent()) {
-            currentWord = currentWE.get();
-
+        if (currentWord != null) {
             //TODO: подумать, надо ли вообще это Last Tried Word; так как слова для проверки будут браться с gramota.ru
-            var lastGuessWordWE = wordleRepository.getLastTriedWordForChat(chatId);
+            var lastTriedWord = wordleRepository.getLastTriedWordForChat(chatId);
             String s;
-            if (lastGuessWordWE.isEmpty()) {
+            if (lastTriedWord == null) {
                 s = "";
             } else {
-                s = lastGuessWordWE.get();
+                s = lastTriedWord;
             }
 
-            lastGuessWord = formatToMarkdownV2(s, compareWords(s, currentWord));
+            lastGuessWord = formatToMarkdownV2(s, compareWords(s, this.currentWord));
             return MyString.markdownv2Format("Слово уже загадано! Предыдущая попытка отгадки: ") + lastGuessWord;
         }
 
-        //ЭТУ ПРОВЕРКУ УБИРАЕМ, НЕ БУДЕТ ОГРАНИЧЕНИЯ
-        //слово не загадано, прошло меньше интервала времени между предыдущей загадкой
-//        currentWE = wordleRepository.getLastGuessedWord();
-//        if (currentWE.isPresent()) {
-//            var interval = System.currentTimeMillis() / 1000 - currentWE.get().getTimeStamp();
-//            if (interval < WORDS_INTERVAL) {
-//                var pendingTime = WORDS_INTERVAL - interval;
-//                return MyString.markdownv2Format("Следующее слово будет доступно через " + MyMath.secondsToReadableTimeVin(pendingTime) + "!");
-//            }
-//        }
-
         //TODO: wordleRepo.getNextRandomWordForChatId(Long chatId)
         //слово не загадано, отгаданных слов нет либо прошло больше интервала времени между предыдущей загадкой
-        currentWord = wordleRepository.getRandomWord();
+        this.currentWord = wordleRepository.getRandomWord();
 
         //TODO: количество букв в слове может теперь быть не пять
         String пяти = "пяти";
@@ -74,13 +60,13 @@ public class WordleService3 implements WordleService {
     }
 
     public String checkWord(String word, User chatUser, Long chatId) {
-        var optionalCurrentWord = wordleRepository.getCurrentWord();
+        var optionalCurrentWord = wordleRepository.getCurrentWordForChat(chatId);
 
         if (optionalCurrentWord.isEmpty()) {
             return "";
         }
 
-        var currentWordEntity = optionalCurrentWord.get();
+        var currentWordEntity = optionalCurrentWord;
         var triedWord = wordleRepository.getWordByText(word);
 
         //слова нету в базе данных, орём, что нету мол
@@ -90,17 +76,17 @@ public class WordleService3 implements WordleService {
 
         //слово таки есть в базе данных, проверяем, не превысил ли пользователь количество попытков
         //для первого угадывающего фора в +1 попытку
-        int currentAllowedAttempts = !wordleRepository.isAnyWordAttempts(currentWordEntity.getId())
+        int currentAllowedAttempts = !wordleRepository.isAnyWordAttempts(currentWordEntity, chatId)
                 ? MAX_ALLOWED_ATTEMPTS + 1
                 : MAX_ALLOWED_ATTEMPTS;
 
-        var optionalWordAttempt = wordleRepository.getOrCreateWordAttempt(chatUser, currentAllowedAttempts);
-        if (optionalWordAttempt.isEmpty()) {
+        var optionalWordAttempt = wordleRepository.getOrCreateWordAttempt(chatUser, chatId, currentAllowedAttempts);
+        if (optionalWordAttempt == -1) {
             return "";
         }
 
-        var wordAttempt = optionalWordAttempt.get();
-        var wordAttemptsCount = wordAttempt.getRemainingAttemptsCount();
+        var wordAttempt = optionalWordAttempt;
+        var wordAttemptsCount = wordAttempt;
 
         if (wordAttemptsCount <= 0) {
             return MyString.markdownv2Format(
@@ -111,15 +97,15 @@ public class WordleService3 implements WordleService {
         }
 
         //слово таки есть в базе данных, сравняем с правильным
-        currentWord = currentWordEntity.getText();
+        currentWord = currentWordEntity;
         var guessResult = compareWords(word, currentWord);
         var formattedWord = formatToMarkdownV2(word, guessResult);
 
         //если не совпадает с правильным
         if (!isFullOfTwos(guessResult)) {
-            wordAttempt.setRemainingAttemptsCount(--wordAttemptsCount);
-            wordleRepository.saveWordAttempt(wordAttempt);
-            wordleRepository.setLastTriedWord(triedWord.get());
+            wordAttempt--;
+            wordleRepository.saveWordAttempt(chatUser, chatId, wordAttempt);
+            wordleRepository.setLastTriedWord(triedWord);
             return formattedWord +
                     MyString.markdownv2Format(
                             "\nДля пользователя "
@@ -130,49 +116,12 @@ public class WordleService3 implements WordleService {
         }
 
         //если всё правильно
-        wordAttempt.setGuessed(true);
-        wordAttempt.setRemainingAttemptsCount(wordAttemptsCount + 1);
-        wordleRepository.saveWordAttempt(wordAttempt);
-        wordleRepository.setLastGuessedWord(triedWord.get());
+        wordleRepository.saveWordAttempt(chatUser, chatId, wordAttempt);
+        wordleRepository.setLastGuessedWord(triedWord, chatId);
         if (currentWord.equals("пчела")) {
             formattedWord = formattedWord + " " + BEE;
         }
         return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
-    }
-
-    public String checkWord(String word) {
-        var weOpt = wordleRepository.getCurrentWord();
-
-        if (weOpt.isEmpty()) {
-            return "";
-        }
-
-        var we = weOpt.get();
-        var triedWord = wordleRepository.getWordByText(word);
-
-        //слова нету в базе данных, орём, что нету мол
-        if (triedWord.isEmpty()) {
-            return MyString.markdownv2Format("В моём словаре нет слова \"" + word + "\", попробуйте другое!");
-        }
-
-        //слово таки есть в базе данных, сравняем с правильным
-        currentWord = we.getText();
-        var guessResult = compareWords(word, currentWord);
-        var formattedWord = formatToMarkdownV2(word, guessResult);
-
-        //если не совпадает с правильным
-        if (!isFullOfTwos(guessResult)) {
-            wordleRepository.setLastTriedWord(triedWord.get());
-            return formattedWord;
-        }
-
-        //если всё правильно
-        wordleRepository.setLastGuessedWord(triedWord.get());
-        return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
-    }
-
-    private boolean wordIsInDB(String word) {
-        return wordleRepository.isWordInDB(word);
     }
 
     public enum GameStatus {
