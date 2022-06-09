@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.services;
 
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
 import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyMath;

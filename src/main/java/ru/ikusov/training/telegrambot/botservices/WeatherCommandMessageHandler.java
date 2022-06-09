@@ -5,18 +5,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.services.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.LocationDatabaseGetter;
-import ru.ikusov.training.telegrambot.services.WeatherGetter;
 import ru.ikusov.training.telegrambot.services.WeatherGetter2;
-import ru.ikusov.training.telegrambot.utils.MyString;
 
-import javax.xml.crypto.Data;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 @Component

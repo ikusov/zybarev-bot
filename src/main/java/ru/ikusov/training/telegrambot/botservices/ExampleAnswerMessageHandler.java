@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.services.DatabaseConnector;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.utils.MyMath;

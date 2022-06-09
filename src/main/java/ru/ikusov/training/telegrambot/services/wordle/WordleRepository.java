@@ -7,7 +7,7 @@ import ru.ikusov.training.telegrambot.model.WordAttempt;
 import ru.ikusov.training.telegrambot.model.WordEntity;
 import ru.ikusov.training.telegrambot.model.WordEntity2;
 import ru.ikusov.training.telegrambot.model.WordsHistory;
-import ru.ikusov.training.telegrambot.services.DatabaseConnector;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 
 import java.util.List;
 import java.util.Optional;

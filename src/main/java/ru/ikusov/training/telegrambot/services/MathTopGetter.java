@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 
 import java.util.*;
 

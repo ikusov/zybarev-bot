@@ -1,4 +1,4 @@
-package ru.ikusov.training.telegrambot.services;
+package ru.ikusov.training.telegrambot.repository;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

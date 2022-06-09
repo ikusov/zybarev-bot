@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.QuoteEntity;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import javax.persistence.Query;

@@ -7,7 +7,7 @@ import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.services.DatabaseConnector;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
 
 import java.util.Comparator;
