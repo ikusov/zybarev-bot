@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot.botservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import java.util.Set;
 @Component
 @Order(180)
 public class WordleCommandMessageHandler extends CommandMessageHandler {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Set<String> commandVariants = Set.of("/wordle", "/words", "/слова");
 
     private final WordleService wordleService;
@@ -34,7 +37,15 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String fMsg = wordleService.startGame(Long.valueOf(command.getChatId()));
+        String fMsg;
+        String chatId = command.getChatId();
+
+        try {
+            fMsg = wordleService.startGame(Long.valueOf(command.getChatId()));
+        } catch (Exception e) {
+            log.error("Error while start game handling: {}", e.getMessage());
+            return new BotMessageSender(chatId, "Неизвестная ошибка! Попробуйте ещё раз.");
+        }
         return new BotFormattedMessageSender(command.getChatId(), fMsg);
     }
 }

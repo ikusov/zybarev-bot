@@ -8,4 +8,6 @@ public interface WordleService {
     String startGame(Long chatId);
 
     String checkWord(String word, User chatUser, Long chatId);
+
+    boolean isWordleAnswer(String text, Long chatId);
 }

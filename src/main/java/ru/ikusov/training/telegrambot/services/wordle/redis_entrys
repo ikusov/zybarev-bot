@@ -1,0 +1,18 @@
+words ["word1"..."wordN"]
+chat:13345345:word_id:list [123, 2443...4534]
+chat:-5346345:word_id:list [435,...,3455]
+chat:current_word [{"13345345": "123"}, {"-5346345": ""}]
+attempts_count [{chat_id, user_id, word_id} : 2, {chat_id2, user_id2, word_id2} : 1]
+chat:last_tried_words [{"13345345": {wordlist}}, {"-5346345": {wordlist2}}]
+
+
+альтернатива
+words ["word1", ..., "wordN"]
+
+current_word:CHAT_ID "123"
+
+tried_words:CHAT_ID:WORD_ID ["wordOO", ..., "wordUU"]
+
+attempts_count:CHAT_ID:WORD_ID:USER_ID "2"
+
+word_id_list:CHAT_ID [124, 543, ..., 2343]

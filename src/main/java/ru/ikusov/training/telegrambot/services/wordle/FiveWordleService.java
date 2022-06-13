@@ -11,7 +11,7 @@ import ru.ikusov.training.telegrambot.utils.MyString;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.*;
 
 @Component
-@Primary
+//@Primary
 public class FiveWordleService implements WordleService {
     private static final int MAX_ALLOWED_ATTEMPTS = 2;
         private static final long WORDS_INTERVAL = 3600;
@@ -130,6 +130,15 @@ public class FiveWordleService implements WordleService {
             formattedWord = formattedWord + " " + BEE;
         }
         return MyString.markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
+    }
+
+    @Override
+    public boolean isWordleAnswer(String text, Long chatId) {
+        var len = 5;
+        if (len != text.length()) {
+            return false;
+        }
+        return WordleUtils.isWordleAnswer(text);
     }
 
     public String checkWord(String word) {

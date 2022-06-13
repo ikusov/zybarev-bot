@@ -1,6 +1,20 @@
 package ru.ikusov.training.telegrambot.utils;
 
+import java.util.Map;
+
 public final class Linguistic {
+    public static final Map<Integer, String> russianNumberNamesGenetive =
+            Map.ofEntries(
+              Map.entry(2, "двух"),
+              Map.entry(3, "трёх"),
+              Map.entry(4, "четырёх"),
+              Map.entry(5, "пяти"),
+              Map.entry(6, "шести"),
+              Map.entry(7, "семи"),
+              Map.entry(8, "восьми"),
+              Map.entry(9, "девяти"),
+              Map.entry(10, "десяти")
+            );
     private static final String[] cutletWordEndingsIme = {"а", "ы", ""};
     private static final String[] cutletWordEndingsVin = {"у", "ы", ""};
     private static final String[] manulWordEndingsIme = {"", "а", "ов"};

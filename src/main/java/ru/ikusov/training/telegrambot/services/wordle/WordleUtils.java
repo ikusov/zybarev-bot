@@ -80,7 +80,10 @@ public final class WordleUtils {
     }
 
     public static boolean isWordleAnswer(String input) {
-        if (input.length() != 5) return false;
+        if (input.isEmpty()) {
+            return false;
+        }
+
         char[] chars = input.toCharArray();
 
         for (char c : chars) {
