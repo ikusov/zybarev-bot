@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 public class WordleRepository2 {
     private static final int WORD_INDEXES_ARRAY_PART_SIZE = 300;
     private static final String KEY_WORDS_ENTRY = "words";
+    private static final long TIME_EXPIRING_WORD_ATTEMPT_SECONDS = 24 * 3600;
     private final String redisSystemEnvironmentVariableName = "REDIS_URL";
     private final JedisPool myJedisPool;
 
@@ -126,7 +127,7 @@ public class WordleRepository2 {
 
             if (wordAttemptsCount == null) {
                 wordAttemptsCount = String.valueOf(currentAllowedAttempts);
-                jedis.set(key, wordAttemptsCount);
+                jedis.setex(key, TIME_EXPIRING_WORD_ATTEMPT_SECONDS, wordAttemptsCount);
             }
         }
 
