@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
+import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.io.IOException;
@@ -96,10 +97,13 @@ public class WordleService3 implements WordleService {
                         allowedAttemptsGetter.apply(word) + 1);
 
         if (attemptsCount <= 0) {
+            var attemptTTLSeconds = wordleRepository.getWordAttemptTTL(chatUser.getId(), chatId);
             return MyString.markdownv2Format(
                     "Достигнуто максимальное количество попыток для пользователя "
                             + UserNameGetter.getUserName(chatUser) +
-                            "!"
+                            "! Следующая попытка угадать данное слово будет доступна через "
+                    + MyMath.secondsToReadableTimeVin(attemptTTLSeconds)
+                    + "!"
             );
         }
 

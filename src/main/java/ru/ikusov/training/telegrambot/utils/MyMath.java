@@ -109,6 +109,11 @@ public class MyMath {
                     seconds%60, Linguistic.getCutletWordEnding((int)seconds%60));
     }
 
+    /**
+     *
+     * @param seconds
+     * @return
+     */
     public static String secondsToReadableTimeVin(long seconds) {
         if (seconds<60)
             return String.format("%d секунд%s", seconds, Linguistic.getCutletWordEndingVin((int)seconds));

@@ -134,6 +134,19 @@ public class WordleRepository2 {
         return Integer.parseInt(wordAttemptsCount);
     }
 
+    public long getWordAttemptTTL(Long userId, Long chatId) {
+        long wordAttemptsTTL;
+
+        try (var jedis = myJedisPool.getResource()) {
+            String wordId = getCurrentWordId(jedis, chatId);
+
+            var key = keyAttemptsCount(chatId, userId, wordId);
+            wordAttemptsTTL = jedis.ttl(key);
+        }
+
+        return wordAttemptsTTL < 0 ? 0 : wordAttemptsTTL;
+    }
+
     public void saveWordAttempt(String word, Long userId, Long chatId) {
         try (var jedis = myJedisPool.getResource()) {
             String wordId = getCurrentWordId(jedis, chatId);
@@ -224,4 +237,5 @@ public class WordleRepository2 {
             throw new RuntimeException(text);
         }
     }
+
 }
