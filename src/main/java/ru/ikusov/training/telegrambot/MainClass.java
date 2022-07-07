@@ -33,7 +33,7 @@ public class MainClass {
             botsApi.registerBot(myBot);
 
             log.info("Bot successfully registered.");
-            new RabbitPublisher().start();
+//            new RabbitPublisher().start();
         } catch (Exception e) {
             e.printStackTrace();
         }
