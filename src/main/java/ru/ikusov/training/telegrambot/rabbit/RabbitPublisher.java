@@ -1,12 +1,15 @@
 package ru.ikusov.training.telegrambot.rabbit;
 
+import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.ErrorManager;
 
 public class RabbitPublisher {
@@ -34,5 +37,12 @@ public class RabbitPublisher {
             return;
         }
         log.info(RABBIT + "URI and PORT successfully setted!");
+
+        try (Connection connection = factory.newConnection()) {
+            log.info(RABBIT + "Connection succ getted!");
+        } catch (IOException | TimeoutException e) {
+            log.error(RABBIT + "FACTORY.NEWCONNECTION ERRORA!", e);
+            return;
+        }
     }
 }
