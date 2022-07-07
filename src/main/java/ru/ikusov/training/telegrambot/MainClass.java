@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -8,6 +10,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class MainClass {
+    public static final Logger log = LoggerFactory.getLogger(MainClass.class);
     public static final String AVTFTALK_CHAT_ID = Optional.ofNullable((System.getenv("avtftalk_chat_id"))).orElse("");
     public static final String WEATHER_API_KEY = Optional.ofNullable((System.getenv("weather_api_token"))).orElse("");
     public static final String GEOCODE_API_KEY = Optional.ofNullable((System.getenv("geocode_api_key"))).orElse("");
@@ -27,6 +30,8 @@ public class MainClass {
 
             botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(myBot);
+
+            log.info("Bot successfully registered.");
         } catch (Exception e) {
             e.printStackTrace();
         }
