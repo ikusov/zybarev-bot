@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.ikusov.training.telegrambot.rabbit.RabbitPublisher;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class MainClass {
             botsApi.registerBot(myBot);
 
             log.info("Bot successfully registered.");
+            new RabbitPublisher().start();
         } catch (Exception e) {
             e.printStackTrace();
         }
