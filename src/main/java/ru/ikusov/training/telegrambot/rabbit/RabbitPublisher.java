@@ -32,6 +32,7 @@ public class RabbitPublisher {
         try {
             factory.setUri(uriString);
             factory.setPort(RABBIT_PORT);
+            factory.useSslProtocol();
         } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
             log.error(RABBIT + "FACTORY.SETURI Errora!", e);
             return;
