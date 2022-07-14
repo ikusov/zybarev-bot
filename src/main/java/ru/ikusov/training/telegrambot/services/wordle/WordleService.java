@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 @Component
 public interface WordleService {
-    String startGame(Long chatId);
+    String startGame(Long chatId, int wordLen);
 
     String checkWord(String word, User chatUser, Long chatId);
 

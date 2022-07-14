@@ -39,13 +39,24 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
         String fMsg;
         String chatId = command.getChatId();
+        var wordLen = getWordLength(command.getParams());
 
         try {
-            fMsg = wordleService.startGame(Long.valueOf(command.getChatId()));
+            fMsg = wordleService.startGame(Long.valueOf(command.getChatId()), wordLen);
         } catch (Exception e) {
             log.error("Error while start game handling: {}", e.getMessage());
             return new BotMessageSender(chatId, "Неизвестная ошибка! Попробуйте ещё раз.");
         }
         return new BotFormattedMessageSender(command.getChatId(), fMsg);
+    }
+
+    private int getWordLength(String commandParams) {
+        int wordLength = 0;
+        try {
+            wordLength = Integer.parseInt(commandParams.strip());
+        } catch (NumberFormatException ignore) {
+        }
+
+        return wordLength;
     }
 }

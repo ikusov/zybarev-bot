@@ -32,7 +32,7 @@ public class WordleService3 implements WordleService {
         this.wordCheckers = wordCheckers;
     }
 
-    public String startGame(Long chatId) {
+    public String startGame(Long chatId, int wordLen) {
         var currentWord = wordleRepository.getCurrentWordForChat(chatId);
 
         //слово уже загадано
@@ -59,7 +59,8 @@ public class WordleService3 implements WordleService {
         }
 
         //слово не загадано
-        currentWord = wordleRepository.getNextRandomWordForChat(chatId);
+//        currentWord = wordleRepository.getNextRandomWordForChat(chatId);
+        currentWord = wordleRepository.getNextRandomWordForChat(chatId, wordLen);
 
         String wordLength = Linguistic.russianNumberNamesGenetive.getOrDefault(
                 currentWord.length(),

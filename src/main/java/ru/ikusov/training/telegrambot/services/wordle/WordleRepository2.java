@@ -238,4 +238,8 @@ public class WordleRepository2 {
         }
     }
 
+    public String getNextRandomWordForChat(Long chatId, int wordLen) {
+        //TODO: обработка длины слова
+        return getNextRandomWordForChat(chatId);
+    }
 }

@@ -1,7 +1,6 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
@@ -31,7 +30,7 @@ public class FiveWordleService implements WordleService {
         this.gameStatus = GameStatus.NOT_STARTED;
     }
 
-    public String startGame(Long chatId) {
+    public String startGame(Long chatId, int wordLen) {
         var currentWE = wordleRepository.getCurrentWord();
         System.out.println("start game: current word from DB: " + currentWE.isPresent());
 
