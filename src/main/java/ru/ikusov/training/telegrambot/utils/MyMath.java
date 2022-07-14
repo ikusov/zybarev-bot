@@ -13,7 +13,7 @@ public class MyMath {
      * @return true if num is prime
      */
     public static boolean isPrime(long num) {
-        boolean isPrime = true;
+        boolean isPrime = num >= 2;
         for (long i=2; i<num; i++) {
             if (num%i == 0) {
                 isPrime = false;

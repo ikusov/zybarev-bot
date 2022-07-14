@@ -240,7 +240,7 @@ public class MathAchieves {
             achieves.put(10, "За ровный счёт! Кратно 1000.");
         if (ladderLength > 0)
             achieves.put(ladderLength, String.format("Лесенка! Длина %d.", ladderLength));
-        if (MyMath.isPrime(numberAbs))
+        if (MyMath.isPrime(number))
             achieves.put((int)Math.log(numberAbs), "За простое число!");
         if (MyMath.isFromOneDigit(numberAbs))
             achieves.put(5, "Из одной цифры!");

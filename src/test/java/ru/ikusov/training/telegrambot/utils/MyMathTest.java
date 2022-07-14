@@ -26,18 +26,18 @@ public class MyMathTest extends TestCase {
         int[] cyphersActual = MyMath.getCyphers(num);
 
         Assert.assertEquals(cyphersExpected.length, cyphersActual.length);
-        for (int i=0; i<cyphersActual.length; i++)
+        for (int i = 0; i < cyphersActual.length; i++)
             Assert.assertEquals(cyphersExpected[i], cyphersActual[i]);
     }
 
     public void testPalindromeLength() {
-        List<Integer> nums =                         List.of(1, 22, 232, 325, 4444, 5632365, 720, 0, -565);
-        List<Integer> palindromeLengthExpected =    List.of(0, 0,  3  , 0  , 4   , 7      , 0  , 0,  3);
+        List<Integer> nums = List.of(1, 22, 232, 325, 4444, 5632365, 720, 0, -565);
+        List<Integer> palindromeLengthExpected = List.of(0, 0, 3, 0, 4, 7, 0, 0, 3);
 
         Iterator<Integer> numIterator = nums.listIterator();
         Iterator<Integer> palindromeLengthExpectedIterator = palindromeLengthExpected.listIterator();
 
-        while(numIterator.hasNext()) {
+        while (numIterator.hasNext()) {
             long num = numIterator.next();
             long palLengthExpected = palindromeLengthExpectedIterator.next();
             Assert.assertEquals(palLengthExpected, MyMath.palindromeLength(num));
@@ -45,13 +45,13 @@ public class MyMathTest extends TestCase {
     }
 
     public void testIsFromOneDigit() {
-        var nums =    List.of(1,      22,     232,    -325,   4444,   -5555555,   7,      111,    -665);
-        var exps =     List.of(false,  true,   false,  false,  true,   true,       false,  true,   false);
+        var nums = List.of(1, 22, 232, -325, 4444, -5555555, 7, 111, -665);
+        var exps = List.of(false, true, false, false, true, true, false, true, false);
 
         var numsi = nums.listIterator();
         var expsi = exps.listIterator();
 
-        while(numsi.hasNext()) {
+        while (numsi.hasNext()) {
             long num = numsi.next();
             boolean exp = expsi.next();
             Assert.assertEquals(exp, MyMath.isFromOneDigit(num));
@@ -128,5 +128,43 @@ public class MyMathTest extends TestCase {
         String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
 
         Assert.assertEquals(expected, actual);
+    }
+
+    public void testIsPrime_FalseIfLessThan2() {
+        long[] lessThan2s = {-13L, -10L, -3L, -1L, 0, 1L};
+
+        for (var num : lessThan2s) {
+            var actual = MyMath.isPrime(num);
+            assertFalse(actual);
+        }
+    }
+
+    public void testIsPrime_TrueForSomeKnownPrimes() {
+        long[] primes = {7, 19, 37, 61, 127, 271, 331, 397, 547, 631, 919, 1657, 1801, 1951,
+                2269, 2437, 2791, 3169, 3571, 4219, 4447, 5167, 5419, 6211, 7057, 7351, 8269,
+                9241, 10267, 11719, 12097, 13267, 13669, 16651, 19441, 19927, 22447, 23497,
+                24571, 25117, 26227, 27361, 33391, 35317,
+                13, 109, 193, 433, 769, 1201, 1453, 2029, 3469, 3889, 4801, 10093, 12289,
+                13873, 18253, 20173, 21169, 22189, 28813, 37633, 43201, 47629, 60493, 63949,
+                65713, 69313, 73009, 76801, 84673, 106033, 108301, 112909, 115249,
+                2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73,
+                79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163,
+                167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257,
+                263, 269, 271};
+
+        for (var num : primes) {
+            var actual = MyMath.isPrime(num);
+            assertTrue(actual);
+        }
+    }
+
+    public void testIsPrime_FalseForSomeNonPrimes() {
+        long[] nonPrimes = {4,6,8,9,10,12,14,15,16,18,20,21,22,24,26,65536};
+
+        for (var num : nonPrimes) {
+            var actual = MyMath.isPrime(num);
+            System.out.println(num + " is prime: " + actual);
+            assertFalse(actual);
+        }
     }
 }
