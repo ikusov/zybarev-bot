@@ -19,7 +19,10 @@ import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.*;
 @Component
 @Primary
 public class WordleService3 implements WordleService {
-    private final Function<String, Integer> allowedAttemptsGetter = w -> w.length()/2;
+    private final Function<String, Integer> allowedAttemptsGetter =
+            w ->
+//                    w.length()/2;
+                    2;
 
     private static final String BEE = "\uD83D\uDC1D";
 
@@ -52,8 +55,8 @@ public class WordleService3 implements WordleService {
 
             String finalCurrentWord = currentWord;
             var markDownV2FormattedWordList = lastTriedWords.stream()
-                            .map(w -> formatToMarkdownV2(w, compareWords(w, finalCurrentWord)))
-                            .collect(Collectors.joining("\n"));
+                    .map(w -> formatToMarkdownV2(w, compareWords(w, finalCurrentWord)))
+                    .collect(Collectors.joining("\n"));
             return MyString.markdownv2Format("Слово уже загадано! Предыдущие попытки отгадок:\n")
                     + markDownV2FormattedWordList;
         }
@@ -83,7 +86,7 @@ public class WordleService3 implements WordleService {
             } catch (IOException ignored) {
             }
         }
-        
+
         //слова не существует, орём, что нету мол
         if (!wordExists) {
             return MyString.markdownv2Format("В моём словаре нет слова \"" + word + "\", попробуйте другое!");
@@ -94,7 +97,7 @@ public class WordleService3 implements WordleService {
         var attemptsCount = wordleRepository
                 .getOrCreateWordAttempt(chatUser.getId(), chatId, wordleRepository
                         .isAnyWordAttempts(chatId)
-                        ? allowedAttemptsGetter.apply(word) : 
+                        ? allowedAttemptsGetter.apply(word) :
                         allowedAttemptsGetter.apply(word) + 1);
 
         if (attemptsCount <= 0) {
@@ -103,8 +106,8 @@ public class WordleService3 implements WordleService {
                     "Достигнуто максимальное количество попыток для пользователя "
                             + UserNameGetter.getUserName(chatUser) +
                             "! Следующая попытка угадать данное слово будет доступна через "
-                    + MyMath.secondsToReadableTimeVin(attemptTTLSeconds)
-                    + "!"
+                            + MyMath.secondsToReadableTimeVin(attemptTTLSeconds)
+                            + "!"
             );
         }
 
@@ -126,7 +129,7 @@ public class WordleService3 implements WordleService {
                                     + " осталось попыток: "
                                     + attemptsCount
                     );
-        //если всё правильно
+            //если всё правильно
         } else {
             if (currentWord.equals("пчела")) {
                 formattedWord = formattedWord + " " + BEE;
