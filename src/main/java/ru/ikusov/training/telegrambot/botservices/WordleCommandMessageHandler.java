@@ -26,7 +26,7 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
     @Override
     protected void addHelp() {
         String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - Игра в слова по типу Wordle.\n";
+        help += " - Игра в слова по типу Wordle. Параметром можно задать длину слова (от 4 до 8 символов)\n";
         helpString = help + helpString;
     }
 

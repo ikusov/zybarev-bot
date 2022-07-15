@@ -239,7 +239,57 @@ public class WordleRepository2 {
     }
 
     public String getNextRandomWordForChat(Long chatId, int wordLen) {
-        //TODO: обработка длины слова
-        return getNextRandomWordForChat(chatId);
+        String word = "";
+
+        try (var jedis = myJedisPool.getResource()) {
+            var key = keyWordIdList(chatId);
+            var listExists = jedis.exists(key);
+
+            if (!listExists) {
+                var size = (int) jedis.llen(KEY_WORDS_ENTRY);
+                String[] indexesArray = getShuffledIndexesArray(chatId, size);
+
+                jedis.rpush(key, indexesArray);
+            }
+
+            String wordIdString = null;
+            //логика поиска слова нужной длины здесь
+
+            //длина слова не может быть нулевой или отрицательной,
+            if (wordLen > 0) {
+                int minDif = Integer.MAX_VALUE;
+                for (long i = 0; minDif > 0; i++) {
+                    String nextWordIdString = jedis.lindex(key, i);
+
+                    if (nextWordIdString == null) {
+                        break;
+                    }
+
+                    String nextWord = jedis.lindex(KEY_WORDS_ENTRY, Integer.parseInt(nextWordIdString));
+
+                    int dif = Math.abs(nextWord.length() - wordLen);
+
+                    if (dif < minDif) {
+                        minDif = dif;
+                        word = nextWord;
+                        wordIdString = nextWordIdString;
+                    }
+                }
+            }
+
+            //если длина слова нулевая или отрицательная
+            //или если что-то пошло не так
+            if (wordIdString == null) {
+                wordIdString = jedis.lpop(key);
+                word = jedis.lindex(KEY_WORDS_ENTRY, Integer.parseInt(wordIdString));
+            } else {
+                jedis.lrem(key, 0, wordIdString);
+            }
+
+            key = keyCurrentWord(chatId);
+            jedis.set(key, wordIdString);
+        }
+
+        return word;
     }
 }
