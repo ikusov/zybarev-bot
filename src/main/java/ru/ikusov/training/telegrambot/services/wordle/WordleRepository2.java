@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import ru.ikusov.training.telegrambot.rabbit.RabbitPublisher;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -25,10 +26,14 @@ public class WordleRepository2 {
     private static final int WORD_INDEXES_ARRAY_PART_SIZE = 300;
     private static final String KEY_WORDS_ENTRY = "words";
     private static final long TIME_EXPIRING_WORD_ATTEMPT_SECONDS = 24 * 3600;
+
+    private static final String RABBIT_MSG = "For chat id %s word-to-guess number %s";
     private final String redisSystemEnvironmentVariableName = "REDIS_URL";
     private final JedisPool myJedisPool;
+    private final RabbitPublisher rabbitPublisher;
 
-    public WordleRepository2() {
+    public WordleRepository2(RabbitPublisher rabbitPublisher) {
+        this.rabbitPublisher = rabbitPublisher;
         myJedisPool = getJedisPool();
     }
 
@@ -288,6 +293,11 @@ public class WordleRepository2 {
 
             key = keyCurrentWord(chatId);
             jedis.set(key, wordIdString);
+
+            if (rabbitPublisher != null) {
+                String msg = String.format(RABBIT_MSG, chatId.toString(), wordIdString);
+                rabbitPublisher.publish(msg);
+            }
         }
 
         return word;

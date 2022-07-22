@@ -19,6 +19,10 @@ import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.*;
 @Component
 @Primary
 public class WordleService3 implements WordleService {
+
+    //TODO: > Максим Букарев:
+    //TODO: > Можно добавить какой нибудь интерактивчик и выигрывать попытки
+    //TODO: > Типа отгадал сразу две буквы на своём месте и получаешь плюс попытку
     private final Function<String, Integer> allowedAttemptsGetter =
             w ->
 //                    w.length()/2;
