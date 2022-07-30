@@ -39,7 +39,8 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         }
 
-        text = WordleUtils.toWordleString(text);
+        //move this conversion to wordle service
+//        text = WordleUtils.toWordleString(text);
         String textAnswer;
         try {
             textAnswer =

@@ -75,8 +75,9 @@ public class WordleService3 implements WordleService {
         return MyString.markdownv2Format("Загадал русское слово из " + wordLength + " букв!");
     }
 
-    public String checkWord(String word, User chatUser, Long chatId) {
+    public String checkWord(String userWord, User chatUser, Long chatId) {
         var currentWord = wordleRepository.getCurrentWordForChat(chatId);
+        var word = WordleUtils.toWordleString(userWord);
 
         if (currentWord.isEmpty()) {
             return "";
@@ -87,13 +88,14 @@ public class WordleService3 implements WordleService {
         for (var wordChecker : wordCheckers) {
             try {
                 wordExists = wordExists || wordChecker.check(word);
+                wordExists = wordExists || wordChecker.check(userWord);
             } catch (IOException ignored) {
             }
         }
 
         //слова не существует, орём, что нету мол
         if (!wordExists) {
-            return MyString.markdownv2Format("В моём словаре нет слова \"" + word + "\", попробуйте другое!");
+            return MyString.markdownv2Format("В моём словаре нет слова \"" + userWord + "\", попробуйте другое!");
         }
 
         //проверяем, не превысил ли пользователь количество попытков

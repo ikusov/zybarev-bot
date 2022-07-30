@@ -19,6 +19,19 @@ public class WiktionaryWordCheckerTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    public void testCheck_IfAirplane() {
+        WiktionaryWordChecker wc = new WiktionaryWordChecker();
+
+        boolean expected = true;
+        boolean actual = true;
+
+        try {
+            actual = wc.check("самолет");
+        } catch (IOException ignore) {}
+
+        assertEquals(expected, actual);
+    }
+
     public void testCheck_IfWordNotExists() {
         WiktionaryWordChecker wc = new WiktionaryWordChecker();
 
