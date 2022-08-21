@@ -89,7 +89,7 @@ public class UserEntity implements CommonEntity {
     @Override
     public String toString() {
         return firstName +
-                (lastName == null ? "" : " "+lastName) +
-                (userName == null ? "" : " ("+userName+ ") ");
+                (lastName == null ? "" : " " + lastName) +
+                (userName == null ? "" : " (" + userName + ") ");
     }
 }

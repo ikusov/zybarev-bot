@@ -197,6 +197,17 @@ public class WordleRepository2 {
         }
     }
 
+    //TODO: начал работу по сбору статистики угаданных словей
+    public void setRightAnswer(Long chatId, Long userId) {
+        try (var jedis = myJedisPool.getResource()) {
+            var key = keyCurrentWord(chatId);
+            jedis.set(key, "");
+
+            key = keyRightAnsweredUserList(chatId);
+            jedis.rpush(key, userId.toString());
+        }
+    }
+
     public String[] getShuffledIndexesArray(Long chatId, int size) {
         List<String> bigIndexesList = new ArrayList<>(size);
 
@@ -235,6 +246,10 @@ public class WordleRepository2 {
 
     private String keyWordIdList(Long chatId) {
         return "word_id_list:" + chatId;
+    }
+
+    private String keyRightAnsweredUserList(Long chatId) {
+        return "right_answered_user_list:" + chatId;
     }
 
     private void exceptionIfNullOrEmpty(String word, String text) {

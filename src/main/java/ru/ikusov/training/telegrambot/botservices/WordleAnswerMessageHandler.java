@@ -7,10 +7,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.wordle.WordleService;
-import ru.ikusov.training.telegrambot.services.wordle.WordleUtils;
-
-import java.net.SocketTimeoutException;
 
 @Component
 @Order(20)
@@ -18,10 +16,12 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final WordleService wordleService;
+    private final DatabaseConnector databaseConnector;
 
     @Autowired
-    public WordleAnswerMessageHandler(WordleService wordleService) {
+    public WordleAnswerMessageHandler(WordleService wordleService, DatabaseConnector databaseConnector) {
         this.wordleService = wordleService;
+        this.databaseConnector = databaseConnector;
     }
 
     @Override
@@ -29,6 +29,10 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
         String text = message.getText();
         boolean isWordleAnswer = false;
 
+        //add user to database
+        databaseConnector.getOrCreateUser(message.getFrom());
+
+        //check message text if it may be wordle answer
         try {
             isWordleAnswer = wordleService.isWordleAnswer(text, message.getChatId());
         } catch (Exception e) {

@@ -36,6 +36,8 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
+    //todo: добавить вывод статистики угаданных пользователем слов, топ пользователей по угаданным словам,
+    //todo: топ пользователей по соотношению попытки/угаданные слова
     public BotReaction handleCommand(MyBotCommand command) {
         String fMsg;
         String chatId = command.getChatId();
