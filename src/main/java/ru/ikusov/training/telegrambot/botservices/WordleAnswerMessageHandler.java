@@ -16,21 +16,15 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final WordleService wordleService;
-    private final DatabaseConnector databaseConnector;
-
     @Autowired
-    public WordleAnswerMessageHandler(WordleService wordleService, DatabaseConnector databaseConnector) {
+    public WordleAnswerMessageHandler(WordleService wordleService) {
         this.wordleService = wordleService;
-        this.databaseConnector = databaseConnector;
     }
 
     @Override
     public BotReaction handleNonCommand(Message message) {
         String text = message.getText();
         boolean isWordleAnswer = false;
-
-        //add user to database
-        databaseConnector.getOrCreateUser(message.getFrom());
 
         //check message text if it may be wordle answer
         try {

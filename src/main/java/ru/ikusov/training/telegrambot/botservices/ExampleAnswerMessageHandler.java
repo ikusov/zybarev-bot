@@ -37,18 +37,19 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         ExampleAnswerEntity exampleAnswer;
 
 
-        if (exampleGenerator.isAnswered()) {
-            return new BotEmptyReaction();
-        }
-
         try {
+            //persisting user and chat to database no matter if message has example answer or not
+            user = databaseConnector.getOrCreateUser(message.getFrom());
+            chat = databaseConnector.getOrCreateChat(message.getChat());
+
+            if (exampleGenerator.isAnswered()) {
+                return new BotEmptyReaction();
+            }
+
             userAnswer = MyString.brutalParseInt(message.getText().strip());
             rightAnswer = exampleGenerator.getAnswerInt();
 
             isRight = (userAnswer == rightAnswer);
-
-            user = databaseConnector.getOrCreateUser(message.getFrom());
-            chat = databaseConnector.getOrCreateChat(message.getChat());
 
             var exampleAnswerMessageGenerator =
                     new ExampleAnswerMessageGenerator
