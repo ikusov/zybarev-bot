@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class WordleRepository2Test extends TestCase {
     private final long USER_ID = 42;
     private final long CHAT_ID = 34;
-    WordleRepository2 wr = new WordleRepository2(null);
+    WordleRepository2 wr = new WordleRepository2();
 
     public void testGetOrCreateWordAttempt() {
         wr.getOrCreateWordAttempt(USER_ID, CHAT_ID, 5);

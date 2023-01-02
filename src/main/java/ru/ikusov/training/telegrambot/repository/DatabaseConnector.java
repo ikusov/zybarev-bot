@@ -4,6 +4,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -18,6 +20,8 @@ import java.util.Optional;
 
 @Component
 public class DatabaseConnector {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final SessionFactory sessionFactory;
     private final List<Class<? extends CommonEntity>> entities =
             List.of(QuoteEntity.class,
@@ -29,11 +33,18 @@ public class DatabaseConnector {
                     WordEntity.class);
 
     public DatabaseConnector() throws URISyntaxException {
+        log.info("Getting database url from system env...");
+        String uriString = System.getenv("DATABASE_URL");
+        log.info("Database url string was successfully geted! This is the {}", uriString);
+        log.info("Trying to construct URI from url string...");
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
+        log.info("URI was successfully constructed!");
 
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String connectionUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+
+        log.info("We have the next connection params now: {}, {}, {}", connectionUrl, username, password);
 
 //        String connectionUrl = System.getenv("JDBC_DATABASE_URL");
 

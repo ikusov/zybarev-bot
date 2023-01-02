@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.ErrorManager;
 
-@Component
+//@Component
 public class RabbitPublisher {
     private final static String RABBIT = "RABBITRABBITRABBIT ";
     private static final int RABBIT_PORT = 5671;

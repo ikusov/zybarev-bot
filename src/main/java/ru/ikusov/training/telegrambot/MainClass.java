@@ -35,6 +35,7 @@ public class MainClass {
             log.info("Bot successfully registered.");
 //            new RabbitPublisher().start();
         } catch (Exception e) {
+            log.error("General Error: {}! Message was: {}", e.getClass(), e.getMessage());
             e.printStackTrace();
         }
     }

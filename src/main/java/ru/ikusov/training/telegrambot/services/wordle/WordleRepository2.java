@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -14,10 +16,7 @@ import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,14 +26,32 @@ public class WordleRepository2 {
     private static final String KEY_WORDS_ENTRY = "words";
     private static final long TIME_EXPIRING_WORD_ATTEMPT_SECONDS = 24 * 3600;
 
-    private static final String RABBIT_MSG = "For chat id %s word-to-guess number %s";
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final String redisSystemEnvironmentVariableName = "REDIS_URL";
     private final JedisPool myJedisPool;
-    private final RabbitPublisher rabbitPublisher;
 
-    public WordleRepository2(RabbitPublisher rabbitPublisher) {
-        this.rabbitPublisher = rabbitPublisher;
-        myJedisPool = getJedisPool();
+    public WordleRepository2() {
+        myJedisPool = getJedisPool2();
+    }
+
+    private JedisPool getJedisPool2() {
+        log.info("Trying to get redis uri from system env variable {}...", redisSystemEnvironmentVariableName);
+        String uriString = System.getenv(redisSystemEnvironmentVariableName);
+        Objects.requireNonNull(uriString);
+        log.info("Redis url was successfully getted: {}", uriString);
+        log.info("Trying to create URI from getted uri string...");
+        URI uri = URI.create(uriString);
+        log.info("URI was successfylly created!");
+
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(10);
+        poolConfig.setMaxIdle(5);
+        poolConfig.setMinIdle(1);
+        poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestOnReturn(true);
+        poolConfig.setTestWhileIdle(true);
+        return new JedisPool(poolConfig, uri);
     }
 
     //lot of boilerplate code for heroku redis connection
@@ -309,10 +326,10 @@ public class WordleRepository2 {
             key = keyCurrentWord(chatId);
             jedis.set(key, wordIdString);
 
-            if (rabbitPublisher != null) {
-                String msg = String.format(RABBIT_MSG, chatId.toString(), wordIdString);
-                rabbitPublisher.publish(msg);
-            }
+//            if (rabbitPublisher != null) {
+//                String msg = String.format(RABBIT_MSG, chatId.toString(), wordIdString);
+//                rabbitPublisher.publish(msg);
+//            }
         }
 
         return word;
