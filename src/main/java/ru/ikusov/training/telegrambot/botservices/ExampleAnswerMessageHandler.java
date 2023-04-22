@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.utils.MyMath;
@@ -17,14 +17,13 @@ import ru.ikusov.training.telegrambot.utils.MyString;
 @Order(10)
 public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
     @Autowired
-    private ExampleGenerator exampleGenerator;
-
-    @Autowired
     DatabaseConnector databaseConnector;
+    @Autowired
+    private ExampleGenerator exampleGenerator;
 
     @Override
     public BotReaction handleNonCommand(Message message) {
-        long timer = System.nanoTime()-exampleGenerator.getTimer();
+        long timer = System.nanoTime() - exampleGenerator.getTimer();
         String interval = MyMath.toReadableTime(timer);
         String textAnswer;
         int score;
@@ -54,47 +53,30 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             var exampleAnswerMessageGenerator =
                     new ExampleAnswerMessageGenerator
                             (databaseConnector, user, chat, userAnswer,
-                                    rightAnswer, (int)(timer/1_000_000_000));
+                                    rightAnswer, (int) (timer / 1_000_000_000));
             textAnswer = exampleAnswerMessageGenerator.generate();
             score = exampleAnswerMessageGenerator.getExampleScore();
 
             exampleAnswer = new ExampleAnswerEntity()
-                    .setTimestamp(System.currentTimeMillis()/1000)
+                    .setTimestamp(System.currentTimeMillis() / 1000)
                     .setChat(chat)
                     .setUser(user)
                     .setRight(isRight);
 
             if (isRight) {
-                exampleAnswer.setTimer(timer/1_000_000).setScore(score);
+                exampleAnswer.setTimer(timer / 1_000_000).setScore(score);
                 exampleGenerator.setAnswered(true);
             }
 
             databaseConnector.save(exampleAnswer);
+        } catch (NumberFormatException e) {
+            return new BotEmptyReaction();
         } catch (Exception e) {
-            System.out.println("Exception while serializing example answer to database: " + e.getMessage());
+            log.warn("Exception while serializing example answer to database!", e);
             return new BotEmptyReaction();
         }
 
-
-//        String userName = UserNameGetter.getUserName(message.getFrom());
-//
-//        long userId = user.getId(),
-//                chatId = chat.getId();
-//
-//        if (isRight) {
-//            textAnswer = String.format(
-//                    MessageType.RIGHT_ANSWER_MESSAGE.getRandomMessage(),
-//                    String.valueOf(userAnswer),
-//                    userName,
-//                    interval);
-//            exampleGenerator.setAnswered(true);
-//        } else {
-//            textAnswer = String.format(
-//                    MessageType.WRONG_ANSWER_MESSAGE.getRandomMessage(),
-//                    String.valueOf(userAnswer),
-//                    userName);
-//        }
-//
+        log(message);
         return new BotMessageSender(message.getChatId().toString(), textAnswer);
     }
 

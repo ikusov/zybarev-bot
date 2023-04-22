@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import redis.clients.jedis.exceptions.JedisConnectionException;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.services.wordle.WordleService;
+
+import static ru.ikusov.training.telegrambot.MainClass.IS_TEST_MODE;
+import static ru.ikusov.training.telegrambot.MainClass.TEST_CHAT_ID;
 
 @Component
 @Order(20)
@@ -23,6 +24,10 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
 
     @Override
     public BotReaction handleNonCommand(Message message) {
+        if (IS_TEST_MODE && !message.getChatId().equals(TEST_CHAT_ID)) {
+            return new BotEmptyReaction();
+        }
+
         String text = message.getText();
         boolean isWordleAnswer = false;
 
@@ -37,24 +42,20 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         }
 
-        //move this conversion to wordle service
-//        text = WordleUtils.toWordleString(text);
         String textAnswer;
         try {
             textAnswer =
                     wordleService.checkWord(text, message.getFrom(), message.getChatId());
-        } catch (JedisConnectionException e) {
-            log.error("Jedis connection exception: " + e.getMessage());
-            return new BotMessageSender(message.getChatId().toString(),
-                    "Ошибка сети! Попробуйте ещё раз.");
         } catch (Exception e) {
-//            System.err.println("Any exception: " + e.getMessage());
             log.error("Any exception: " + e.getMessage());
             return new BotEmptyReaction();
         }
 
-        return textAnswer.isEmpty()
-                ? new BotEmptyReaction()
-                : new BotFormattedMessageSender(message.getChatId().toString(), textAnswer);
+        if (textAnswer.isEmpty()) {
+            return new BotEmptyReaction();
+        } else {
+            log(message);
+            return new BotFormattedMessageSender(message.getChatId().toString(), textAnswer);
+        }
     }
 }

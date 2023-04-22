@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class HttpConnector {
     private final String urlString;
@@ -14,7 +15,7 @@ public class HttpConnector {
     }
 
     public String getJsonString() throws IOException {
-        return getString("application/json");
+        return getString("application/json; charset=utf-8");
     }
 
     public String getTextString() throws IOException {
@@ -30,8 +31,10 @@ public class HttpConnector {
         connection.setRequestMethod("GET");
         connection.setRequestProperty("User-Agent", "ZybarevBot/0.1");
         connection.setRequestProperty("Content-Type", contentType);
+        connection.setConnectTimeout(10_000);
+        connection.setReadTimeout(10_000);
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
         String inputLine;
 
         while ((inputLine = in.readLine()) != null) {

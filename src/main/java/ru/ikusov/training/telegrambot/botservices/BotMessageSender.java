@@ -21,10 +21,14 @@ public class BotMessageSender implements BotReaction {
     public void react(Bot bot) {
         try {
             SendMessage sendMessage = new SendMessage(chatId, textMessage);
-//            sendMessage.setParseMode("MarkdownV2");
             bot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.warn("Telegram API error while sending message! {}", e.getMessage());
         }
+    }
+
+    @Override
+    public void log() {
+        log.info("REACTION ChatId: '{}' TextMessage: {}", chatId, textMessage);
     }
 }

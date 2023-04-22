@@ -3,11 +3,11 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
 
 import java.util.Comparator;
@@ -49,7 +49,7 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
         float timeAverage=0f;
 
         try {
-            answers = databaseConnector.getByQuery(ExampleAnswerEntity.class,
+            answers = databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class,
                     String.format("from ExampleAnswerEntity"));
             answers.sort(Comparator.reverseOrder());
             boolean noErrorFlag = true, globalSeriesFlag = true;

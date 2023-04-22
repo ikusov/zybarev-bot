@@ -21,6 +21,9 @@ public class CaseAnswerMessageHandler extends NonCommandMessageHandler {
         String userName = UserNameGetter.getUserName(message.getFrom());
 
         int testResult = caseQuestionGenerator.testUserAnswer(message.getText());
+        if (testResult != 0) {
+            log(message);
+        }
         switch (testResult) {
             case 0:
                 return new BotEmptyReaction();

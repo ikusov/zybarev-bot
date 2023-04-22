@@ -1,9 +1,12 @@
 package ru.ikusov.training.telegrambot.botservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.Bot;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
+import ru.ikusov.training.telegrambot.services.UserNameGetter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +18,7 @@ import java.util.Set;
  */
 
 public abstract class CommandMessageHandler implements MessageHandler {
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     private Bot bot;
 
     @Autowired
@@ -23,7 +27,6 @@ public abstract class CommandMessageHandler implements MessageHandler {
     }
 
     public CommandMessageHandler() {
-//        System.out.println(this.getClass().getSimpleName() + " created!");
     }
 
     private MyBotCommand command;
@@ -72,8 +75,10 @@ public abstract class CommandMessageHandler implements MessageHandler {
         //or
         //if the descendant instance's command variants contains the command
         if (commandVariants.isEmpty() || commandVariants.contains(command.getCommand())) {
+            this.log();
             BotReaction botReaction = handleCommand(command);
             botReaction.react(bot);
+            botReaction.log();
         }
     }
 
@@ -81,7 +86,16 @@ public abstract class CommandMessageHandler implements MessageHandler {
         registeredCommands.addAll(getCommandVariants());
     }
 
-//todo: add method to describe every command handler for /help command
+    protected void log() {
+        log.info(
+                "COMMAND ChatId: '{}' ChatName: '{}' UserId: '{}' UserName:'{}' Command: {}",
+                command.getChatId(),
+                command.getChat().getTitle(),
+                command.getUser().getId(),
+                UserNameGetter.getUserName(command.getUser()),
+                command.getCommand() + " " + command.getParams()
+        );
+    }
 
     protected abstract void addHelp();
 

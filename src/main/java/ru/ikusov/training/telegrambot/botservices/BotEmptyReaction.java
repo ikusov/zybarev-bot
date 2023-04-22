@@ -7,7 +7,8 @@ import ru.ikusov.training.telegrambot.Bot;
  */
 public class BotEmptyReaction implements BotReaction {
     @Override
-    public void react(Bot bot) {
+    public void react(Bot bot) {}
 
-    }
+    @Override
+    public void log() {}
 }

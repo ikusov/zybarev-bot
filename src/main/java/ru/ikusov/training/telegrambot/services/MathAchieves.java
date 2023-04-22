@@ -1,9 +1,9 @@
 package ru.ikusov.training.telegrambot.services;
 
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class MathAchieves {
         String query = "from ExampleAnswerEntity";
         var userId = user.getId();
         var chatId = chat.getId();
-        List<ExampleAnswerEntity> answers = databaseConnector.getByQuery(ExampleAnswerEntity.class, query);
+        List<ExampleAnswerEntity> answers = databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class, query);
         answers.sort(Comparator.reverseOrder());
 
         solvedExamplesCount = (int) answers.stream()

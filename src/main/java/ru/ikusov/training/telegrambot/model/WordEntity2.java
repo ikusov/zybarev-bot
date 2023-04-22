@@ -1,6 +1,6 @@
 package ru.ikusov.training.telegrambot.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "words")

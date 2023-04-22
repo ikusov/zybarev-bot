@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.ikusov.training.telegrambot.MainClass;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;

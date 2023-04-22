@@ -5,12 +5,10 @@ import ru.ikusov.training.telegrambot.utils.Linguistic;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.ikusov.training.telegrambot.MainClass.RUS_LOCALE;
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
 @Component

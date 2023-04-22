@@ -1,15 +1,15 @@
 package ru.ikusov.training.telegrambot.services;
 
+import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.QuoteEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
-import javax.persistence.Query;
 import java.util.List;
 import java.util.NoSuchElementException;
 

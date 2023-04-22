@@ -1,7 +1,5 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.ImageGetter;
 

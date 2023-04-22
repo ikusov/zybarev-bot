@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.Selector;
-import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;

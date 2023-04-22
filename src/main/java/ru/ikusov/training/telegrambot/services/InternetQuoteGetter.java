@@ -10,8 +10,6 @@ import ru.ikusov.training.telegrambot.utils.MyString;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import static ru.ikusov.training.telegrambot.utils.MyMath.r;
-
 public class InternetQuoteGetter implements QuoteGetter, Markdownv2QuoteGetter {
     private final String url = "https://socratify.net/quotes/random";
     private String text;
@@ -31,25 +29,17 @@ public class InternetQuoteGetter implements QuoteGetter, Markdownv2QuoteGetter {
                 String quote = div.select("h1.b-quote__text").html();
                 if (!quote.contains("br"))
                     suitable = true;
-//                else
-//                    continue;
 
                 String author = div.select("h2.b-quote__category a")
-                                    .html()
-                                    .split(",")[0];
+                        .html()
+                        .split(",")[0];
 
                 quote = div.select("h1.b-quote__text").text();
                 text = quote + "\n" + author;
                 markdownv2FormattedText = MyString.markdownv2Format(quote)
-                                + "\n_"
-                                + MyString.markdownv2Format(author)
-                                + "_";
-
-//            //for testing purposes only
-//                System.out.printf("%s:%n%s%n",
-//                                    suitable ? "Suitable" : "Unsuitable" + " quote:",
-//                                    text);
-//                System.out.printf("Formatted:\n%s", formattedText);
+                        + "\n_"
+                        + MyString.markdownv2Format(author)
+                        + "_";
             }
 
         } catch (IOException e) {

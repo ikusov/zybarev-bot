@@ -3,9 +3,9 @@ package ru.ikusov.training.telegrambot.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class LocationDatabaseGetter {
 
             //get all locations from da tabase
             List<LocationEntity> locations =
-                    databaseConnector.getByQuery(LocationEntity.class, "from LocationEntity");
+                    databaseConnector.getByQueryNotEmpty(LocationEntity.class, "from LocationEntity");
 
             //if one of locations has alias equals to command param, get the location
             boolean noAliasesFound = true;

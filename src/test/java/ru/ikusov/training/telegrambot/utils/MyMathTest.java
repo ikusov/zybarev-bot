@@ -1,13 +1,15 @@
 package ru.ikusov.training.telegrambot.utils;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class MyMathTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class MyMathTest {
+
+    @Test
     public void testLadderLength() {
         List<Integer> numbersLadder3 = List.of(123, 321, 468, 963);
         List<Integer> numbersLadder4 = List.of(1234, 3210, 2468, 9630);
@@ -20,16 +22,18 @@ public class MyMathTest extends TestCase {
         numbersNotLadder.forEach(num -> assertEquals(0, MyMath.ladderLength(num)));
     }
 
+    @Test
     public void testGetCyphers() {
         long num = 2367;
         int[] cyphersExpected = {2, 3, 6, 7};
         int[] cyphersActual = MyMath.getCyphers(num);
 
-        Assert.assertEquals(cyphersExpected.length, cyphersActual.length);
+        assertEquals(cyphersExpected.length, cyphersActual.length);
         for (int i = 0; i < cyphersActual.length; i++)
-            Assert.assertEquals(cyphersExpected[i], cyphersActual[i]);
+            assertEquals(cyphersExpected[i], cyphersActual[i]);
     }
 
+    @Test
     public void testPalindromeLength() {
         List<Integer> nums = List.of(1, 22, 232, 325, 4444, 5632365, 720, 0, -565);
         List<Integer> palindromeLengthExpected = List.of(0, 0, 3, 0, 4, 7, 0, 0, 3);
@@ -40,10 +44,11 @@ public class MyMathTest extends TestCase {
         while (numIterator.hasNext()) {
             long num = numIterator.next();
             long palLengthExpected = palindromeLengthExpectedIterator.next();
-            Assert.assertEquals(palLengthExpected, MyMath.palindromeLength(num));
+            assertEquals(palLengthExpected, MyMath.palindromeLength(num));
         }
     }
 
+    @Test
     public void testIsFromOneDigit() {
         var nums = List.of(1, 22, 232, -325, 4444, -5555555, 7, 111, -665);
         var exps = List.of(false, true, false, false, true, true, false, true, false);
@@ -54,10 +59,11 @@ public class MyMathTest extends TestCase {
         while (numsi.hasNext()) {
             long num = numsi.next();
             boolean exp = expsi.next();
-            Assert.assertEquals(exp, MyMath.isFromOneDigit(num));
+            assertEquals(exp, MyMath.isFromOneDigit(num));
         }
     }
 
+    @Test
     public void testSecondsToReadableTime_IfAllOnes() {
         int hours = 1;
         int minutes = 1;
@@ -67,9 +73,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d час %d минута %d секунда", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTime(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testSecondsToReadableTime_IfTwos() {
         int hours = 2;
         int minutes = 2;
@@ -79,9 +86,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d часа %d минуты %d секунды", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTime(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testSecondsToReadableTimeVin_IfAllOnes() {
         int hours = 1;
         int minutes = 1;
@@ -91,9 +99,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d час %d минуту %d секунду", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testSecondsToReadableTimeVin_IfTwos() {
         int hours = 2;
         int minutes = 2;
@@ -103,9 +112,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d часа %d минуты %d секунды", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testSecondsToReadableTimeVin_IfFives() {
         int hours = 5;
         int minutes = 5;
@@ -115,9 +125,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d часов %d минут %d секунд", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testSecondsToReadableTimeVin_IfTwentyOnes() {
         int hours = 21;
         int minutes = 21;
@@ -127,9 +138,10 @@ public class MyMathTest extends TestCase {
         String expected = String.format("%d час %d минуту %d секунду", hours, minutes, seconds);
         String actual = MyMath.secondsToReadableTimeVin(timeIntervalInSeconds);
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
+    @Test
     public void testIsPrime_FalseIfLessThan2() {
         long[] lessThan2s = {-13L, -10L, -3L, -1L, 0, 1L};
 
@@ -139,6 +151,7 @@ public class MyMathTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsPrime_TrueForSomeKnownPrimes() {
         long[] primes = {7, 19, 37, 61, 127, 271, 331, 397, 547, 631, 919, 1657, 1801, 1951,
                 2269, 2437, 2791, 3169, 3571, 4219, 4447, 5167, 5419, 6211, 7057, 7351, 8269,
@@ -158,8 +171,9 @@ public class MyMathTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsPrime_FalseForSomeNonPrimes() {
-        long[] nonPrimes = {4,6,8,9,10,12,14,15,16,18,20,21,22,24,26,65536};
+        long[] nonPrimes = {4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 26, 65536};
 
         for (var num : nonPrimes) {
             var actual = MyMath.isPrime(num);

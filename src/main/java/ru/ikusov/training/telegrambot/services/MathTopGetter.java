@@ -2,9 +2,9 @@ package ru.ikusov.training.telegrambot.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
-import ru.ikusov.training.telegrambot.repository.DatabaseConnector;
 
 import java.util.*;
 
@@ -21,8 +21,8 @@ public class MathTopGetter {
     public List<Map.Entry<UserEntity, Long>> getMathTop(String chatId) {
         HashMap<UserEntity, Long> userScoreMap = new HashMap<>();
         List<ExampleAnswerEntity> answers =
-                databaseConnector.getByQuery(ExampleAnswerEntity.class,
-                        "from ExampleAnswerEntity where is_right=true and chat_id=" + chatId);
+                databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class,
+                        "from ExampleAnswerEntity where isRight=true and chat=" + chatId);
 
         for (ExampleAnswerEntity answer : answers) {
             UserEntity user = answer.getUser();

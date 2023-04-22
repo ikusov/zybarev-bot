@@ -7,9 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
 import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyString;
-import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
-
-import java.util.Locale;
 
 @Component
 @Order(15)
@@ -27,6 +24,7 @@ public class GoodExampleMessageHandler extends NonCommandMessageHandler {
 //                    RandomMessageGenerator.generate(RandomMessageGenerator.MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE);
                     MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE.getRandomMessage();
 
+            log(message);
             return new BotMessageSender(message.getChatId().toString(), textAnswer);
         } else return new BotEmptyReaction();
     }

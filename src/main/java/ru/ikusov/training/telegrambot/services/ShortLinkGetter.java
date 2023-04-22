@@ -1,10 +1,5 @@
 package ru.ikusov.training.telegrambot.services;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 public class ShortLinkGetter {
     private static final String urlShorter = "https://clck.ru/--?url=";
 

@@ -1,15 +1,17 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.compareWords;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.formatToMarkdownV2;
 
-public class WordleUtilsTest extends TestCase {
+public class WordleUtilsTest {
 
+    @Test
     public void testCompareWords_IfOneMatches() {
         String tested = "дрова";
         String right = "спина";
@@ -21,6 +23,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfOneMatchesOfTwo() {
         String tested = "парта";
         String right = "мечта";
@@ -32,6 +35,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfOnePresentsOfTwo() {
         String tested = "парад";
         String right = "мечта";
@@ -45,6 +49,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfTwoPresents() {
         String tested = "парад";
         String right = "груда";
@@ -58,6 +63,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfTwoMatchesAndOnePresents() {
         String tested = "парад";
         String right = "карта";
@@ -71,6 +77,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfTwoMatchesAndOnePresents2() {
         String tested = "драка";
         String right = "лодка";
@@ -84,6 +91,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfOneMatchesOfFive() {
         String tested = "ааааа";
         String right = "лодка";
@@ -97,6 +105,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfOneMatchesAndTwoPresents() {
         String tested = "акааа";
         String right = "ладка";
@@ -110,6 +119,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testCompareWords_IfOneMatchesAndThreePresents() {
         String tested = "дкааа";
         String right = "ладка";
@@ -123,6 +133,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(result);
     }
 
+    @Test
     public void testFormatToMarkdownV2() {
         String tested = "стена";
         String right = "мечта";
@@ -133,6 +144,7 @@ public class WordleUtilsTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testToWordleString_replaceOneBigYo() {
         String s = "рУжьЁ";
 
@@ -142,6 +154,7 @@ public class WordleUtilsTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testToWordleString_replaceOneSmallYo() {
         String s = "Бельё";
 
@@ -151,6 +164,7 @@ public class WordleUtilsTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testToWordleString_replaceSomeBigYo() {
         String s = "КЁСЁМ";
 
@@ -160,6 +174,7 @@ public class WordleUtilsTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testToWordleString_replaceSomeSmallYo() {
         String s = "БёЛёк";
 
@@ -169,6 +184,7 @@ public class WordleUtilsTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testIsWordExists_ifExistingWord() {
         boolean actual = false;
 
@@ -181,6 +197,7 @@ public class WordleUtilsTest extends TestCase {
         assertTrue(actual);
     }
 
+    @Test
     public void testIsWordExists_ifNotExistingWord() {
         boolean actual = true;
 

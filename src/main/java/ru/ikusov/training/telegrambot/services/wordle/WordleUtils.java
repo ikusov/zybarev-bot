@@ -99,7 +99,7 @@ public final class WordleUtils {
 
     public static boolean isWordExistsOnGramotaRu(String s) throws IOException {
         final String WORD_ABSENT_TEXT = "искомое слово отсутствует";
-        final String url = "http://gramota.ru/slovari/dic/?lop=x&word=" + URLEncoder.encode(s, StandardCharsets.UTF_8.toString());
+        final String url = "http://gramota.ru/slovari/dic/?lop=x&word=" + URLEncoder.encode(s, StandardCharsets.UTF_8);
         Document document;
         try {
             document = Jsoup.connect(url).get();

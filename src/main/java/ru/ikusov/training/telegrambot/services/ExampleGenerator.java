@@ -2,10 +2,8 @@ package ru.ikusov.training.telegrambot.services;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
@@ -15,50 +13,51 @@ public class ExampleGenerator {
     private final String[] operators = new String[]{"×", "+", "-"};
 
     private String example = "",
-                    answer = String.valueOf(r(RANGE));
+            answer = String.valueOf(r(RANGE));
     private int answerInt;
     private long timer;
 
     private boolean answered = true;
 
-    public ExampleGenerator() {}
+    public ExampleGenerator() {
+    }
 
     public String generateExampleNew(Complexity complexity) {
         List<String> operatorList = new LinkedList<>();
         List<Integer> operandList = new LinkedList<>();
-        int operandLength = 3+r(3);
+        int operandLength = 3 + r(3);
 
-        for (int i=0; i<operandLength-1; i++) {
+        for (int i = 0; i < operandLength - 1; i++) {
             operatorList.add(
-                    complexity==Complexity.EASY &&
+                    complexity == Complexity.EASY &&
                             operatorList.contains("×") ?
-                            operators[1+r(operators.length-1)] :
+                            operators[1 + r(operators.length - 1)] :
                             operators[r(operators.length)]
             );
         }
 
-        for (int i=0; i<operandLength; i++) {
-            if(i>0 && operatorList.get(i-1).equals("×"))
-                operandList.add(r(Complexity.EASY.range)+2);
+        for (int i = 0; i < operandLength; i++) {
+            if (i > 0 && operatorList.get(i - 1).equals("×"))
+                operandList.add(r(Complexity.EASY.range) + 2);
             else
-                operandList.add(r(complexity.range)+2);
+                operandList.add(r(complexity.range) + 2);
         }
 
         //form example string from operand and operator lists
         example = "" + operandList.get(0);
-        for (int i=1; i<operandLength; i++) {
-            String operator = operatorList.get(i-1);
+        for (int i = 1; i < operandLength; i++) {
+            String operator = operatorList.get(i - 1);
             int operand = operandList.get(i);
             example += operator + operand;
         }
 
         //calculate the example
-        for (int i=0; i<operandLength-1; i++) {
-            if(operatorList.get(i).equals("×")) {
+        for (int i = 0; i < operandLength - 1; i++) {
+            if (operatorList.get(i).equals("×")) {
                 int operand1 = operandList.get(i),
-                        operand2 = operandList.get(i+1);
-                operandList.set(i, operand1*operand2);
-                operandList.remove(i+1);
+                        operand2 = operandList.get(i + 1);
+                operandList.set(i, operand1 * operand2);
+                operandList.remove(i + 1);
                 operatorList.remove(i);
                 i--;
                 operandLength--;
@@ -66,8 +65,8 @@ public class ExampleGenerator {
         }
 
         int total = operandList.get(0);
-        for (int i=1; i<operandLength; i++) {
-            total = operatorList.get(i-1).equals("+") ?
+        for (int i = 1; i < operandLength; i++) {
+            total = operatorList.get(i - 1).equals("+") ?
                     total + operandList.get(i) :
                     total - operandList.get(i);
         }
@@ -81,28 +80,17 @@ public class ExampleGenerator {
         return example;
     }
 
-//    public String getMessage(int userAnswer) {
-//        String message = "";
-//
-//        if (userAnswer == answerInt) {
-//            timer = (System.nanoTime() - timer)/1_000_000;
-//
-//        }
-//
-//        return message;
-//    }
-//
-    public String getAnswer() {
-        return answer;
+    public int getAnswerInt() {
+        return answerInt;
     }
-
-    public int getAnswerInt() {return answerInt;}
 
     public String getExample() {
         return example;
     }
 
-    public long getTimer() { return timer; }
+    public long getTimer() {
+        return timer;
+    }
 
     public boolean isAnswered() {
         return answered;
@@ -114,13 +102,13 @@ public class ExampleGenerator {
 
 
     public enum Complexity {
-        EASY(RANGE/10),
-        MEDIUM(RANGE/10),
+        EASY(RANGE / 10),
+        MEDIUM(RANGE / 10),
         HARD(RANGE);
 
-        private int range;
+        private final int range;
 
-        Complexity (int range) {
+        Complexity(int range) {
             this.range = range;
         }
 

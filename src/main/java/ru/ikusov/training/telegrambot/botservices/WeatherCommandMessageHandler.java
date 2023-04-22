@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.LocationDatabaseGetter;
-import ru.ikusov.training.telegrambot.services.WeatherGetter2;
+import ru.ikusov.training.telegrambot.services.WeatherGetter;
 
 import java.util.Set;
 
@@ -32,14 +32,14 @@ public class WeatherCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        WeatherGetter2 weatherGetter;
+        WeatherGetter weatherGetter;
         String textAnswer;
 
         String params = command.getParams();
 
         try {
             LocationEntity location = locationDatabaseGetter.getLocation(command.getUser(), params);
-            weatherGetter = new WeatherGetter2(location);
+            weatherGetter = new WeatherGetter(location);
             textAnswer = weatherGetter.getWeather();
         } catch (Exception e) {
             textAnswer = e.getMessage();

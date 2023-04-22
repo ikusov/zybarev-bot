@@ -1,11 +1,10 @@
 package ru.ikusov.training.telegrambot.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.telegram.telegrambots.meta.api.objects.Chat;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "chats")
@@ -56,7 +55,7 @@ public class ChatEntity implements CommonEntity {
         this.username = chat.getUserName();
         this.firstname = chat.getFirstName();
         this.lastname = chat.getLastName();
-        if (chat.getLocation()!=null && chat.getLocation().getLocation()!=null) {
+        if (chat.getLocation() != null && chat.getLocation().getLocation() != null) {
             this.locationLongitude = chat.getLocation().getLocation().getLongitude();
             this.locationLatitude = chat.getLocation().getLocation().getLatitude();
         }

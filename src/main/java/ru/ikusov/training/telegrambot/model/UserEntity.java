@@ -1,8 +1,7 @@
 package ru.ikusov.training.telegrambot.model;
 
+import jakarta.persistence.*;
 import org.telegram.telegrambots.meta.api.objects.User;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "users")

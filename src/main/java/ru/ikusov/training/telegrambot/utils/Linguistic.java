@@ -3,6 +3,8 @@ package ru.ikusov.training.telegrambot.utils;
 import java.util.Map;
 
 public final class Linguistic {
+    public static final int RUSSIAN_ALPHABET_LETTERS_COUNT = 33;
+    public static final char[] RUSSIAN_ALPHABET_LOWERCASE = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".toCharArray();
     public static final Map<Integer, String> russianNumberNamesGenetive =
             Map.ofEntries(
               Map.entry(2, "двух"),
@@ -18,8 +20,25 @@ public final class Linguistic {
     private static final String[] cutletWordEndingsIme = {"а", "ы", ""};
     private static final String[] cutletWordEndingsVin = {"у", "ы", ""};
     private static final String[] manulWordEndingsIme = {"", "а", "ов"};
+    private static final String[] pointWordEndingsIme = {"о", "а", "ов"};
 
     private Linguistic(){}
+
+    /**
+     * Returns index of russian letter in russian alphabet.
+     * Letter must be in lower case.
+     *
+     * @param letter russian letter
+     * @return index begins from zero
+     */
+    public static int calculateRussianLetterAlphabetIndex(char letter) {
+        for (int i = 0; i < RUSSIAN_ALPHABET_LOWERCASE.length; i++) {
+            if (RUSSIAN_ALPHABET_LOWERCASE[i] == letter) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public static String getCutletWordEnding(int num) {
         int r10 = num%10,
@@ -52,6 +71,9 @@ public final class Linguistic {
 
     public static String getManulWordEndingIme(int num) {
         return getWordEnding(num, manulWordEndingsIme);
+    }
+    public static String getPointWordEndingIme(int num) {
+        return getWordEnding(num, pointWordEndingsIme);
     }
 
     public static String getWordEnding(int num, String[] endings) {

@@ -2,9 +2,7 @@ package ru.ikusov.training.telegrambot.services;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Selector;
-import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.utils.MessageType;
-import ru.ikusov.training.telegrambot.utils.RandomMessageGenerator;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

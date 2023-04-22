@@ -1,12 +1,10 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.CaseQuestionGenerator;
-import ru.ikusov.training.telegrambot.services.RhymeGetter;
 
 import java.util.Set;
 

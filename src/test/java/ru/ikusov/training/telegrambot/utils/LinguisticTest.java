@@ -1,13 +1,14 @@
 package ru.ikusov.training.telegrambot.utils;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class LinguisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class LinguisticTest {
     String manul = "манул",
             cutlet = "котлет";
 
@@ -26,19 +27,21 @@ public class LinguisticTest extends TestCase {
     private void testGetWordEnding(String source, String testString, Function<Integer, String> endingGetter) {
         List<String> testStrings = Arrays.stream(testString.split(","))
                 .map(String::trim)
-                .collect(Collectors.toList());
+                .toList();
 
-        for (int i=0; i<testStrings.size(); i++) {
+        for (int i = 0; i < testStrings.size(); i++) {
             String actual = String.format("%d %s%s", i, source, endingGetter.apply(i));
             String expected = testStrings.get(i);
             assertEquals(expected, actual);
         }
     }
 
+    @Test
     public void testGetManulWordEnding() {
         testGetWordEnding(manul, manulTestString, Linguistic::getManulWordEnding);
     }
 
+    @Test
     public void testGetCutletWordEnding() {
         testGetWordEnding(cutlet, cutletTestString, Linguistic::getCutletWordEnding);
     }
