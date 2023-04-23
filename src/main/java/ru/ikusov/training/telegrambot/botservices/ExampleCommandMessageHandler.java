@@ -40,6 +40,6 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
                     (exampleGenerator.isAnswered() ? exampleGenerator.generateExampleNew(complexity) : exampleGenerator.getExample()) +
                     "=?";
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 }

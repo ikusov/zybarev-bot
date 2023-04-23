@@ -18,43 +18,43 @@ public class CaseAnswerMessageHandler extends NonCommandMessageHandler {
         if (caseQuestionGenerator.isAnswered()) return new BotEmptyReaction();
 
         String chatId = message.getChatId().toString();
+        var topicId = message.getMessageThreadId();
         String userName = UserNameGetter.getUserName(message.getFrom());
 
         int testResult = caseQuestionGenerator.testUserAnswer(message.getText());
         if (testResult != 0) {
             log(message);
         }
-        switch (testResult) {
-            case 0:
-                return new BotEmptyReaction();
-            case -1:
-                return new BotMessageSender(chatId,
-                        String.format(
-                                MessageType.WRONG_CASE_MESSAGE.getRandomMessage(),
-                                userName
-                        )
-                );
-            case 1:
-                return new BotMessageSender(chatId,
-                        String.format(
-                                MessageType.HALF_CASE_MESSAGE.getRandomMessage(),
-                                userName
-                        )
-                );
-            case 2:
-                return new BotMessageSender(chatId,
-                        String.format(
-                                MessageType.RIGHT_CASE_MESSAGE.getRandomMessage(),
-                                userName
-                        ));
-            default:
-                return new BotMessageSender(chatId,
-                        String.format(
-                                MessageType.TOO_MUCH_VARIANTS_MESSAGE.getRandomMessage(),
-                                String.valueOf(-testResult),
-                                Linguistic.getManulWordEnding(-testResult),
-                                userName
-                        ));
-        }
+        return switch (testResult) {
+            case 0 -> new BotEmptyReaction();
+            case -1 -> new BotMessageSender(chatId,
+                    topicId,
+                    String.format(
+                            MessageType.WRONG_CASE_MESSAGE.getRandomMessage(),
+                            userName
+                    )
+            );
+            case 1 -> new BotMessageSender(chatId,
+                    topicId,
+                    String.format(
+                            MessageType.HALF_CASE_MESSAGE.getRandomMessage(),
+                            userName
+                    )
+            );
+            case 2 -> new BotMessageSender(chatId,
+                    topicId,
+                    String.format(
+                            MessageType.RIGHT_CASE_MESSAGE.getRandomMessage(),
+                            userName
+                    ));
+            default -> new BotMessageSender(chatId,
+                    topicId,
+                    String.format(
+                            MessageType.TOO_MUCH_VARIANTS_MESSAGE.getRandomMessage(),
+                            -testResult,
+                            Linguistic.getManulWordEnding(-testResult),
+                            userName
+                    ));
+        };
     }
 }

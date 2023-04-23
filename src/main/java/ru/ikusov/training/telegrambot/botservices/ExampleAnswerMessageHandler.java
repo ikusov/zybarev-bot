@@ -10,7 +10,6 @@ import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
 import ru.ikusov.training.telegrambot.services.ExampleGenerator;
-import ru.ikusov.training.telegrambot.utils.MyMath;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 @Component
@@ -24,7 +23,6 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
     @Override
     public BotReaction handleNonCommand(Message message) {
         long timer = System.nanoTime() - exampleGenerator.getTimer();
-        String interval = MyMath.toReadableTime(timer);
         String textAnswer;
         int score;
 
@@ -77,7 +75,7 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
         }
 
         log(message);
-        return new BotMessageSender(message.getChatId().toString(), textAnswer);
+        return new BotMessageSender(message.getChatId().toString(), message.getMessageThreadId(), textAnswer);
     }
 
 

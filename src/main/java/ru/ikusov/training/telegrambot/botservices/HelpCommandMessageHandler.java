@@ -25,10 +25,8 @@ public class HelpCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-//
         String textAnswer = helpString;
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 }

@@ -34,6 +34,6 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
                     MessageType.GREETING_MESSAGE.getRandomMessage(),
                     userName);
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 }

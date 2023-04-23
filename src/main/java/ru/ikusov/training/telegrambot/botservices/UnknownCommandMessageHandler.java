@@ -21,7 +21,7 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler {
                 String.format(
                         MessageType.UNKNOWN_COMMAND_MESSAGE.getRandomMessage(),
                         command.getCommand());
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 
     @Override

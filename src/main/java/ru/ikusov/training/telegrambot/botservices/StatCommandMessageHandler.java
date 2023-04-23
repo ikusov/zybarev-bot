@@ -45,12 +45,12 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
         long userId = command.getUser().getId(),
                 chatId = command.getChat().getId();
         List<ExampleAnswerEntity> answers;
-        int exampleCount=0, rightCount=0, wrongCount=0, score=0, globalSeries=0, noErrorSeries=0;
+        int exampleCount=0, rightCount=0, wrongCount, score=0, globalSeries=0, noErrorSeries=0;
         float timeAverage=0f;
 
         try {
             answers = databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class,
-                    String.format("from ExampleAnswerEntity"));
+                    "from ExampleAnswerEntity");
             answers.sort(Comparator.reverseOrder());
             boolean noErrorFlag = true, globalSeriesFlag = true;
             for (var answer : answers) {
@@ -76,13 +76,15 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
             }
             wrongCount = exampleCount-rightCount;
             textAnswer += String.format(
-                    "\nПопыток решения: %d" +
-                    "\nПравильных решений: %d (%.1f%%)" +
-                    "\nНеправильных решений: %d (%.1f%%)" +
-                    "\nСреднее время решения: %.1f с" +
-                    "\nМат. баллов заработано: %d" +
-                    "\nГлобальная серия: %d пример%s" +
-                    "\nЛичная серия без ошибок: %d пример%s",
+                    """
+
+                            Попыток решения: %d
+                            Правильных решений: %d (%.1f%%)
+                            Неправильных решений: %d (%.1f%%)
+                            Среднее время решения: %.1f с
+                            Мат. баллов заработано: %d
+                            Глобальная серия: %d пример%s
+                            Личная серия без ошибок: %d пример%s""",
                     exampleCount,
                     rightCount, 100.*rightCount/exampleCount,
                     wrongCount, 100.*wrongCount/exampleCount,
@@ -96,6 +98,6 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
             textAnswer += " нет данных.";
         }
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 }
