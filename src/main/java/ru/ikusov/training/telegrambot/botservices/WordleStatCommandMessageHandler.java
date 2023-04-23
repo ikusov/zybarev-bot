@@ -40,17 +40,22 @@ public class WordleStatCommandMessageHandler extends CommandMessageHandler {
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
         String chatId = command.getChatId();
+        var topicId = command.getTopicId();
         if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID.toString())) {
-            return new BotMessageSender(chatId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
+            return new BotMessageSender(
+                    chatId,
+                    topicId,
+                    "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!"
+            );
         }
 
         String fMsg;
         try {
             fMsg = wordleStatService.getStat(command.getChat(), command.getUser());
-            return new BotFormattedMessageSender(chatId, fMsg);
+            return new BotFormattedMessageSender(chatId, topicId, fMsg);
         } catch (Exception e) {
             log.error("Error while wordle stat handling!", e);
-            return new BotMessageSender(chatId, "Неизвестная ошибка! Попробуйте ещё раз.");
+            return new BotMessageSender(chatId, topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
         }
     }
 }

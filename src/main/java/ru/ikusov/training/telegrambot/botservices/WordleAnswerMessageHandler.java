@@ -55,7 +55,11 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         } else {
             log(message);
-            return new BotFormattedMessageSender(message.getChatId().toString(), textAnswer);
+            return new BotFormattedMessageSender(
+                    message.getChatId().toString(),
+                    message.getMessageThreadId(),
+                    textAnswer
+            );
         }
     }
 }

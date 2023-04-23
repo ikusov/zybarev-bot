@@ -19,7 +19,7 @@ public class BotChatLeaver implements BotReaction {
         try {
             bot.execute(new LeaveChat(chatId));
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Error while leaving chat '{}'", chatId, e);
         }
     }
 }

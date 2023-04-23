@@ -35,7 +35,6 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
         Markdownv2QuoteGetter quoteGetter;
 
         String textAnswer;
@@ -51,7 +50,6 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
             textAnswer = MyString.markdownv2Format(e.getMessage());
         }
 
-        return new BotFormattedMessageSender(command.getChatId(), textAnswer);
-//        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotFormattedMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 }

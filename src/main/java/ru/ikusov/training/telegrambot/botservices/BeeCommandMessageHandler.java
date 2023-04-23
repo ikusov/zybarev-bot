@@ -15,11 +15,13 @@ public class BeeCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
         return new BotFormattedMessageSender(
                 command.getChatId(),
-                "\uD83D\uDC1D" +
-                        "\nТы пчела я пчеловод" +
-                        "\nА мы любим мёд" +
-                        "\nА мне повезёт" +
-                        "\nС тобой мне повезёт"
+                command.getTopicId(),
+                """
+                        \uD83D\uDC1D
+                        Ты пчела я пчеловод
+                        А мы любим мёд
+                        А мне повезёт
+                        С тобой мне повезёт"""
         );
     }
 
