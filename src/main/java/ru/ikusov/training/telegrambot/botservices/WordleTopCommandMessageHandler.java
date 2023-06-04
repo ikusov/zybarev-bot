@@ -40,7 +40,7 @@ public class WordleTopCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String chatId = command.getChatId();
+        String chatId = command.getChatId().toString();
         var topicId = command.getTopicId();
 
         int topNumber = fetchTopNumber(command);

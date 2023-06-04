@@ -47,10 +47,10 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String chatId = command.getChatId();
+        Long chatId = command.getChatId();
         var topicId = command.getTopicId();
-        if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID.toString())) {
-            return new BotMessageSender(chatId, topicId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
+        if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID)) {
+            return new BotMessageSender(chatId.toString(), topicId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
         }
 
         String fMsg;
@@ -58,18 +58,18 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
         if (isStatParam(commandParams)) {
             fMsg = wordleStatService.getStat(command.getChat(), command.getUser());
-            return new BotFormattedMessageSender(chatId, topicId, fMsg);
+            return new BotFormattedMessageSender(chatId.toString(), topicId, fMsg);
         }
 
         var wordLen = getWordLength(commandParams);
 
         try {
-            fMsg = wordleService.startGame(Long.valueOf(chatId), command.getUser().getId(), wordLen);
+            fMsg = wordleService.startGame(chatId, command.getUser().getId(), wordLen);
         } catch (Exception e) {
             log.error("Error while start game handling: {}", e.getMessage());
-            return new BotMessageSender(chatId, topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
+            return new BotMessageSender(chatId.toString(), topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
         }
-        return new BotFormattedMessageSender(chatId, topicId, fMsg);
+        return new BotFormattedMessageSender(chatId.toString(), topicId, fMsg);
     }
 
     private boolean isStatParam(String commandParams) {

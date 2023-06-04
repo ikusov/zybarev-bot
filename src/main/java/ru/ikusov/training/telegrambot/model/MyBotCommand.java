@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 public class MyBotCommand {
     private final String command;
     private final String params;
-    private final String chatId;
+    private final Long chatId;
     private final Integer topicId;
     private final User user;
     private final Chat chat;
@@ -17,7 +17,7 @@ public class MyBotCommand {
         this.params = params;
         this.chat = chat;
         this.topicId = topicId;
-        this.chatId = this.chat.getId().toString();
+        this.chatId = this.chat.getId();
         this.user = user;
     }
 
@@ -65,7 +65,7 @@ public class MyBotCommand {
         return chat;
     }
 
-    public String getChatId() {
+    public Long getChatId() {
         return chatId;
     }
 

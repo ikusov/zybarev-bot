@@ -12,6 +12,11 @@ public class BotFormattedMessageSender extends BotMessageSender {
         this.sendMessage.setParseMode("MarkdownV2");
     }
 
+    public BotFormattedMessageSender(Long chatId, Integer topicId, String textMessage) {
+        super(chatId, topicId, textMessage);
+        this.sendMessage.setParseMode("MarkdownV2");
+    }
+
     @Override
     public void log() {
         log.info("REACTION ChatId: '{}' TopicId: '{}' FormattedMessage: {}",

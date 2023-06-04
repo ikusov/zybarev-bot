@@ -24,6 +24,17 @@ public class BotMessageSender implements BotReaction {
                 .build();
     }
 
+    public BotMessageSender(Long chatId, Integer topicId, String textMessage) {
+        this.chatId = chatId.toString();
+        this.topicId = topicId;
+        this.textMessage = textMessage;
+        this.sendMessage = SendMessage.builder()
+                .chatId(chatId)
+                .messageThreadId(topicId)
+                .text(textMessage)
+                .build();
+    }
+
     @Override
     public void react(Bot bot) {
         try {

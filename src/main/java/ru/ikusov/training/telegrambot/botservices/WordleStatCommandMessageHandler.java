@@ -39,7 +39,7 @@ public class WordleStatCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String chatId = command.getChatId();
+        String chatId = command.getChatId().toString();
         var topicId = command.getTopicId();
         if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID.toString())) {
             return new BotMessageSender(

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static ru.ikusov.training.telegrambot.utils.Linguistic.getPointWordEndingIme;
+
 @Service
 public class WordleStatService {
     private final WordleEventRepository wordleEventRepository;
@@ -92,7 +94,8 @@ public class WordleStatService {
 
             var points = wue.getPoints();
 
-            String userString = i + ". " + userName + ": " + points + " очков";
+            var place = i + 1;
+            String userString = place + ". " + userName + ": " + points + " очк" + getPointWordEndingIme(points.intValue());
             topList.add(userString);
         }
 

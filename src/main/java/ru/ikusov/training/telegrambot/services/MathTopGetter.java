@@ -18,7 +18,7 @@ public class MathTopGetter {
      * @param chatId id of chat where to count score
      * @return list of users with their score
      */
-    public List<Map.Entry<UserEntity, Long>> getMathTop(String chatId) {
+    public List<Map.Entry<UserEntity, Long>> getMathTop(Long chatId) {
         HashMap<UserEntity, Long> userScoreMap = new HashMap<>();
         List<ExampleAnswerEntity> answers =
                 databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class,
