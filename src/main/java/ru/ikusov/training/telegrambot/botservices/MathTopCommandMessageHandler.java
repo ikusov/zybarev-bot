@@ -48,7 +48,7 @@ public class MathTopCommandMessageHandler extends CommandMessageHandler {
             textAnswer = e.getMessage();
         }
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 
 }

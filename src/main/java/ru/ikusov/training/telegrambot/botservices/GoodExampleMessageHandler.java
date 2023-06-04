@@ -25,7 +25,7 @@ public class GoodExampleMessageHandler extends NonCommandMessageHandler {
                     MessageType.GOOD_EXAMPLE_ANSWER_MESSAGE.getRandomMessage();
 
             log(message);
-            return new BotMessageSender(message.getChatId().toString(), textAnswer);
+            return new BotMessageSender(message.getChatId().toString(), message.getMessageThreadId(), textAnswer);
         } else return new BotEmptyReaction();
     }
 }

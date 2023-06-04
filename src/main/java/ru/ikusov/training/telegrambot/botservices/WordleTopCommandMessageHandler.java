@@ -40,7 +40,8 @@ public class WordleTopCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String chatId = command.getChatId();
+        String chatId = command.getChatId().toString();
+        var topicId = command.getTopicId();
 
         int topNumber = fetchTopNumber(command);
 
@@ -50,10 +51,10 @@ public class WordleTopCommandMessageHandler extends CommandMessageHandler {
             for (String s : topList) {
                 fMsg.append(markdownv2Format(s)).append("\n");
             }
-            return new BotFormattedMessageSender(chatId, fMsg.toString());
+            return new BotFormattedMessageSender(chatId, topicId, fMsg.toString());
         } catch (Exception e) {
             log.error("Error while wordle stat handling!", e);
-            return new BotMessageSender(chatId, "Неизвестная ошибка! Попробуйте ещё раз.");
+            return new BotMessageSender(chatId, topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
         }
     }
 

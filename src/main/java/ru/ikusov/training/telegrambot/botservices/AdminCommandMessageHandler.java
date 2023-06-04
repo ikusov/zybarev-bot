@@ -39,16 +39,17 @@ public class AdminCommandMessageHandler extends CommandMessageHandler {
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
         //very simple temporary admin for copying data from redis to postgres
-        String chatId = command.getChatId();
+        String chatId = command.getChatId().toString();
+        var topicId = command.getTopicId();
         Long userId = command.getUser().getId();
         String commandParams = command.getParams().strip();
         if (userId == ADMIN_USER_ID && commandParams.equals(COPY_COMMAND)) {
             String result = auxService.calculateAndSavePoints();
-            return new BotMessageSender(chatId, result);
+            return new BotMessageSender(chatId, topicId, result);
         } else {
             return new BotFormattedMessageSender(
                     chatId,
-                    SUNFLOWER_MESSAGE
+                    topicId, SUNFLOWER_MESSAGE
             );
         }
     }

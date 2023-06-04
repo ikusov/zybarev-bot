@@ -17,7 +17,7 @@ public class DonateCommandMessageHandler extends CommandMessageHandler {
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
         String msgText = donateMessageProvider.fetchMessage();
-        return new BotMessageSender(command.getChatId(), msgText);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), msgText);
     }
 
     @Override

@@ -31,14 +31,13 @@ public class DatabaseConnector {
                     LocationEntity.class,
                     ExampleAnswerEntity.class,
                     WordAttempt.class,
-                    WordEntity1.class,
                     WordEntity.class,
                     WordleChatCurrentWordEntity.class,
                     WordleChatWordListEntity.class,
                     WordleChatAttemptListEntity.class,
                     WordleEventEntity.class,
                     WordleUserEntity.class
-                    );
+            );
 
     public DatabaseConnector() throws URISyntaxException {
         log.info("Getting database url from system env...");
@@ -53,8 +52,6 @@ public class DatabaseConnector {
         String connectionUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 
         log.info("We have the next connection params now: {}, {}, {}", connectionUrl, username, password);
-
-//        String connectionUrl = System.getenv("JDBC_DATABASE_URL");
 
         Configuration configuration = new Configuration();
         configuration.setProperty("hibernate.connection.url", connectionUrl);

@@ -28,8 +28,9 @@ public abstract class NonCommandMessageHandler implements MessageHandler {
 
     protected void log(Message message) {
         log.info(
-                "NON COMMAND ChatId: '{}' ChatName: '{}' UserId: '{}' UserName:'{}' Text: {}",
+                "NON COMMAND ChatId: '{}' TopicId: '{}' ChatName: '{}' UserId: '{}' UserName:'{}' Text: {}",
                 message.getChatId(),
+                message.getMessageThreadId(),
                 message.getChat().getTitle(),
                 message.getFrom().getId(),
                 UserNameGetter.getUserName(message.getFrom()),

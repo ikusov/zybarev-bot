@@ -46,12 +46,11 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
-    //todo: добавить вывод статистики угаданных пользователем слов, топ пользователей по угаданным словам,
-    //todo: топ пользователей по соотношению попытки/угаданные слова
     public BotReaction handleCommand(MyBotCommand command) {
-        String chatId = command.getChatId();
-        if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID.toString())) {
-            return new BotMessageSender(chatId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
+        Long chatId = command.getChatId();
+        var topicId = command.getTopicId();
+        if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID)) {
+            return new BotMessageSender(chatId.toString(), topicId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
         }
 
         String fMsg;
@@ -59,18 +58,18 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
 
         if (isStatParam(commandParams)) {
             fMsg = wordleStatService.getStat(command.getChat(), command.getUser());
-            return new BotFormattedMessageSender(chatId, fMsg);
+            return new BotFormattedMessageSender(chatId.toString(), topicId, fMsg);
         }
 
         var wordLen = getWordLength(commandParams);
 
         try {
-            fMsg = wordleService.startGame(Long.valueOf(chatId), command.getUser().getId(), wordLen);
+            fMsg = wordleService.startGame(chatId, command.getUser().getId(), wordLen);
         } catch (Exception e) {
             log.error("Error while start game handling: {}", e.getMessage());
-            return new BotMessageSender(chatId, "Неизвестная ошибка! Попробуйте ещё раз.");
+            return new BotMessageSender(chatId.toString(), topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
         }
-        return new BotFormattedMessageSender(chatId, fMsg);
+        return new BotFormattedMessageSender(chatId.toString(), topicId, fMsg);
     }
 
     private boolean isStatParam(String commandParams) {

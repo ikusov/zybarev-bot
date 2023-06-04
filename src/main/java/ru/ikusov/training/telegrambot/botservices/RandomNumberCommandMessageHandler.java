@@ -11,9 +11,9 @@ import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 @Component
 @Order(60)
 public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
-    private final int DEFAULT_TO = 100;
+    private static final int DEFAULT_TO = 100;
 
-    private final String ERROR1_MESSAGE = "Не могу понять, что за число %s.";
+    private static final String ERROR1_MESSAGE = "Не могу понять, что за число %s.";
 
     private final Set<String> commandVariants = Set.of("/random", "/случ", "/r");
 
@@ -31,12 +31,10 @@ public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-//
         String paramsString = command.getParams();
         String textAnswer = calculate(paramsString);
 
-        return new BotMessageSender(command.getChatId(), textAnswer);
+        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }
 
     private String calculate(String paramsString) {
