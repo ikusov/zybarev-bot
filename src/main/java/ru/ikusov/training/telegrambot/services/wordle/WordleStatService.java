@@ -44,32 +44,32 @@ public class WordleStatService {
     public String getStat(Chat chat, User user) {
         var oldestEventTimestamp = wordleEventRepository.getOldestEventTimestamp();
         String userStatString = "";
-        var userName = UserNameGetter.getUserName(user);
+        String userName = UserNameGetter.getUserName(user);
         //Статистика для пользователя /Слепой Пью/:
         userStatString += "*" + m("Статистика для пользователя ")
                 + m(userName) + "*" + m(":") + "\n";
 
-        var sumPointsForUser = wordleRepository.getPointsForUserInChat(chat.getId(), user.getId());
+        int sumPointsForUser = wordleRepository.getPointsForUserInChat(chat.getId(), user.getId());
         userStatString += m("Очков: ") + "*" + sumPointsForUser + "*\n";
 
-        var eventsForUser = wordleEventRepository.getEventsForUser(user.getId(), chat.getId());
+        List<WordleEventEntity> eventsForUser = wordleEventRepository.getEventsForUser(user.getId(), chat.getId());
         userStatString += m("Слов загадано: " + countMadeWords(eventsForUser)) + "\n";
         userStatString += m("Попыток отгадки: " + countAttempts(eventsForUser)) + "\n";
         userStatString += m("Слов отгадано: " + countGuessed(eventsForUser)) + "\n\n";
 
-        var eventsForChat =
+        List<WordleEventEntity> eventsForChat =
                 wordleEventRepository.getEventsForChat(chat.getId());
-        var chatStatString = "*" + m("Статистика для чата: ") + "*\n";
+        String chatStatString = "*" + m("Статистика для чата: ") + "*\n";
         chatStatString += m("Слов загадано: " + countMadeWords(eventsForChat)) + "\n";
-        chatStatString += m("Попыток отгадки: " + countAttempts(eventsForUser)) + "\n\n";
+        chatStatString += m("Попыток отгадки: " + countAttempts(eventsForChat)) + "\n\n";
 
         Long countMadeWords = wordleEventRepository.countMadeWords();
         Long countAttempts = wordleEventRepository.countAttempts();
         double dailyMadeWordsRate =
                 (double) countMadeWords * (double) (24 * 3600)
                         / ((double) Instant.now().getEpochSecond() - (double) oldestEventTimestamp);
-        var dailyMadeWordsString = String.format("%.1f", dailyMadeWordsRate);
-        var allStatString = "*" + m("Общая статистика: ") + "*\n";
+        String dailyMadeWordsString = String.format("%.1f", dailyMadeWordsRate);
+        String allStatString = "*" + m("Общая статистика: ") + "*\n";
         allStatString += m("Слов загадано: " + countMadeWords) + "\n";
         allStatString += m("Попыток отгадки: " + countAttempts) + "\n";
         allStatString += m("В среднем за сутки загаданных слов: " + dailyMadeWordsString + " шт.") + "\n\n";
@@ -116,6 +116,8 @@ public class WordleStatService {
 
     private long countMadeWords(List<WordleEventEntity> events) {
         return events.stream()
+                //событие о загаданном слове сохраняется в таблицу wordle_events
+                //с attempt_word == null
                 .filter(e -> e.getAttemptWord() == null)
                 .count();
     }
