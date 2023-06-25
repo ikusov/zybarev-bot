@@ -26,7 +26,9 @@ public interface WordleRepository {
 
     long getWordAttemptTTL(Long userId, Long chatId);
 
-    void saveWordAttempt(String word, Long userId, Long chatId);
+    void saveWordAttempt(String word, Long chatId);
+
+    void decreaseAttemptsCount(Long userId, Long chatId);
 
     void setRightAnswer(Long chatId);
 

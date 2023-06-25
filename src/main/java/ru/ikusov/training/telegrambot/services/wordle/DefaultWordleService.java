@@ -27,10 +27,8 @@ import static ru.ikusov.training.telegrambot.utils.MyString.markdownv2Format;
 public class DefaultWordleService implements WordleService {
     private static final Logger log = LoggerFactory.getLogger(DefaultWordleService.class);
     private static final String BEE = "\uD83D\uDC1D";
-    private final Function<String, Integer> allowedAttemptsGetter =
-            w ->
-//                    w.length()/2;
-                    2;
+    private final Function<String, Integer> allowedAttemptsGetter = w -> 2;
+
     private final WordleRepository wordleRepository;
     private final List<WordChecker> wordCheckers;
     private final WordlePointsService wordlePointsService;
@@ -123,15 +121,28 @@ public class DefaultWordleService implements WordleService {
             return markdownv2Format("В моём словаре нет слова \"" + userWord + "\", попробуйте другое!");
         }
 
+        //слово таки есть в базе данных, сравняем с правильным
+        int[] guessResult = compareWords(word, currentWord);
+        String formattedWord = formatToMarkdownV2(word, guessResult);
+        boolean isAddBonusAttempt = isAlmostFullOfTwos(guessResult);
+
+        String additionalMessage = "";
+
         //проверяем, не превысил ли пользователь количество попытков
         //для первого угадывающего фора в +1 попытку
         var attemptsCount = wordleRepository.getWordAttemptsCount(
                 userId,
                 chatId,
-                wordleRepository.isAnyWordAttempts(chatId)
-                        ? allowedAttemptsGetter.apply(word)
-                        : allowedAttemptsGetter.apply(word) + 1
+                !wordleRepository.isAnyWordAttempts(chatId)
+                        ? allowedAttemptsGetter.apply(word) + 1
+                        : allowedAttemptsGetter.apply(word)
         );
+
+        if (attemptsCount == 1 && isAddBonusAttempt) {
+            attemptsCount = 2;
+            additionalMessage = markdownv2Format("\nДобавлена бонус-попытка!\n")
+                    + "*" + markdownv2Format("FINISH IT!") + "*";
+        }
 
         String userName = UserNameGetter.getUserName(chatUser);
         if (attemptsCount <= 0) {
@@ -146,23 +157,21 @@ public class DefaultWordleService implements WordleService {
         }
 
         //сохраниям попытку угадывания слова
-        wordleRepository.saveWordAttempt(word, userId, chatId);
-
-        //слово таки есть в базе данных, сравняем с правильным
-        var guessResult = compareWords(word, currentWord);
-        var formattedWord = formatToMarkdownV2(word, guessResult);
+        wordleRepository.saveWordAttempt(word, chatId);
+        if (!isAddBonusAttempt) {
+            wordleRepository.decreaseAttemptsCount(userId, chatId);
+        }
 
         String response;
 
         //если не совпадает с правильным
         if (!isFullOfTwos(guessResult)) {
-            response = formattedWord +
-                    markdownv2Format(
-                            "\nДля пользователя "
-                                    + userName
-                                    + " осталось попыток: "
-                                    + --attemptsCount
-                    );
+            response = formattedWord
+                    + markdownv2Format("\nДля пользователя "
+                        + userName
+                        + " осталось попыток: "
+                        + --attemptsCount)
+                    + additionalMessage;
             //если всё правильно
         } else {
             if (currentWord.equals("пчела")) {

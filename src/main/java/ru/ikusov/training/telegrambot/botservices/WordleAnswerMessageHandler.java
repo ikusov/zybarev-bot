@@ -23,6 +23,10 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
     }
 
     @Override
+    //устранить протекание бизнес-логики в логику бота
+    //по идее этот метод это аналог метода контроллера в REST-API, т.е. сюда мы отправляем данные запроса
+    //а отсюда мы ожидаем данные ответа
+    //т.е. в этом методе должен быть только вызов метода сервиса и не более того
     public BotReaction handleNonCommand(Message message) {
         if (IS_TEST_MODE && !message.getChatId().equals(TEST_CHAT_ID)) {
             return new BotEmptyReaction();

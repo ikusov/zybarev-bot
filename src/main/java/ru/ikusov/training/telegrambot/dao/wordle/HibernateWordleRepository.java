@@ -94,24 +94,23 @@ public class HibernateWordleRepository implements WordleRepository {
     }
 
     @Override
-    public void saveWordAttempt(String word, Long userId, Long chatId) {
+    public void saveWordAttempt(String word, Long chatId) {
         //ну чё нам тут надо, добавить в список попытанных слов чата попытанное слово
         //ии уменьшить количество попыток для попытавшегося юзора
         //давайте этим и займёмся
-
-        WordleUserEntity wordleUserEntity = fetchWordleUserEntity(userId, chatId);
-
         var chatAttemptListOpt = databaseConnector.getById(WordleChatAttemptListEntity.class, chatId);
         WordleChatAttemptListEntity wordleChatAttemptListEntity = chatAttemptListOpt.orElseThrow(() -> {
             log.error("No entries for chatId '{}' was found in table!", chatId);
             return new RuntimeException("No entries for chatId = " + chatId);
         });
-
-
         wordleChatAttemptListEntity.getAttemptList().add(word);
-        wordleUserEntity.setAttemptsCount(wordleUserEntity.getAttemptsCount() - 1);
-
         databaseConnector.saveOrUpdate(wordleChatAttemptListEntity);
+    }
+
+    @Override
+    public void decreaseAttemptsCount(Long userId, Long chatId) {
+        WordleUserEntity wordleUserEntity = fetchWordleUserEntity(userId, chatId);
+        wordleUserEntity.setAttemptsCount(wordleUserEntity.getAttemptsCount() - 1);
         databaseConnector.saveOrUpdate(wordleUserEntity);
     }
 

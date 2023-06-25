@@ -54,6 +54,25 @@ public final class WordleUtils {
         return true;
     }
 
+    static boolean isAlmostFullOfTwos(int[] compareResult) {
+        if (compareResult == null) {
+            return false;
+        }
+
+        int twosCount = 0;
+        int onesCount = 0;
+        for (int digit : compareResult) {
+            if (digit == 2) {
+                twosCount++;
+            }
+            if (digit == 1) {
+                onesCount++;
+            }
+        }
+        return twosCount == compareResult.length - 1
+                || twosCount == compareResult.length - 2 && onesCount == 2;
+    }
+
     public static int countOnes(int[] numbers) {
         int count = 0;
         for (int num : numbers) {

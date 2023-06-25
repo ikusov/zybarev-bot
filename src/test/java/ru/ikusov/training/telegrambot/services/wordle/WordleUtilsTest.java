@@ -1,11 +1,16 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.compareWords;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.formatToMarkdownV2;
 
@@ -209,4 +214,33 @@ public class WordleUtilsTest {
 
         assertFalse(actual);
     }
+
+    //<editor-fold desc="isAlmostFullOfTwos">
+    @ParameterizedTest
+    @MethodSource
+    void isAlmostFullOfTwos(int[] numbers, boolean expectedResult) {
+        boolean actualResult = WordleUtils.isAlmostFullOfTwos(numbers);
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+
+    public static Stream<Arguments> isAlmostFullOfTwos() {
+        return Stream.of(
+                arguments(new int[]{2, 2, 2}, false),
+                arguments(new int[]{2, 2, 1}, true),
+                arguments(new int[]{2, 2, 1, 1}, true),
+                arguments(new int[]{0, 2, 0, 0, 2}, false),
+                arguments(new int[]{2, 2, 2, 0, 2}, true),
+                arguments(new int[]{0, 2, 2, 2, 2}, true),
+                arguments(new int[]{1, 2, 2, 2, 2}, true),
+                arguments(new int[]{1, 2, 2, 2, 1}, true),
+                arguments(new int[]{1, 2, 2, 1, 1}, false),
+                arguments(new int[]{1, 2, 2, 0, 1}, false),
+                arguments(new int[]{1, 2, 2, 2, 1}, true),
+                arguments(new int[]{1, 1, 2, 0, 1}, false),
+                arguments(new int[]{}, false)
+        );
+    }
+    //</editor-fold>
 }
