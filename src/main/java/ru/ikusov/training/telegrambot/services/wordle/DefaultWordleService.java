@@ -106,8 +106,10 @@ public class DefaultWordleService implements WordleService {
             return "";
         }
 
-        //проверяем вордчекерами, существует ли слово
-        boolean wordExists = false;
+        //<editor-fold desc="будем проверять вордчекерами, существует ли слово">
+        //проверка не нужна, если юзер угадал слово (т.к. в БД не все слова чекаются)
+        boolean wordExists = currentWord.equals(word) || currentWord.equals(userWord);
+
         for (var wordChecker : wordCheckers) {
             try {
                 wordExists = wordExists || wordChecker.check(word);
@@ -118,8 +120,9 @@ public class DefaultWordleService implements WordleService {
 
         //слова не существует, орём, что нету мол
         if (!wordExists) {
-            return markdownv2Format("В моём словаре нет слова \"" + userWord + "\", попробуйте другое!");
+            return markdownv2Format("В моём словаре нет существительного в именительном падеже \"" + userWord + "\", попробуйте другое!");
         }
+        //</editor-fold>
 
         //слово таки есть в базе данных, сравняем с правильным
         int[] guessResult = compareWords(word, currentWord);
