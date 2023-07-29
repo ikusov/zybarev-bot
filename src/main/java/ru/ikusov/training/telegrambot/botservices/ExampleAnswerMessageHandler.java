@@ -9,7 +9,7 @@ import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.services.ExampleAnswerMessageGenerator;
-import ru.ikusov.training.telegrambot.services.ExampleGenerator;
+import ru.ikusov.training.telegrambot.services.ExampleProvider;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 @Component
@@ -18,11 +18,11 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
     @Autowired
     DatabaseConnector databaseConnector;
     @Autowired
-    private ExampleGenerator exampleGenerator;
+    private ExampleProvider exampleProvider;
 
     @Override
     public BotReaction handleNonCommand(Message message) {
-        long timer = System.nanoTime() - exampleGenerator.getTimer();
+        long timer = System.nanoTime() - exampleProvider.getTimer();
         String textAnswer;
         int score;
 
@@ -36,15 +36,17 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
         try {
             //persisting user and chat to database no matter if message has example answer or not
+            //todo: убрать здесь сохранение чата в БД, т.к. по факту не нужен он в БД
+            //todo: выпилить таблицу чата из БД
             user = databaseConnector.getOrCreateUser(message.getFrom());
             chat = databaseConnector.getOrCreateChat(message.getChat());
 
-            if (exampleGenerator.isAnswered()) {
+            if (exampleProvider.isAnswered()) {
                 return new BotEmptyReaction();
             }
 
-            userAnswer = MyString.brutalParseInt(message.getText().strip());
-            rightAnswer = exampleGenerator.getAnswerInt();
+            userAnswer = MyString.brutalParseInt(message.getText());
+            rightAnswer = exampleProvider.getAnswerInt();
 
             isRight = (userAnswer == rightAnswer);
 
@@ -55,7 +57,10 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
             textAnswer = exampleAnswerMessageGenerator.generate();
             score = exampleAnswerMessageGenerator.getExampleScore();
 
+            //todo: из ExampleAnswerEntity выпилить ChatEntity, оставить только id чата
+            //todo: но id чата теперь должен быть составной Chat ID + Group ID
             exampleAnswer = new ExampleAnswerEntity()
+                    //todo: эту штучку можно заменить на @CreationTimestamp
                     .setTimestamp(System.currentTimeMillis() / 1000)
                     .setChat(chat)
                     .setUser(user)
@@ -63,7 +68,7 @@ public class ExampleAnswerMessageHandler extends NonCommandMessageHandler {
 
             if (isRight) {
                 exampleAnswer.setTimer(timer / 1_000_000).setScore(score);
-                exampleGenerator.setAnswered(true);
+                exampleProvider.setAnswered(true);
             }
 
             databaseConnector.save(exampleAnswer);

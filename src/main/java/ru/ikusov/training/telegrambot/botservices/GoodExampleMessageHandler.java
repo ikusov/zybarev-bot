@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.ikusov.training.telegrambot.services.ExampleGenerator;
+import ru.ikusov.training.telegrambot.services.ExampleProvider;
 import ru.ikusov.training.telegrambot.utils.MessageType;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
@@ -12,10 +12,10 @@ import ru.ikusov.training.telegrambot.utils.MyString;
 @Order(15)
 public class GoodExampleMessageHandler extends NonCommandMessageHandler {
     @Autowired
-    ExampleGenerator exampleGenerator;
+    ExampleProvider exampleProvider;
 
     public BotReaction handleNonCommand(Message message) {
-        if (exampleGenerator.isAnswered()) return new BotEmptyReaction();
+        if (exampleProvider.isAnswered()) return new BotEmptyReaction();
 
         String msgText = MyString.trimPunctuationMarksInclusive(message.getText());
 

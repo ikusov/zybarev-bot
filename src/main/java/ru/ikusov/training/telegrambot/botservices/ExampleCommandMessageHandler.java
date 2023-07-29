@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.services.ExampleGenerator;
+import ru.ikusov.training.telegrambot.services.ExampleProvider;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
     private final Set<String> commandVariants = Set.of("/example", "/e", "/primer", "/пример");
 
     @Autowired
-    private ExampleGenerator exampleGenerator;
+    private ExampleProvider exampleProvider;
 
     @Override
     protected void addHelp() {
@@ -32,12 +32,12 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
     public BotReaction handleCommand(MyBotCommand command) {
         long userId = command.getUser().getId();
 
-        ExampleGenerator.Complexity complexity = userId == 1834473953 ? ExampleGenerator.Complexity.EASY :
-                ExampleGenerator.Complexity.getRandomComplexity();
+        ExampleProvider.Complexity complexity = userId == 1834473953 ? ExampleProvider.Complexity.EASY :
+                ExampleProvider.Complexity.getRandomComplexity();
 
         String textAnswer;
         textAnswer = "Сколько будет " +
-                    (exampleGenerator.isAnswered() ? exampleGenerator.generateExampleNew(complexity) : exampleGenerator.getExample()) +
+                    (exampleProvider.isAnswered() ? exampleProvider.generateExampleNew(complexity) : exampleProvider.getExample()) +
                     "=?";
 
         return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);

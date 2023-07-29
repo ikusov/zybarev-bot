@@ -1,5 +1,7 @@
 package ru.ikusov.training.telegrambot.services;
 
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
@@ -52,6 +54,14 @@ public class MathAchieves {
         getAllAchieves();
     }
 
+    public MathAchieves(List<ExampleAnswerEntity> answers, User user, Chat chat, int number, int timer) {
+        this.number = number;
+        this.timer = timer;
+
+        getFromAnswerList(answers, user.getId(), chat.getId());
+        getAllAchieves();
+    }
+
     public int getSum() {
         return achieveList.stream().mapToInt(MathAchieve::getBonus).sum()+1;
     }
@@ -73,6 +83,10 @@ public class MathAchieves {
         var userId = user.getId();
         var chatId = chat.getId();
         List<ExampleAnswerEntity> answers = databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class, query);
+        getFromAnswerList(answers, userId, chatId);
+    }
+
+    private void getFromAnswerList(List<ExampleAnswerEntity> answers, long userId, long chatId) {
         answers.sort(Comparator.reverseOrder());
 
         solvedExamplesCount = (int) answers.stream()
@@ -99,7 +113,6 @@ public class MathAchieves {
                 .filter(ExampleAnswerEntity::isRight)
                 .mapToInt(ExampleAnswerEntity::getScore)
                 .sum();
-
     }
 
     public String getTimeMessage(String userNaming) {

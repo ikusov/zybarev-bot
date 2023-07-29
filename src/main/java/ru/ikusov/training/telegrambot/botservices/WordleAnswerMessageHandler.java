@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.services.wordle.WordleService;
 
-import static ru.ikusov.training.telegrambot.MainClass.IS_TEST_MODE;
-import static ru.ikusov.training.telegrambot.MainClass.TEST_CHAT_ID;
+import static ru.ikusov.training.telegrambot.MainClass.*;
 
 @Component
 @Order(20)
@@ -32,7 +31,7 @@ public class WordleAnswerMessageHandler extends NonCommandMessageHandler {
             return new BotEmptyReaction();
         }
 
-        String text = message.getText();
+        String text = message.getText().toLowerCase(RUS_LOCALE);
         boolean isWordleAnswer = false;
 
         //check message text if it may be wordle answer
