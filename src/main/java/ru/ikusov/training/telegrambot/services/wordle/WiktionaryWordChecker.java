@@ -18,6 +18,12 @@ public class WiktionaryWordChecker implements WordChecker {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String URL = "https://ru.wiktionary.org/wiki/";
+
+    @Override
+    public String getName() {
+        return "ru.wiktionary.org";
+    }
+
     @Override
     public boolean check(String word) throws IOException {
         final String NOUN_TEXT = "Существительное";
