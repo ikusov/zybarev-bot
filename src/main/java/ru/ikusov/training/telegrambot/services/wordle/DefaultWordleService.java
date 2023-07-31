@@ -117,8 +117,8 @@ public class DefaultWordleService implements WordleService {
                 if (wordExists) {
                     break;
                 }
-                checkedByList.add(wordChecker.getName());
                 wordExists = wordChecker.check(word);
+                checkedByList.add(wordChecker.getName());
 
                 wordExists = wordExists || wordChecker.check(userWord);
             } catch (IOException ignored) {
@@ -127,9 +127,11 @@ public class DefaultWordleService implements WordleService {
 
         //слова не существует, орём, что нету мол
         if (!wordExists) {
-            return markdownv2Format("На ресурсах "
-                    + checkedByList +
-                    " не найдено существительного в именительном падеже \""
+            return markdownv2Format("В моих словарях (доступно "
+                    + checkedByList.size()
+                    + " из "
+                    + wordCheckers.size()
+                    + ") не найдено существительного в именительном падеже \""
                     + userWord +
                     "\", попробуйте другое!");
         }
