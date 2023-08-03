@@ -14,6 +14,7 @@ import ru.ikusov.training.telegrambot.utils.Linguistic;
 import ru.ikusov.training.telegrambot.utils.MyMath;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -109,10 +110,16 @@ public class DefaultWordleService implements WordleService {
         //<editor-fold desc="будем проверять вордчекерами, существует ли слово">
         //проверка не нужна, если юзер угадал слово (т.к. в БД не все слова чекаются)
         boolean wordExists = currentWord.equals(word) || currentWord.equals(userWord);
+        List<String> checkedByList = new ArrayList<>(wordCheckers.size());
 
         for (var wordChecker : wordCheckers) {
             try {
-                wordExists = wordExists || wordChecker.check(word);
+                if (wordExists) {
+                    break;
+                }
+                wordExists = wordChecker.check(word);
+                checkedByList.add(wordChecker.getName());
+
                 wordExists = wordExists || wordChecker.check(userWord);
             } catch (IOException ignored) {
             }
@@ -120,7 +127,13 @@ public class DefaultWordleService implements WordleService {
 
         //слова не существует, орём, что нету мол
         if (!wordExists) {
-            return markdownv2Format("В моём словаре нет существительного в именительном падеже \"" + userWord + "\", попробуйте другое!");
+            return markdownv2Format("В моих словарях (доступно "
+                    + checkedByList.size()
+                    + " из "
+                    + wordCheckers.size()
+                    + ") не найдено существительного в именительном падеже \""
+                    + userWord +
+                    "\", попробуйте другое!");
         }
         //</editor-fold>
 
@@ -171,9 +184,9 @@ public class DefaultWordleService implements WordleService {
         if (!isFullOfTwos(guessResult)) {
             response = formattedWord
                     + markdownv2Format("\nДля пользователя "
-                        + userName
-                        + " осталось попыток: "
-                        + --attemptsCount)
+                    + userName
+                    + " осталось попыток: "
+                    + --attemptsCount)
                     + additionalMessage;
             //если всё правильно
         } else {

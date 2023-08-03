@@ -1,5 +1,6 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,6 +19,12 @@ public class WiktionaryWordChecker implements WordChecker {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String URL = "https://ru.wiktionary.org/wiki/";
+
+    @Override
+    public String getName() {
+        return "ru.wiktionary.org";
+    }
+
     @Override
     public boolean check(String word) throws IOException {
         final String NOUN_TEXT = "Существительное";
@@ -33,11 +40,14 @@ public class WiktionaryWordChecker implements WordChecker {
                     return true;
                 }
             }
+        } catch (HttpStatusException e) {
+            log.debug("Существительное '{}' не найдено на ресурсе '{}'", word, url);
+            return false;
         } catch (IOException e) {
-            log.debug("Не найден URL '{}' (слово не существует либо ошибка сети)", url);
+            log.error("Ошибка при отправке запроса на URL '{}'", url);
             throw e;
         } catch (Selector.SelectorParseException e) {
-            log.debug("Невалидный CSS запрос в методе парсинга базы русских слов '{}'", url);
+            log.error("Невалидный CSS запрос в методе парсинга базы русских слов '{}'", url);
             throw new IOException(e);
         }
 

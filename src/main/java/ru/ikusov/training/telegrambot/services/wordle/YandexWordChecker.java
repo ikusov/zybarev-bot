@@ -20,6 +20,12 @@ public class YandexWordChecker implements WordChecker {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=" + DICTIONARY_API_KEY + "&lang=ru-ru&text=";
+
+    @Override
+    public String getName() {
+        return "dictionary.yandex.net";
+    }
+
     @Override
     public boolean check(String word) throws IOException {
         final String NOUN_TEXT = "noun";

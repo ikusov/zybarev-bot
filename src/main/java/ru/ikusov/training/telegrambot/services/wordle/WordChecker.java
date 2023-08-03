@@ -7,5 +7,6 @@ import java.io.IOException;
 //TODO: добавить вордчекер из БД, чтобы обезопаситься от проблем с внешними сервисами
 @Component
 public interface WordChecker {
+    String getName();
     boolean check(String word) throws IOException;
 }
