@@ -8,17 +8,12 @@
         </encoder>
     </appender>
 
-    <property name="LOG_FILE" value="LogFile" />
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/%d{yyyy/MM}/${LOG_FILE}.log</fileNamePattern>
+            <fileNamePattern>./logs/%d{yyyy-MM}/%d{dd, aux}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>100kB</maxFileSize>
-        </triggeringPolicy>
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%d [%thread] %-5level %logger{40} - %msg%n</pattern>
