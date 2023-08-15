@@ -10,7 +10,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../zybarev-logs/%d{yyyy-MM}/%d{dd, aux}.log</fileNamePattern>
+            <fileNamePattern>./zybarev-logs/%d{yyyy-MM}/%d{dd, aux}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
