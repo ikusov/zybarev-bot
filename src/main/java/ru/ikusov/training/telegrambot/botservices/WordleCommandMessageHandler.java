@@ -64,7 +64,7 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
         var wordLen = getWordLength(commandParams);
 
         try {
-            fMsg = wordleService.startGame(chatId, command.getUser().getId(), wordLen);
+            fMsg = wordleService.startGame(command.getChat(), command.getUser().getId(), wordLen);
         } catch (Exception e) {
             log.error("Error while start game handling: {}", e.getMessage());
             return new BotMessageSender(chatId.toString(), topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
