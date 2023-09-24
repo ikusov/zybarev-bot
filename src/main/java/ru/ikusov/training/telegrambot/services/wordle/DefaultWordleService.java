@@ -153,7 +153,6 @@ public class DefaultWordleService implements WordleService {
         //слово таки есть в базе данных, сравняем с правильным
         int[] guessResult = compareWords(word, currentWord);
         String formattedWord = formatToMarkdownV2(word, guessResult);
-        boolean isAddBonusAttempt = isAlmostFullOfTwos(guessResult);
 
         String additionalMessage = "";
 
@@ -167,7 +166,8 @@ public class DefaultWordleService implements WordleService {
                         : allowedAttemptsGetter.apply(word)
         );
 
-        if (attemptsCount == 1 && isAddBonusAttempt) {
+        boolean isAddBonusAttempt = attemptsCount == 1 && isAlmostFullOfTwos(guessResult);
+        if (isAddBonusAttempt) {
             attemptsCount = 2;
             additionalMessage = markdownv2Format("\nДобавлена бонус-попытка!\n")
                     + "*" + markdownv2Format("FINISH IT!") + "*";
