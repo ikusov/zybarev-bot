@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.ikusov.training.telegrambot.utils.Linguistic.getPointWordEndingIme;
 
@@ -102,6 +103,13 @@ public class WordleStatService {
         return topList;
     }
 
+    public long getMadeWordsCountForChat(Chat chat) {
+        List<WordleEventEntity> eventsForChat =
+                wordleEventRepository.getEventsForChat(chat.getId());
+
+        return countMadeWords(eventsForChat);
+    }
+
     private long countGuessed(List<WordleEventEntity> events) {
         return events.stream()
                 .filter(WordleEventEntity::isRight)
@@ -118,7 +126,8 @@ public class WordleStatService {
         return events.stream()
                 //событие о загаданном слове сохраняется в таблицу wordle_events
                 //с attempt_word == null
-                .filter(e -> e.getAttemptWord() == null)
+                .map(WordleEventEntity::getAttemptWord)
+                .filter(Objects::isNull)
                 .count();
     }
 

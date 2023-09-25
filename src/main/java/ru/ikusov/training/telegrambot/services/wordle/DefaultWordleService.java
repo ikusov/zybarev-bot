@@ -1,12 +1,16 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.ikusov.training.telegrambot.dao.wordle.WordleRepository;
+import ru.ikusov.training.telegrambot.dao.wordle.dto.WordleWordDto;
 import ru.ikusov.training.telegrambot.model.WordleEventDto;
 import ru.ikusov.training.telegrambot.model.wordle.WordleUserPointsDto;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
@@ -25,27 +29,23 @@ import static ru.ikusov.training.telegrambot.utils.MyString.markdownv2Format;
 
 @Component
 @Primary
+@RequiredArgsConstructor
 public class DefaultWordleService implements WordleService {
     private static final Logger log = LoggerFactory.getLogger(DefaultWordleService.class);
     private static final String BEE = "\uD83D\uDC1D";
-    private final Function<String, Integer> allowedAttemptsGetter = w -> 2;
+
+    @Value("#{environment.wordle_max_attempts}")
+    private final Integer allowedAttemptsCount = 2;
+    private final Function<String, Integer> allowedAttemptsGetter = w -> allowedAttemptsCount;
 
     private final WordleRepository wordleRepository;
     private final List<WordChecker> wordCheckers;
     private final WordlePointsService wordlePointsService;
+    private final WordleStatService wordleStatService;
 
-    @Autowired
-    public DefaultWordleService(
-            WordleRepository wordleRepository,
-            List<WordChecker> wordCheckers,
-            WordlePointsService wordlePointsService
-    ) {
-        this.wordleRepository = wordleRepository;
-        this.wordCheckers = wordCheckers;
-        this.wordlePointsService = wordlePointsService;
-    }
-
-    public String startGame(Long chatId, Long userId, int wordLen) {
+    @Override
+    public String startGame(Chat chat, Long userId, int wordLen) {
+        Long chatId = chat.getId();
         log.debug("Trying to get current word for chatId '{}' from repository...", chatId);
         var currentWord = wordleRepository.getCurrentWordForChat(chatId);
         log.debug("Getted current word from repository!");
@@ -81,9 +81,9 @@ public class DefaultWordleService implements WordleService {
         }
 
         //слово не загадано
-//        currentWord = wordleRepository.getNextRandomWordForChat(chatId);
         log.debug("Current word is empty! Getting next word for chat from repository...");
-        currentWord = wordleRepository.getNextRandomWordForChat(chatId, wordLen);
+        WordleWordDto wordForChatDto = wordleRepository.getNextRandomWordForChat(chatId, wordLen);
+        currentWord = wordForChatDto.word();
         log.debug("The word was successfully getted! In has {} letters!", currentWord.length());
 
         String wordLength = Linguistic.russianNumberNamesGenetive.getOrDefault(
@@ -95,7 +95,20 @@ public class DefaultWordleService implements WordleService {
         WordleEventDto we = new WordleEventDto(chatId, userId, currentWord, null, false);
         wordleRepository.saveWordleEvent(we);
 
-        return markdownv2Format("Загадал русское слово из " + wordLength + " букв!");
+        String chatName = StringUtils.isEmpty(chat.getTitle()) ? "" : chat.getTitle();
+        long madeWordsCount = wordleStatService.getMadeWordsCountForChat(chat);
+        long lastWordCount = wordForChatDto.wordsCount() + madeWordsCount;
+        return markdownv2Format("Загадал русское слово из " + wordLength + " букв!")
+                + "\n"
+                + markdownv2Format(
+                        "(Слово № "
+                                + madeWordsCount
+                                +
+                                " из "
+                                + lastWordCount
+                                + " для чата "
+                                + chatName
+                                + ")");
     }
 
     public String checkWord(String userWord, User chatUser, Long chatId) {
@@ -140,7 +153,6 @@ public class DefaultWordleService implements WordleService {
         //слово таки есть в базе данных, сравняем с правильным
         int[] guessResult = compareWords(word, currentWord);
         String formattedWord = formatToMarkdownV2(word, guessResult);
-        boolean isAddBonusAttempt = isAlmostFullOfTwos(guessResult);
 
         String additionalMessage = "";
 
@@ -154,7 +166,8 @@ public class DefaultWordleService implements WordleService {
                         : allowedAttemptsGetter.apply(word)
         );
 
-        if (attemptsCount == 1 && isAddBonusAttempt) {
+        boolean isAddBonusAttempt = attemptsCount == 1 && isAlmostFullOfTwos(guessResult);
+        if (isAddBonusAttempt) {
             attemptsCount = 2;
             additionalMessage = markdownv2Format("\nДобавлена бонус-попытка!\n")
                     + "*" + markdownv2Format("FINISH IT!") + "*";

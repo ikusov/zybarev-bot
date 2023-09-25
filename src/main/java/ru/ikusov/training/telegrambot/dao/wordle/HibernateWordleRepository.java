@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
+import ru.ikusov.training.telegrambot.dao.wordle.dto.WordleWordDto;
 import ru.ikusov.training.telegrambot.model.WordleEventDto;
 import ru.ikusov.training.telegrambot.model.wordle.*;
 
@@ -136,7 +137,7 @@ public class HibernateWordleRepository implements WordleRepository {
     }
 
     @Override
-    public String getNextRandomWordForChat(Long chatId, int wordLen) {
+    public WordleWordDto getNextRandomWordForChat(Long chatId, int wordLen) {
         //we there must
         //get word list for the current chat
         //if no current chat or no word list for them
@@ -168,7 +169,7 @@ public class HibernateWordleRepository implements WordleRepository {
         databaseConnector.saveOrUpdate(wordList);
         databaseConnector.saveOrUpdate(attemptList);
 
-        return nextRandomWord;
+        return new WordleWordDto(nextRandomWord, wordList.getWordList().size());
     }
 
     @Override

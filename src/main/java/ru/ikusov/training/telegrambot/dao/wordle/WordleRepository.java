@@ -1,5 +1,6 @@
 package ru.ikusov.training.telegrambot.dao.wordle;
 
+import ru.ikusov.training.telegrambot.dao.wordle.dto.WordleWordDto;
 import ru.ikusov.training.telegrambot.model.WordleEventDto;
 import ru.ikusov.training.telegrambot.model.wordle.WordleUserEntity;
 
@@ -32,7 +33,7 @@ public interface WordleRepository {
 
     void setRightAnswer(Long chatId);
 
-    String getNextRandomWordForChat(Long chatId, int wordLen);
+    WordleWordDto getNextRandomWordForChat(Long chatId, int wordLen);
 
     void saveWordleEvent(WordleEventDto we);
 
