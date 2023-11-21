@@ -150,19 +150,19 @@ public class HibernateWordleRepository implements WordleRepository {
         WordleChatWordListEntity wordList;
         var currentWordListOpt = databaseConnector.getById(WordleChatWordListEntity.class, chatId);
         if (currentWordListOpt.isEmpty() || isNullOrEmpty(currentWordListOpt.get().getWordList())) {
-            wordList = new WordleChatWordListEntity(chatId, fetchShuffledWordList());
+            wordList = new WordleChatWordListEntity(chatId, fetchShuffledWordList(), null);
         } else {
             wordList = currentWordListOpt.get();
         }
 
         var currentAttemptListOpt = databaseConnector.getById(WordleChatAttemptListEntity.class, chatId);
-        WordleChatAttemptListEntity attemptList = currentAttemptListOpt.orElse(new WordleChatAttemptListEntity(chatId, null));
+        WordleChatAttemptListEntity attemptList = currentAttemptListOpt.orElse(new WordleChatAttemptListEntity(chatId, null, null));
         attemptList.setAttemptList(new ArrayList<>(10));
 
         var nextRandomWord = takeFromList(wordList.getWordList(), wordLen);
 
         var currentCurrentWordOpt = databaseConnector.getById(WordleChatCurrentWordEntity.class, chatId);
-        WordleChatCurrentWordEntity currentWord = currentCurrentWordOpt.orElse(new WordleChatCurrentWordEntity(chatId, null));
+        WordleChatCurrentWordEntity currentWord = currentCurrentWordOpt.orElse(new WordleChatCurrentWordEntity(chatId, null, null));
         currentWord.setCurrentWord(nextRandomWord);
 
         databaseConnector.saveOrUpdate(currentWord);

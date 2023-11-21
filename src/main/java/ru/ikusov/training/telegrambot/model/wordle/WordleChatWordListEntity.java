@@ -4,11 +4,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.ikusov.training.telegrambot.model.CommonEntity;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "wordle_chat_word_list")
 public class WordleChatWordListEntity implements CommonEntity {
     @Id
@@ -17,27 +25,6 @@ public class WordleChatWordListEntity implements CommonEntity {
     @Column(name = "word_list")
     private List<String> wordList;
 
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
-
-    public List<String> getWordList() {
-        return wordList;
-    }
-
-    public void setWordList(List<String> wordList) {
-        this.wordList = wordList;
-    }
-
-    public WordleChatWordListEntity(long chatId, List<String> wordList) {
-        this.chatId = chatId;
-        this.wordList = wordList;
-    }
-
-    public WordleChatWordListEntity() {
-    }
+    @Column(name = "extended_chat_id")
+    private String extendedChatId;
 }

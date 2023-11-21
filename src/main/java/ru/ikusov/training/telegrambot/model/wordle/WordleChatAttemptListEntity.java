@@ -25,4 +25,7 @@ public class WordleChatAttemptListEntity implements CommonEntity {
 
     @Column(name = "attempt_list")
     private List<String> attemptList;
+
+    @Column(name = "extended_chat_id")
+    private String extendedChatId;
 }
