@@ -1,8 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.LocationDatabaseGetter;
@@ -12,22 +13,20 @@ import java.util.Set;
 
 @Component
 @Order(80)
+@RequiredArgsConstructor
 public class WeatherCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/weather", "/w", "/погода");
 
-    @Autowired
-    LocationDatabaseGetter locationDatabaseGetter;
-
-    @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - текущая погода в указанной локации. По умолчанию - Новосибирск, но это не точно.\n";
-        helpString = help + helpString;
-    }
+    private final LocationDatabaseGetter locationDatabaseGetter;
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/weather", "/w", "/погода");
+    }
+
+    @Override
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "текущая погода в указанной локации. По умолчанию - Новосибирск, но это не точно";
     }
 
     @Override

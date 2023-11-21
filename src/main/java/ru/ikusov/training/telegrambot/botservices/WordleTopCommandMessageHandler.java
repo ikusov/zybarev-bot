@@ -1,8 +1,7 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
@@ -12,30 +11,24 @@ import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.utils.MyString.markdownv2Format;
 
+@Slf4j
 @Component
 @Order(183)
+@RequiredArgsConstructor
 public class WordleTopCommandMessageHandler extends CommandMessageHandler {
     private static final int DEFAULT_TOP_NUMBER = 10;
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final Set<String> commandVariants = Set.of("/wordletop", "/wordtop", "/словатоп");
+
     private final WordleStatService wordleStatService;
-
-    @Autowired
-    public WordleTopCommandMessageHandler(WordleStatService wordleStatService) {
-        this.wordleStatService = wordleStatService;
-    }
-
-    @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - Выводит топ пользователей по количеству очков в игре Wordle. " +
-                "Параметр (от 3 до 100) задаёт количество элементов списка (по умолчанию 10).\n";
-        helpString = help + helpString;
-    }
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/wordletop", "/wordtop", "/словатоп");
+    }
+
+    @Override
+    protected String getHelpString() {
+        return "Выводит топ пользователей по количеству очков в игре Wordle. " +
+                "Параметр (от 3 до 100) задаёт количество элементов списка (по умолчанию 10)";
     }
 
     @Override

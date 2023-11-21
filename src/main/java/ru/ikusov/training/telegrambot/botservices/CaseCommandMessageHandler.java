@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.CaseQuestionGenerator;
 
@@ -22,10 +23,9 @@ public class CaseCommandMessageHandler extends CommandMessageHandler {
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - вопросу по падежей русскому языком.\n";
-        helpString = help + helpString;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "вопросу по падежей русскому языком";
     }
 
     @Override

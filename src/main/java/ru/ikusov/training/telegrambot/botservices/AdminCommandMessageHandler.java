@@ -1,8 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.auxiliary.AuxService;
 
@@ -12,28 +13,23 @@ import static ru.ikusov.training.telegrambot.statik.Constants.SUNFLOWER_MESSAGE;
 
 @Component
 @Order(200)
+@RequiredArgsConstructor
 public class AdminCommandMessageHandler extends CommandMessageHandler {
     //todo: some day get'em from properties?
     private static final long ADMIN_USER_ID = 349513007L;
     private static final String COPY_COMMAND = "copy";
-    private final AuxService auxService;
-    private final Set<String> commandVariants = Set.of("/admin");
 
-    @Autowired
-    public AdminCommandMessageHandler(AuxService auxService) {
-        this.auxService = auxService;
-    }
+    private final AuxService auxService;
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/admin");
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - админка.\n";
-        helpString = help + helpString;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "админка";
     }
 
     @Override

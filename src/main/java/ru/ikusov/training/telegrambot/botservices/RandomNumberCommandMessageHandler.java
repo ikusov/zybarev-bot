@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.botservices;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 
 import java.util.Set;
@@ -15,18 +16,15 @@ public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
 
     private static final String ERROR1_MESSAGE = "Не могу понять, что за число %s.";
 
-    private final Set<String> commandVariants = Set.of("/random", "/случ", "/r");
-
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/random", "/случ", "/r");
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - Случайное число. Можно попробовать передавать параметры.\n";
-        helpString = help + helpString;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "Случайное число. Можно попробовать передавать параметры";
     }
 
     @Override
@@ -63,6 +61,6 @@ public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
             return String.format(ERROR1_MESSAGE, params[1]);
         }
 
-        return String.valueOf(from + r(to-from));
+        return String.valueOf(from + r(to - from));
     }
 }

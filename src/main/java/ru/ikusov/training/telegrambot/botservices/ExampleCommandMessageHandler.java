@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.botservices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.ExampleProvider;
 
@@ -11,21 +12,19 @@ import java.util.Set;
 @Component
 @Order(20)
 public class ExampleCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/example", "/e", "/primer", "/пример");
 
     @Autowired
     private ExampleProvider exampleProvider;
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - арифметический пример. Разомни мозги!\n";
-        helpString = help + helpString;
+    protected Set<String> getCommandVariants() {
+        return Set.of("/example", "/e", "/primer", "/пример");
     }
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return commandVariants;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "арифметический пример. Разомни мозги!";
     }
 
     @Override
@@ -37,8 +36,8 @@ public class ExampleCommandMessageHandler extends CommandMessageHandler {
 
         String textAnswer;
         textAnswer = "Сколько будет " +
-                    (exampleProvider.isAnswered() ? exampleProvider.generateExampleNew(complexity) : exampleProvider.getExample()) +
-                    "=?";
+                (exampleProvider.isAnswered() ? exampleProvider.generateExampleNew(complexity) : exampleProvider.getExample()) +
+                "=?";
 
         return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
     }

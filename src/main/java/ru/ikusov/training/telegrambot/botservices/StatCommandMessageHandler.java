@@ -1,8 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
@@ -16,22 +17,20 @@ import java.util.Set;
 
 @Component
 @Order(140)
+@RequiredArgsConstructor
 public class StatCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/stat", "/стат", "/statistics", "/статистика", "/матстат");
 
-    @Autowired
-    private DatabaseConnector databaseConnector;
+    private final DatabaseConnector databaseConnector;
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/stat", "/стат", "/statistics", "/статистика", "/матстат");
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - статистика по математическим достижениям.\n";
-        helpString = help + helpString;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "статистика по математическим достижениям";
     }
 
 
@@ -45,8 +44,8 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
         long userId = command.getUser().getId(),
                 chatId = command.getChat().getId();
         List<ExampleAnswerEntity> answers;
-        int exampleCount=0, rightCount=0, wrongCount, score=0, globalSeries=0, noErrorSeries=0;
-        float timeAverage=0f;
+        int exampleCount = 0, rightCount = 0, wrongCount, score = 0, globalSeries = 0, noErrorSeries = 0;
+        float timeAverage = 0f;
 
         try {
             answers = databaseConnector.getByQueryNotEmpty(ExampleAnswerEntity.class,
@@ -54,7 +53,7 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
             answers.sort(Comparator.reverseOrder());
             boolean noErrorFlag = true, globalSeriesFlag = true;
             for (var answer : answers) {
-                if(answer.getChat().getId() == chatId) {
+                if (answer.getChat().getId() == chatId) {
                     if (answer.getUser().getId() != userId) {
                         if (answer.isRight())
                             globalSeriesFlag = false;
@@ -63,7 +62,7 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
                         timeAverage += answer.getTimer();
                         if (answer.isRight()) {
                             rightCount++;
-                            score+=answer.getScore();
+                            score += answer.getScore();
                             if (globalSeriesFlag)
                                 globalSeries++;
                             if (noErrorFlag)
@@ -74,7 +73,7 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
                     }
                 }
             }
-            wrongCount = exampleCount-rightCount;
+            wrongCount = exampleCount - rightCount;
             textAnswer += String.format(
                     """
 
@@ -86,9 +85,9 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
                             Глобальная серия: %d пример%s
                             Личная серия без ошибок: %d пример%s""",
                     exampleCount,
-                    rightCount, 100.*rightCount/exampleCount,
-                    wrongCount, 100.*wrongCount/exampleCount,
-                    timeAverage/exampleCount/1000,
+                    rightCount, 100. * rightCount / exampleCount,
+                    wrongCount, 100. * wrongCount / exampleCount,
+                    timeAverage / exampleCount / 1000,
                     score,
                     globalSeries, Linguistic.getManulWordEnding(globalSeries),
                     noErrorSeries, Linguistic.getManulWordEnding(noErrorSeries)

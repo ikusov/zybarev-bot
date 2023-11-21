@@ -9,7 +9,15 @@ import java.util.Set;
 @Component
 @Order(190)
 public class BeeCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/bee", "/пчела");
+    @Override
+    protected Set<String> getCommandVariants() {
+        return Set.of("/bee", "/пчела");
+    }
+
+    @Override
+    protected String getHelpString() {
+        return "пчела";
+    }
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
@@ -23,17 +31,5 @@ public class BeeCommandMessageHandler extends CommandMessageHandler {
                         А мне повезёт
                         С тобой мне повезёт"""
         );
-    }
-
-    @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - пчела.\n";
-        helpString = help + helpString;
-    }
-
-    @Override
-    protected Set<String> getCommandVariants() {
-        return commandVariants;
     }
 }

@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.botservices;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.RhymeGetter;
 
@@ -10,24 +11,20 @@ import java.util.Set;
 @Component
 @Order(70)
 public class RhymeCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/rhyme", "/стишок", "/стих");
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/rhyme", "/стишок", "/стих");
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - смищной стишок из интернета.\n";
-        helpString = help + helpString;
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "смищной стишок из интернета";
     }
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-//        if (!commandVariants.contains(command.getCommand().toLowerCase())) return null;
-//
         RhymeGetter rhymeGetter;
         String textAnswer;
 

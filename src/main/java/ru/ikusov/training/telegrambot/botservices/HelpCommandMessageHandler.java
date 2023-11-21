@@ -2,6 +2,7 @@ package ru.ikusov.training.telegrambot.botservices;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 
 import java.util.Set;
@@ -9,19 +10,17 @@ import java.util.Set;
 @Component
 @Order(500)
 public class HelpCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/help", "/h", "/?", "/помощь");
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/help", "/h", "/?", "/помощь");
     }
 
     @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - Список команд.\n";
-        helpString = help + helpString;
-    }
+    @ExcludeFromHelp
+    protected String getHelpString() {
+return "Список команд";
+}
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {

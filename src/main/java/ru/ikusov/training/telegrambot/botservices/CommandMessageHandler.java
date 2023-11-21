@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.Bot;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
 
@@ -37,6 +38,8 @@ public abstract class CommandMessageHandler implements MessageHandler {
     //static help string
     protected static String helpString = "";
     protected static boolean helpFormed = false;
+
+    private final Set<String> commandVariants = Set.of("/bakpak");
 
     @Override
     public void handleMessage(Message message) {
@@ -82,7 +85,36 @@ public abstract class CommandMessageHandler implements MessageHandler {
     //the method to be implemented by descendants
     public abstract BotReaction handleCommand(MyBotCommand command);
 
-    protected abstract void addHelp();
+    protected String getHelpString() {
+        return "";
+    }
 
-    protected abstract Set<String> getCommandVariants();
+    protected void addHelp() {
+        boolean excludeFromHelp = true;
+
+        try {
+            excludeFromHelp = this.getClass()
+                    .getDeclaredMethod("getHelpString")
+                    .isAnnotationPresent(ExcludeFromHelp.class);
+        } catch (Exception ignored) {
+        }
+
+        if (excludeFromHelp) {
+            return;
+        }
+
+        final String instanceHelpString = getHelpString();
+
+        helpString = getCommandVariants().stream()
+                .reduce((s1, s2) -> s1 + ", " + s2)
+                .orElse("")
+                + " - "
+                + instanceHelpString
+                + ".\n"
+                + helpString;
+    }
+
+    protected Set<String> getCommandVariants() {
+        return commandVariants;
+    }
 }

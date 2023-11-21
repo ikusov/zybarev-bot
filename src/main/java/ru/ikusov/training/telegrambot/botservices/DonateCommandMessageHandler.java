@@ -11,8 +11,17 @@ import java.util.Set;
 @Component
 @Order(250)
 public class DonateCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/donate", "/спонсор");
     private final DonateMessageProvider donateMessageProvider = new DonateMessageHardcodedProvider();
+
+    @Override
+    protected Set<String> getCommandVariants() {
+        return Set.of("/donate", "/спонсор");
+    }
+
+    @Override
+    protected String getHelpString() {
+        return "поддержать бота финансово";
+    }
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
@@ -20,15 +29,4 @@ public class DonateCommandMessageHandler extends CommandMessageHandler {
         return new BotMessageSender(command.getChatId(), command.getTopicId(), msgText);
     }
 
-    @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - поддержать бота финансово.\n";
-        helpString = help + helpString;
-    }
-
-    @Override
-    protected Set<String> getCommandVariants() {
-        return commandVariants;
-    }
 }

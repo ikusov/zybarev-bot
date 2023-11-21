@@ -1,8 +1,9 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.AvtftalkQuoteGetter;
 import ru.ikusov.training.telegrambot.services.InternetQuoteGetter;
@@ -15,22 +16,20 @@ import static ru.ikusov.training.telegrambot.MainClass.AVTFTALK_CHAT_ID;
 
 @Component
 @Order(110)
+@RequiredArgsConstructor
 public class QuoteCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/quote", "/q", "/цитата", "/ц", "/й");
 
-    @Autowired
-    AvtftalkQuoteGetter avtftalkQuoteGetter;
-
-    @Override
-    protected void addHelp() {
-        String help = commandVariants.stream().reduce((s1, s2) -> s1 + ", " + s2).orElse("");
-        help += " - умная цитата из интернета или (если вам повезло с чатиком) какая-то цитата из старого IRС-канала. Во втором случае можно передать параметром номер цитаты.\n";
-        helpString = help + helpString;
-    }
+    private final AvtftalkQuoteGetter avtftalkQuoteGetter;
 
     @Override
     protected Set<String> getCommandVariants() {
-        return commandVariants;
+        return Set.of("/quote", "/q", "/цитата", "/ц", "/й");
+    }
+
+    @Override
+    @ExcludeFromHelp
+    protected String getHelpString() {
+        return "умная цитата из интернета или (если вам повезло с чатиком) какая-то цитата из старого IRС-канала. Во втором случае можно передать параметром номер цитаты";
     }
 
     @Override
@@ -40,7 +39,7 @@ public class QuoteCommandMessageHandler extends CommandMessageHandler {
         String textAnswer;
 
         try {
-            if(command.getChatId().equals(AVTFTALK_CHAT_ID)) {
+            if (AVTFTALK_CHAT_ID.equals(command.getChatId().toString())) {
                 quoteGetter = avtftalkQuoteGetter;
             } else {
                 quoteGetter = new InternetQuoteGetter();
