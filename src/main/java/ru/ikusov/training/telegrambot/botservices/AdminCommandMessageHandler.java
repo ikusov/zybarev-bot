@@ -1,18 +1,14 @@
 package ru.ikusov.training.telegrambot.botservices;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.auxiliary.AuxService;
-
-import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.statik.Constants.SUNFLOWER_MESSAGE;
 
 @Component
-@Order(200)
 @RequiredArgsConstructor
 public class AdminCommandMessageHandler extends CommandMessageHandler {
     //todo: some day get'em from properties?
@@ -22,23 +18,12 @@ public class AdminCommandMessageHandler extends CommandMessageHandler {
     private final AuxService auxService;
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/admin");
-    }
-
-    @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-        return "админка";
-    }
-
-    @Override
     public BotReaction handleCommand(MyBotCommand command) {
         //very simple temporary admin for copying data from redis to postgres
-        String chatId = command.getChatId().toString();
-        var topicId = command.getTopicId();
-        Long userId = command.getUser().getId();
-        String commandParams = command.getParams().strip();
+        String chatId = command.chatId().toString();
+        var topicId = command.topicId();
+        Long userId = command.user().getId();
+        String commandParams = command.params().strip();
         if (userId == ADMIN_USER_ID && commandParams.equals(COPY_COMMAND)) {
             String result = auxService.calculateAndSavePoints();
             return new BotMessageSender(chatId, topicId, result);
@@ -48,5 +33,10 @@ public class AdminCommandMessageHandler extends CommandMessageHandler {
                     topicId, SUNFLOWER_MESSAGE
             );
         }
+    }
+
+    @Override
+    protected CommandType getSupportedCommandType() {
+        return CommandType.ADMIN;
     }
 }

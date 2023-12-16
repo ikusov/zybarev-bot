@@ -1,31 +1,19 @@
 package ru.ikusov.training.telegrambot.botservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.CaseQuestionGenerator;
 
-import java.util.Set;
-
 @Component
-@Order(170)
 public class CaseCommandMessageHandler extends CommandMessageHandler {
-    private final Set<String> commandVariants = Set.of("/case", "/падеж");
-
     @Autowired
     private CaseQuestionGenerator caseQuestionGenerator;
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return commandVariants;
-    }
-
-    @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-        return "вопросу по падежей русскому языком";
+    protected CommandType getSupportedCommandType() {
+        return CommandType.CASE;
     }
 
     @Override
@@ -38,6 +26,6 @@ public class CaseCommandMessageHandler extends CommandMessageHandler {
             textAnswer = e.getMessage();
         }
 
-        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
+        return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 }

@@ -1,16 +1,14 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.ikusov.training.telegrambot.Bot;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
+import ru.ikusov.training.telegrambot.services.BotStatisticService;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * abstract class for command-type (starting from '/') messages handlers
@@ -18,52 +16,37 @@ import java.util.Set;
  * command and params etc.
  */
 
+@Slf4j
+@NoArgsConstructor
 public abstract class CommandMessageHandler implements MessageHandler {
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     private Bot bot;
+    private BotStatisticService botStatisticService;
 
     @Autowired
     public void setBot(Bot bot) {
         this.bot = bot;
     }
 
-    public CommandMessageHandler() {
+    @Autowired
+    public void setBotStatisticService(BotStatisticService botStatisticService) {
+        this.botStatisticService = botStatisticService;
     }
 
     private MyBotCommand command;
 
-    //static collection of registered commands
-    protected static Set<String> registeredCommands = new HashSet<>();
-
-    //static help string
-    protected static String helpString = "";
-    protected static boolean helpFormed = false;
-
-    private final Set<String> commandVariants = Set.of("/bakpak");
-
     @Override
     public void handleMessage(Message message) {
-        command = MyBotCommand.buildCommand(message, bot.getBotUsername());
+        command = MyBotCommand.build(message, bot.getBotUsername());
         if (command == null) {
             return;
         }
 
-        //add help for the command
-        if(!helpFormed) {
-            addHelp();
-        }
-
-        //every inheritor has its own command variants
-        Set<String> commandVariants = getCommandVariants();
-
-        //add command handler commands to registry
-        registeredCommands.addAll(commandVariants);
-
         //if no variants - that's for unknown command handler -
         //or
         //if the inheritor instance's command variants contains the command
-        if (commandVariants.isEmpty() || commandVariants.contains(command.getCommand())) {
+        if (getSupportedCommandType() == command.commandType()) {
             this.log();
+            botStatisticService.saveCommandInvoke(command);
             BotReaction botReaction = handleCommand(command);
             botReaction.react(bot);
             botReaction.log();
@@ -73,48 +56,17 @@ public abstract class CommandMessageHandler implements MessageHandler {
     protected void log() {
         log.info(
                 "COMMAND ChatId: '{}' TopicId: '{}' ChatName: '{}' UserId: '{}' UserName:'{}' Command: {}",
-                command.getChatId(),
-                command.getTopicId(),
-                command.getChat().getTitle(),
-                command.getUser().getId(),
-                UserNameGetter.getUserName(command.getUser()),
-                command.getCommand() + " " + command.getParams()
+                command.chatId(),
+                command.topicId(),
+                command.chat().getTitle(),
+                command.user().getId(),
+                UserNameGetter.getUserName(command.user()),
+                command.commandType() + " " + command.params()
         );
     }
 
     //the method to be implemented by descendants
     public abstract BotReaction handleCommand(MyBotCommand command);
 
-    protected String getHelpString() {
-        return "";
-    }
-
-    protected void addHelp() {
-        boolean excludeFromHelp = true;
-
-        try {
-            excludeFromHelp = this.getClass()
-                    .getDeclaredMethod("getHelpString")
-                    .isAnnotationPresent(ExcludeFromHelp.class);
-        } catch (Exception ignored) {
-        }
-
-        if (excludeFromHelp) {
-            return;
-        }
-
-        final String instanceHelpString = getHelpString();
-
-        helpString = getCommandVariants().stream()
-                .reduce((s1, s2) -> s1 + ", " + s2)
-                .orElse("")
-                + " - "
-                + instanceHelpString
-                + ".\n"
-                + helpString;
-    }
-
-    protected Set<String> getCommandVariants() {
-        return commandVariants;
-    }
+    protected abstract CommandType getSupportedCommandType();
 }

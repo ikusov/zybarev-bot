@@ -1,48 +1,35 @@
 package ru.ikusov.training.telegrambot.botservices;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
-import ru.ikusov.training.telegrambot.model.ChatEntity;
-import ru.ikusov.training.telegrambot.model.ExampleAnswerEntity;
-import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.model.UserEntity;
+import ru.ikusov.training.telegrambot.model.*;
 import ru.ikusov.training.telegrambot.utils.Linguistic;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
+//TODO: этому лапшекоду нужен рефакторинг
 @Component
-@Order(140)
 @RequiredArgsConstructor
 public class StatCommandMessageHandler extends CommandMessageHandler {
 
     private final DatabaseConnector databaseConnector;
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/stat", "/стат", "/statistics", "/статистика", "/матстат");
+    protected CommandType getSupportedCommandType() {
+        return CommandType.STAT;
     }
-
-    @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-        return "статистика по математическим достижениям";
-    }
-
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        UserEntity user = new UserEntity(command.getUser());
-        ChatEntity chat = new ChatEntity(command.getChat());
+        UserEntity user = new UserEntity(command.user());
+        ChatEntity chat = new ChatEntity(command.chat());
         String textAnswer = String.format("Статистика для %s в чате %s:", user, chat);
 
 
-        long userId = command.getUser().getId(),
-                chatId = command.getChat().getId();
+        long userId = command.user().getId(),
+                chatId = command.chat().getId();
         List<ExampleAnswerEntity> answers;
         int exampleCount = 0, rightCount = 0, wrongCount, score = 0, globalSeries = 0, noErrorSeries = 0;
         float timeAverage = 0f;
@@ -97,6 +84,6 @@ public class StatCommandMessageHandler extends CommandMessageHandler {
             textAnswer += " нет данных.";
         }
 
-        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
+        return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 }

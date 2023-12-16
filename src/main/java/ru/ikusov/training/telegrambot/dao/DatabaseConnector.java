@@ -1,12 +1,12 @@
 package ru.ikusov.training.telegrambot.dao;
 
 import jakarta.persistence.Query;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -19,13 +19,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class DatabaseConnector {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     private final SessionFactory sessionFactory;
+
     private final List<Class<? extends CommonEntity>> entities =
-            List.of(QuoteEntity.class,
+            List.of(
+                    BotEventEntity.class,
+                    QuoteEntity.class,
                     UserEntity.class,
                     ChatEntity.class,
                     LocationEntity.class,

@@ -2,21 +2,19 @@ package ru.ikusov.training.telegrambot.botservices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.wordle.WordleService;
 import ru.ikusov.training.telegrambot.services.wordle.WordleStatService;
 
 import java.util.List;
-import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.MainClass.IS_TEST_MODE;
 import static ru.ikusov.training.telegrambot.MainClass.TEST_CHAT_ID;
 
 @Slf4j
 @Component
-@Order(180)
 @RequiredArgsConstructor
 public class WordleCommandMessageHandler extends CommandMessageHandler {
     private final static List<String> STAT_PARAM_LIST = List.of("стат", "stat");
@@ -25,36 +23,30 @@ public class WordleCommandMessageHandler extends CommandMessageHandler {
     private final WordleStatService wordleStatService;
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/wordle", "/words", "/слова");
-    }
-
-    @Override
-    protected String getHelpString() {
-        return "Игра в слова по типу Wordle. Параметром можно задать длину слова (от 4 до 8 символов), " +
-                "параметр 'стат' выводит статистику по игре";
+    protected CommandType getSupportedCommandType() {
+        return CommandType.WORDLE;
     }
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        Long chatId = command.getChatId();
-        var topicId = command.getTopicId();
+        Long chatId = command.chatId();
+        var topicId = command.topicId();
         if (IS_TEST_MODE && !chatId.equals(TEST_CHAT_ID)) {
             return new BotMessageSender(chatId.toString(), topicId, "Игра недоступна в связи с проведением профилактических работ. Попробуйте позже!");
         }
 
         String fMsg;
-        String commandParams = command.getParams().strip();
+        String commandParams = command.params().strip();
 
         if (isStatParam(commandParams)) {
-            fMsg = wordleStatService.getStat(command.getChat(), command.getUser());
+            fMsg = wordleStatService.getStat(command.chat(), command.user());
             return new BotFormattedMessageSender(chatId.toString(), topicId, fMsg);
         }
 
         var wordLen = getWordLength(commandParams);
 
         try {
-            fMsg = wordleService.startGame(command.getChat(), command.getUser().getId(), wordLen);
+            fMsg = wordleService.startGame(command.chat(), command.user().getId(), wordLen);
         } catch (Exception e) {
             log.error("Error while start game handling: {}", e.getMessage());
             return new BotMessageSender(chatId.toString(), topicId, "Неизвестная ошибка! Попробуйте ещё раз.");
