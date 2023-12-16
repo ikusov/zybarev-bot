@@ -1,38 +1,28 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-
-import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.utils.MyMath.r;
 
 @Component
-@Order(60)
 public class RandomNumberCommandMessageHandler extends CommandMessageHandler {
     private static final int DEFAULT_TO = 100;
 
     private static final String ERROR1_MESSAGE = "Не могу понять, что за число %s.";
 
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/random", "/случ", "/r");
-    }
-
-    @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-        return "Случайное число. Можно попробовать передавать параметры";
+    protected CommandType getSupportedCommandType() {
+        return CommandType.RANDOM;
     }
 
     @Override
     public BotReaction handleCommand(MyBotCommand command) {
-        String paramsString = command.getParams();
+        String paramsString = command.params();
         String textAnswer = calculate(paramsString);
 
-        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
+        return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 
     private String calculate(String paramsString) {

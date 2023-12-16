@@ -1,31 +1,31 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 
-import java.util.Set;
+import java.util.Arrays;
 
 @Component
-@Order(500)
 public class HelpCommandMessageHandler extends CommandMessageHandler {
-
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/help", "/h", "/?", "/помощь");
+    public BotReaction handleCommand(MyBotCommand command) {
+        String textAnswer = Arrays.stream(CommandType.values())
+                .filter(c -> !"".equals(c.getHelpString()))
+                .map(c -> c.getAliases().stream()
+                        .map(a -> "/" + a)
+                        .reduce((a1, a2) -> a1 + ", " + a2).orElse("")
+                        + " - "
+                        + c.getHelpString()
+                )
+                .reduce((s1, s2) -> s1 + "\n" + s2)
+                .orElse("");
+
+        return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 
     @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-return "Список команд";
-}
-
-    @Override
-    public BotReaction handleCommand(MyBotCommand command) {
-        String textAnswer = helpString;
-
-        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
+    protected CommandType getSupportedCommandType() {
+        return CommandType.HELP;
     }
 }

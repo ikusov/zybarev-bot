@@ -4,24 +4,17 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-public class MyBotCommand {
-    private final String command;
-    private final String params;
-    private final Long chatId;
-    private final Integer topicId;
-    private final User user;
-    private final Chat chat;
+import java.util.Arrays;
 
-    public MyBotCommand(String command, String params, Integer topicId, Chat chat, User user) {
-        this.command = command;
-        this.params = params;
-        this.chat = chat;
-        this.topicId = topicId;
-        this.chatId = this.chat.getId();
-        this.user = user;
-    }
-
-    public static MyBotCommand buildCommand(Message message, String botUserName) {
+public record MyBotCommand(
+        CommandType commandType,
+        String params,
+        Long chatId,
+        Integer topicId,
+        User user,
+        Chat chat
+) {
+    public static MyBotCommand build(Message message, String botUserName) {
         String msgText = message.getText();
 
         //if message is not command
@@ -38,38 +31,21 @@ public class MyBotCommand {
             return null;
         }
 
+        String commandString = tokens[0].substring(1);
+        CommandType commandType = Arrays.stream(CommandType.values())
+                .filter(c -> c.getAliases().contains(commandString))
+                .findAny()
+                .orElse(CommandType.UNKNOWN);
+
         //use the same variable for MyBotCommand instance construction
         tokens[0] = commandParts[0].toLowerCase();
         return new MyBotCommand(
-                tokens[0],
-                tokens.length>1 ? tokens[1] : "",
+                commandType,
+                tokens.length > 1 ? tokens[1] : "",
+                message.getChat().getId(),
                 message.getMessageThreadId(),
-                message.getChat(),
-                message.getFrom()
+                message.getFrom(),
+                message.getChat()
         );
-    }
-
-    public String getCommand() {
-        return command;
-    }
-
-    public String getParams() {
-        return params;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Chat getChat() {
-        return chat;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public Integer getTopicId() {
-        return topicId;
     }
 }

@@ -1,26 +1,15 @@
 package ru.ikusov.training.telegrambot.botservices;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.ikusov.training.telegrambot.botservices.annotation.ExcludeFromHelp;
+import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.RhymeGetter;
 
-import java.util.Set;
-
 @Component
-@Order(70)
 public class RhymeCommandMessageHandler extends CommandMessageHandler {
-
     @Override
-    protected Set<String> getCommandVariants() {
-        return Set.of("/rhyme", "/стишок", "/стих");
-    }
-
-    @Override
-    @ExcludeFromHelp
-    protected String getHelpString() {
-        return "смищной стишок из интернета";
+    protected CommandType getSupportedCommandType() {
+        return CommandType.RHYME;
     }
 
     @Override
@@ -35,6 +24,6 @@ public class RhymeCommandMessageHandler extends CommandMessageHandler {
             textAnswer = e.getMessage();
         }
 
-        return new BotMessageSender(command.getChatId(), command.getTopicId(), textAnswer);
+        return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 }
