@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 public record MyBotCommand(
         CommandType commandType,
+        String commandText,
         String params,
         Long chatId,
         Integer topicId,
@@ -31,7 +32,7 @@ public record MyBotCommand(
             return null;
         }
 
-        String commandString = tokens[0].substring(1);
+        String commandString = commandParts[0].substring(1);
         CommandType commandType = Arrays.stream(CommandType.values())
                 .filter(c -> c.getAliases().contains(commandString))
                 .findAny()
@@ -41,6 +42,7 @@ public record MyBotCommand(
         tokens[0] = commandParts[0].toLowerCase();
         return new MyBotCommand(
                 commandType,
+                commandParts[0],
                 tokens.length > 1 ? tokens[1] : "",
                 message.getChat().getId(),
                 message.getMessageThreadId(),

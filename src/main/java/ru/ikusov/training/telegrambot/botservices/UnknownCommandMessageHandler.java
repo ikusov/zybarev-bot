@@ -19,7 +19,7 @@ public class UnknownCommandMessageHandler extends CommandMessageHandler {
         String textAnswer =
                 String.format(
                         MessageType.UNKNOWN_COMMAND_MESSAGE.getRandomMessage(),
-                        command.commandType());
+                        command.commandText());
         return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
     }
 }

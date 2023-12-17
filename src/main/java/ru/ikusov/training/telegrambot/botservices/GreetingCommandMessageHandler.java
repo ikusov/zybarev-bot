@@ -19,7 +19,7 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
 
         String textAnswer =
                 String.format(
-                    MessageType.GREETING_MESSAGE.getRandomMessage(),
+                    MessageType.HNY_GREETING_MESSAGE.getRandomMessage(),
                     userName);
 
         return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
