@@ -101,14 +101,14 @@ public class DefaultWordleService implements WordleService {
         return markdownv2Format("Загадал русское слово из " + wordLength + " букв!")
                 + "\n"
                 + markdownv2Format(
-                        "(Слово № "
-                                + madeWordsCount
-                                +
-                                " из "
-                                + lastWordCount
-                                + " для чата "
-                                + chatName
-                                + ")");
+                "(Слово № "
+                        + madeWordsCount
+                        +
+                        " из "
+                        + lastWordCount
+                        + " для чата "
+                        + chatName
+                        + ")");
     }
 
     public String checkWord(String userWord, User chatUser, Long chatId) {
@@ -196,6 +196,7 @@ public class DefaultWordleService implements WordleService {
         //если не совпадает с правильным
         if (!isFullOfTwos(guessResult)) {
             response = formattedWord
+                    + earnPoints(chatId, userId, userName, false)
                     + markdownv2Format("\nДля пользователя "
                     + userName
                     + " осталось попыток: "
@@ -207,21 +208,9 @@ public class DefaultWordleService implements WordleService {
                 formattedWord = formattedWord + " " + BEE;
             }
             wordleRepository.setRightAnswer(chatId);
-            response = markdownv2Format("Совершенно верно! Правильный ответ - ") + formattedWord;
-
-            //no counting and saving points for private chats (where chatId == userId)
-            if (!chatId.equals(userId)) {
-                try {
-                    WordleUserPointsDto wordleUserPoints = wordlePointsService.savePoints(chatId, userId);
-                    response += "\n" + formattedUserPointsMessage(
-                            userName,
-                            wordleUserPoints.getCurrentPoints(),
-                            wordleUserPoints.getSumPoints()
-                    );
-                } catch (Exception e) {
-                    log.error("Error while saving points to database!");
-                }
-            }
+            response = markdownv2Format("Совершенно верно! Правильный ответ - ")
+                    + formattedWord
+                    + earnPoints(chatId, userId, userName, true);
         }
 
         WordleEventDto we = new WordleEventDto(chatId, userId, currentWord, word, isFullOfTwos(guessResult));
@@ -240,5 +229,31 @@ public class DefaultWordleService implements WordleService {
         var len = curWord.length();
 
         return len == text.length();
+    }
+
+    private String earnPoints(Long chatId, Long userId, String userName, boolean isWordGuessed) {
+        //no counting and saving points for private chats (where chatId == userId)
+        if (chatId.equals(userId)) {
+            return "";
+        }
+
+        try {
+            WordleUserPointsDto wordleUserPoints = isWordGuessed
+                    ? wordlePointsService.earnPointsForGuessed(chatId, userId)
+                    : wordlePointsService.earnPointsForUnguessed(chatId, userId);
+
+            if (wordleUserPoints.getCurrentPoints() == 0) {
+                return "";
+            }
+            return formattedUserPointsMessage(
+                    userName,
+                    wordleUserPoints.getCurrentPoints(),
+                    wordleUserPoints.getSumPoints(),
+                    isWordGuessed
+            );
+        } catch (Exception e) {
+            log.error("Error while saving points to database!");
+            return "";
+        }
     }
 }
