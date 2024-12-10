@@ -1,14 +1,13 @@
 package ru.ikusov.training.telegrambot.botservices;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.LocationEntity;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
 import ru.ikusov.training.telegrambot.services.LocationDatabaseGetter;
 import ru.ikusov.training.telegrambot.services.WeatherGetter;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class WeatherCommandMessageHandler extends CommandMessageHandler {
 
