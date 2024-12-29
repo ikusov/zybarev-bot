@@ -5,11 +5,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.compareWords;
 import static ru.ikusov.training.telegrambot.services.wordle.WordleUtils.formatToMarkdownV2;
@@ -187,32 +187,6 @@ public class WordleUtilsTest {
         String actual = WordleUtils.toWordleString(s);
 
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testIsWordExists_ifExistingWord() {
-        boolean actual = false;
-
-        try {
-            actual = WordleUtils.isWordExistsOnGramotaRu("словообразование");
-        } catch (IOException e) {
-            System.out.println("У меня проблэма! Ламба или фэра! " + e.getMessage());
-        }
-
-        assertTrue(actual);
-    }
-
-    @Test
-    public void testIsWordExists_ifNotExistingWord() {
-        boolean actual = true;
-
-        try {
-            actual = WordleUtils.isWordExistsOnGramotaRu("апуапвааыпывппыккви");
-        } catch (IOException e) {
-            System.out.println("У меня проблэма! Ламба или фэра! " + e.getMessage());
-        }
-
-        assertFalse(actual);
     }
 
     //<editor-fold desc="isAlmostFullOfTwos">

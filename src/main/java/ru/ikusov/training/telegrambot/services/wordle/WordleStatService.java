@@ -103,11 +103,16 @@ public class WordleStatService {
         return topList;
     }
 
-    public long getMadeWordsCountForChat(Chat chat) {
+    @Deprecated
+    public long getMadeWordsCountForChat_OLD(Chat chat) {
         List<WordleEventEntity> eventsForChat =
                 wordleEventRepository.getEventsForChat(chat.getId());
 
         return countMadeWords(eventsForChat);
+    }
+
+    public long getMadeWordsCountForChat(Chat chat) {
+        return wordleEventRepository.countMadeWordsForChat(chat.getId());
     }
 
     private long countGuessed(List<WordleEventEntity> events) {
