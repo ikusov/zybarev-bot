@@ -1,7 +1,5 @@
 package ru.ikusov.training.telegrambot.dao.wordle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
@@ -14,7 +12,6 @@ import java.util.List;
 @Component
 @Primary
 public class WordleEventRepository {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final DatabaseConnector databaseConnector;
 
     public WordleEventRepository(DatabaseConnector databaseConnector) {
@@ -49,6 +46,12 @@ public class WordleEventRepository {
     public Long countMadeWords() {
         return databaseConnector.getCountByQuery(Long.class,
                 "select count(*) from WordleEventEntity where attemptWord is null").get(0);
+    }
+
+    public long countMadeWordsForChat(Long chatId) {
+        return databaseConnector.getCountByQuery(Long.class,
+                "select count(*) from WordleEventEntity" +
+                        " where attemptWord is null and chatId=" + chatId).get(0);
     }
 
     public Long countAttempts() {
