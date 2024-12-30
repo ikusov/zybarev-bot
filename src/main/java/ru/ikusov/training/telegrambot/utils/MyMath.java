@@ -33,6 +33,15 @@ public class MyMath {
     }
 
     /**
+     * returns random number from 0 to range
+     * @param range range of random number to return
+     * @return random number from 0 to range
+     */
+    public static double r(double range) {
+        return Math.random()*range;
+    }
+
+    /**
      * returns random number from 0 to 100
      * @return random number from 0 to 100
      */

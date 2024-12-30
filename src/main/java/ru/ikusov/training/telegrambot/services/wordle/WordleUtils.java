@@ -14,6 +14,9 @@ public final class WordleUtils {
     private WordleUtils() {
     }
 
+    /**
+     * Букву Ё низязя!
+     */
     public static int[] compareWords(String tested, String right) {
         int[] result = new int[tested.length()];
         char[] t = tested.toCharArray();
@@ -74,9 +77,17 @@ public final class WordleUtils {
     }
 
     public static int countOnes(int[] numbers) {
+        return countNumbers(numbers, 1);
+    }
+
+    public static int countTwos(int[] numbers) {
+        return countNumbers(numbers, 2);
+    }
+
+    private static int countNumbers(int[] numbers, int numberToCount) {
         int count = 0;
         for (int num : numbers) {
-            if (num == 1) count++;
+            if (num == numberToCount) count++;
         }
 
         return count;

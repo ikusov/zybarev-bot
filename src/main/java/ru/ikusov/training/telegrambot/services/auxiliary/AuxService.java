@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.archive.wordle.WordlePointsCalculator_OLD;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.dao.wordle.WordleRepository;
 import ru.ikusov.training.telegrambot.model.ChatEntity;
 import ru.ikusov.training.telegrambot.model.UserEntity;
 import ru.ikusov.training.telegrambot.model.wordle.WordleEventEntity;
 import ru.ikusov.training.telegrambot.services.UserNameGetter;
-import ru.ikusov.training.telegrambot.services.wordle.WordlePointsCalculator;
 
 import java.util.*;
 
@@ -75,7 +75,7 @@ public class AuxService {
             chatWordAttempts.computeIfAbsent(chat, e -> new ArrayList<>()).add(attemptWord);
             if (event.isRight()) {
                 var attempts = chatWordAttempts.get(chat);
-                int points = WordlePointsCalculator.countPoints(attempts);
+                int points = WordlePointsCalculator_OLD.countPoints(attempts);
                 int userSumPoints = userChatPoints.getOrDefault(userChat, 0);
                 userChatPoints.put(userChat, userSumPoints + points);
 

@@ -3,6 +3,7 @@ package ru.ikusov.training.telegrambot.services.wordle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.ikusov.training.telegrambot.archive.wordle.WordlePointsCalculator_OLD;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -11,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static ru.ikusov.training.telegrambot.utils.Linguistic.RUSSIAN_ALPHABET_LETTERS_COUNT;
 
-class WordlePointsCalculatorTest {
+class WordlePointsCalculatorOLDTest {
     @ParameterizedTest(name = "{1}")
     @MethodSource
     void countPoints(int expectedPoints, String triedWordsString) {
         var triedWords = List.of(triedWordsString.split(" "));
-        var actualPoints = WordlePointsCalculator.countPoints(triedWords);
+        var actualPoints = WordlePointsCalculator_OLD.countPoints(triedWords);
 
         assertEquals(expectedPoints, actualPoints);
     }
@@ -60,7 +61,7 @@ class WordlePointsCalculatorTest {
                      int expectedPoints,
                      String name
     ) {
-        var actualPoints = WordlePointsCalculator.countPoints(
+        var actualPoints = WordlePointsCalculator_OLD.countPoints(
                 wordLen,
                 guessedLettersCount,
                 placedLettersCount,

@@ -16,11 +16,28 @@ public class WordlePointsService {
         this.wordleRepository = wordleRepository;
     }
 
-
-    public WordleUserPointsDto savePoints(Long chatId, Long userId) {
+    public WordleUserPointsDto earnPointsForUnguessed(Long chatId, Long userId) {
         List<String> triedWordsForChat = wordleRepository.getTriedWordsForChat(chatId);
+        int lastIndex = triedWordsForChat.size() - 1;
 
-        int points = WordlePointsCalculator.countPoints(triedWordsForChat);
+        String rightWord = wordleRepository.getCurrentWordForChat(chatId);
+        String currentAttemptWord = triedWordsForChat.get(lastIndex);
+        List<String> triedWords = triedWordsForChat.subList(0, lastIndex);
+
+        int points = WordlePointsCalculator.countPointsForUnGuessed(rightWord, currentAttemptWord, triedWords);
+        int userSumPoints = wordleRepository.addPointsForUser(chatId, userId, points);
+
+        return new WordleUserPointsDto(points, userSumPoints);
+    }
+
+    public WordleUserPointsDto earnPointsForGuessed(Long chatId, Long userId) {
+        List<String> triedWordsForChat = wordleRepository.getTriedWordsForChat(chatId);
+        int lastIndex = triedWordsForChat.size() - 1;
+
+        String rightWord = triedWordsForChat.get(lastIndex);
+        List<String> triedWords = triedWordsForChat.subList(0, lastIndex);
+
+        int points = WordlePointsCalculator.countPointsForGuessed(rightWord, rightWord, triedWords);
         int userSumPoints = wordleRepository.addPointsForUser(chatId, userId, points);
 
         return new WordleUserPointsDto(points, userSumPoints);
