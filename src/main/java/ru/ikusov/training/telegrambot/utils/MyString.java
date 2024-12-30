@@ -1,11 +1,16 @@
 package ru.ikusov.training.telegrambot.utils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.MainClass.RUS_LOCALE;
 
 public final class MyString {
+
+    private static final int EMPHASIS_UNICODE_CODE = 769;
+
     private MyString() {
     }
 
@@ -48,8 +53,7 @@ public final class MyString {
         if (first != '-' && !Character.isDigit(first))
             throw new NumberFormatException();
 
-        final int INT_MAX_LEN = String.valueOf(Integer.MAX_VALUE).length(),
-                LONG_MAX_LEN = String.valueOf(Long.MAX_VALUE).length();
+        final int INT_MAX_LEN = String.valueOf(Integer.MAX_VALUE).length();
 
         int len = chars.length, count = 0;
         char[] number = new char[chars.length];
@@ -104,6 +108,9 @@ public final class MyString {
         return output.toString();
     }
 
+    /**
+     * Приводит строку в формате markdownv2 в вид, пригодный для логирования.
+     */
     public static String unmarkdownv2Format(String input) {
         char[] inputChars = input.toCharArray();
         int len = inputChars.length;
@@ -122,22 +129,44 @@ public final class MyString {
         return output.toString();
     }
 
-    public static int countChars(String s, char c) {
-        int count = 0;
-        for (char ch : s.toCharArray()) {
-            if (ch == c) count++;
+    /**
+     * Возвращает признак того, что строки отличаются не более, чем на maxDifferentSymbols символов юникода.
+     */
+    public static boolean differsNoMoreThanSymbols(String string1, String string2, int maxDifferentSymbols) {
+        if (string1 == null || string2 == null) {
+            return false;
         }
 
-        return count;
+        List<Integer> codepoints1 = getCodepointsExcludeSpecified(string1, EMPHASIS_UNICODE_CODE);
+        List<Integer> codepoints2 = getCodepointsExcludeSpecified(string2, EMPHASIS_UNICODE_CODE);
+
+        if (codepoints1.size() != codepoints2.size()) {
+            return false;
+        }
+
+        int differSymbols = 0;
+        for (int i = 0; i < codepoints1.size() && differSymbols <= maxDifferentSymbols; i++) {
+            var char1 = codepoints1.get(i);
+            var char2 = codepoints2.get(i);
+
+            if (!Objects.equals(char1, char2)) {
+                differSymbols++;
+            }
+        }
+
+        return differSymbols <= maxDifferentSymbols;
+    }
+
+    private static List<Integer> getCodepointsExcludeSpecified(String string, Integer... codepointsToExclude) {
+        return string.codePoints()
+                .boxed()
+                .filter(codepoint -> !Arrays.asList(codepointsToExclude).contains(codepoint))
+                .toList();
     }
 
     private static boolean isEscaping(char[] inputChars, int i) {
         char ESCAPE = '\\';
 
-        if (inputChars[i] == ESCAPE && i < inputChars.length - 1 && inputChars[i + 1] - 1 < 126) {
-            return true;
-        } else {
-            return false;
-        }
+        return inputChars[i] == ESCAPE && i < inputChars.length - 1 && inputChars[i + 1] - 1 < 126;
     }
 }
