@@ -1,10 +1,16 @@
 package ru.ikusov.training.telegrambot.utils;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class Linguistic {
     public static final int RUSSIAN_ALPHABET_LETTERS_COUNT = 33;
-    public static final char[] RUSSIAN_ALPHABET_LOWERCASE = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".toCharArray();
+    public static final char[] RUSSIAN_ALPHABET_LOWERCASE_ARRAY = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".toCharArray();
+    public static final Set<Character> RUSSIAN_ALPHABET_LOWERCASE_SET = String.valueOf(RUSSIAN_ALPHABET_LOWERCASE_ARRAY)
+            .chars()
+            .mapToObj(c -> (char) c)
+            .collect(Collectors.toSet());
     public static final Map<Integer, String> russianNumberNamesGenetive =
             Map.ofEntries(
               Map.entry(2, "двух"),
@@ -17,9 +23,7 @@ public final class Linguistic {
               Map.entry(9, "девяти"),
               Map.entry(10, "десяти")
             );
-    private static final String[] cutletWordEndingsIme = {"а", "ы", ""};
     private static final String[] cutletWordEndingsVin = {"у", "ы", ""};
-    private static final String[] manulWordEndingsIme = {"", "а", "ов"};
     private static final String[] pointWordEndingsIme = {"о", "а", "ов"};
 
     private Linguistic(){}
@@ -32,8 +36,8 @@ public final class Linguistic {
      * @return index begins from zero
      */
     public static int calculateRussianLetterAlphabetIndex(char letter) {
-        for (int i = 0; i < RUSSIAN_ALPHABET_LOWERCASE.length; i++) {
-            if (RUSSIAN_ALPHABET_LOWERCASE[i] == letter) {
+        for (int i = 0; i < RUSSIAN_ALPHABET_LOWERCASE_ARRAY.length; i++) {
+            if (RUSSIAN_ALPHABET_LOWERCASE_ARRAY[i] == letter) {
                 return i;
             }
         }
@@ -61,17 +65,10 @@ public final class Linguistic {
                "ов";
     }
 
-    public static String getCutletWordEndingIme(int num) {
-        return getWordEnding(num, cutletWordEndingsIme);
-    }
-
     public static String getCutletWordEndingVin(int num) {
         return getWordEnding(num, cutletWordEndingsVin);
     }
 
-    public static String getManulWordEndingIme(int num) {
-        return getWordEnding(num, manulWordEndingsIme);
-    }
     public static String getPointWordEndingIme(int num) {
         return getWordEnding(num, pointWordEndingsIme);
     }
@@ -93,14 +90,5 @@ public final class Linguistic {
                 : _case==3 ? "ый"
                 : _case==4 ? "ым"
                 :            "ом";
-    }
-
-    public enum CASE {
-        IME,
-        ROD,
-        DAT,
-        VIN,
-        TVO,
-        PRE
     }
 }
