@@ -134,6 +134,16 @@ public class ChatEntity implements CommonEntity {
     }
 
     public String toString() {
-        return type.equals("private") ? firstname + " " + lastname : title;
+        if (!"private".equals(type)) {
+            return title;
+        }
+
+        String string = firstname + " " + lastname;
+
+        return !string.isBlank()
+                ? string
+                : !username.isBlank()
+                ? username
+                : String.valueOf(id);
     }
 }

@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.MutationQuery;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -159,6 +160,24 @@ public class DatabaseConnector {
         }
 
         return resultList;
+    }
+
+    public<T> int deleteByQuery(Class<T> entityClass, String fieldName, String paramValue) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            String entityName = entityClass.getSimpleName();
+            String SQL = "delete from %s where %s = :param".formatted(entityName, fieldName);
+
+            MutationQuery query = session
+                    .createMutationQuery(SQL);
+
+            int result = query.setParameter("param", paramValue)
+                            .executeUpdate();
+
+            transaction.commit();
+            return result;
+        }
     }
 
     public UserEntity getOrCreateUser(User chatUser) {

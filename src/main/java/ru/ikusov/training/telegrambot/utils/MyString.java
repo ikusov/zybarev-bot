@@ -1,11 +1,15 @@
 package ru.ikusov.training.telegrambot.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static ru.ikusov.training.telegrambot.MainClass.RUS_LOCALE;
 
 public final class MyString {
+
+    private static final List<Integer> RUSSIAN_ALPHABET_CODEPOINTS = "абвгдеёжзиклмнопрстуфхцчшщъыьэюя".codePoints().boxed().toList();
+
     private MyString() {
     }
 
@@ -48,8 +52,7 @@ public final class MyString {
         if (first != '-' && !Character.isDigit(first))
             throw new NumberFormatException();
 
-        final int INT_MAX_LEN = String.valueOf(Integer.MAX_VALUE).length(),
-                LONG_MAX_LEN = String.valueOf(Long.MAX_VALUE).length();
+        final int INT_MAX_LEN = String.valueOf(Integer.MAX_VALUE).length();
 
         int len = chars.length, count = 0;
         char[] number = new char[chars.length];
@@ -104,6 +107,9 @@ public final class MyString {
         return output.toString();
     }
 
+    /**
+     * Приводит строку в формате markdownv2 в вид, пригодный для логирования.
+     */
     public static String unmarkdownv2Format(String input) {
         char[] inputChars = input.toCharArray();
         int len = inputChars.length;
@@ -122,22 +128,43 @@ public final class MyString {
         return output.toString();
     }
 
-    public static int countChars(String s, char c) {
-        int count = 0;
-        for (char ch : s.toCharArray()) {
-            if (ch == c) count++;
+    /**
+     * Возвращает признак того, что строки являются одинаковыми русскими словами.
+     */
+    public static boolean areEqualRussianWords(String string1, String string2) {
+        if (string1 == null || string2 == null) {
+            return false;
         }
 
-        return count;
+        List<Integer> codepoints1 = getCodepointsFiltered(string1, RUSSIAN_ALPHABET_CODEPOINTS);
+        List<Integer> codepoints2 = getCodepointsFiltered(string2, RUSSIAN_ALPHABET_CODEPOINTS);
+
+        if (codepoints1.size() != codepoints2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < codepoints1.size(); i++) {
+            var char1 = codepoints1.get(i);
+            var char2 = codepoints2.get(i);
+
+            if (!Objects.equals(char1, char2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static List<Integer> getCodepointsFiltered(String string, List<Integer> filter) {
+        return string.codePoints()
+                .boxed()
+                .filter(filter::contains)
+                .toList();
     }
 
     private static boolean isEscaping(char[] inputChars, int i) {
         char ESCAPE = '\\';
 
-        if (inputChars[i] == ESCAPE && i < inputChars.length - 1 && inputChars[i + 1] - 1 < 126) {
-            return true;
-        } else {
-            return false;
-        }
+        return inputChars[i] == ESCAPE && i < inputChars.length - 1 && inputChars[i + 1] - 1 < 126;
     }
 }

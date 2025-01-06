@@ -7,14 +7,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.Selector;
-import ru.ikusov.training.telegrambot.utils.MyString;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-public class WiktionaryWordChecker implements WordChecker {
+@Component
+@Deprecated
+// todo: заиспользовать новый класс после прочёсывания БД с выпилом слов, не проходящих чекер
+public class WiktionaryWordChecker_OLD implements WordChecker {
     private final String URL = "https://ru.wiktionary.org/wiki/";
 
     @Override
@@ -29,10 +32,12 @@ public class WiktionaryWordChecker implements WordChecker {
         try {
             log.debug("Подключаемся к ресурсу '{}' для проверки существования существительного '{}'", URL, word);
             document = Jsoup.connect(url).get();
-            if (isDocumentForNoun(document, word) && isDocumentForSingularSubjective(document, word)) {
+            if (isDocumentForNoun(document, word)) {
                 return true;
             }
-        } catch (HttpStatusException ignored) {
+        } catch (HttpStatusException e) {
+            log.debug("Существительное '{}' не найдено на ресурсе '{}'", word, url);
+            return false;
         } catch (IOException e) {
             log.error("Ошибка при отправке запроса на URL '{}'", url);
             throw e;
@@ -58,31 +63,4 @@ public class WiktionaryWordChecker implements WordChecker {
         return false;
     }
 
-    private boolean isDocumentForSingularSubjective(Document document, String word) {
-        try {
-            Elements morphotableRows = document.select("table.morfotable > tbody > tr");
-
-            Element headerFirstColumn = morphotableRows.get(0).select("td,th").get(0);
-            boolean isHeaderContainsCase = headerFirstColumn.text().toLowerCase().contains("падеж");
-
-            Elements secondRowColumns = morphotableRows.get(1).select("td");
-
-            String secondRowFirstColumnText = secondRowColumns.get(0).text();
-            boolean isSecondRowFirstColumnContainsSubjective = secondRowFirstColumnText.toLowerCase().contains("им");
-
-            String secondRowSecondColumnText = secondRowColumns.get(1).text();
-            boolean isSecondRowSecondColumnTextDiffersNoMoreThanOneSymbol =
-                    MyString.areEqualRussianWords(word, secondRowSecondColumnText);
-
-            if (isHeaderContainsCase && isSecondRowFirstColumnContainsSubjective) {
-                log.debug("С ресурса wiktionary.org получены данные о том, что '{}' - сущ им. п. ед. ч.!", word);
-                return isSecondRowSecondColumnTextDiffersNoMoreThanOneSymbol;
-            }
-        } catch (Exception exception) {
-            log.error("Возникла ошибка при парсинге Wiktionary страницы для слова '{}'", word, exception);
-            //ексепшен глотаем и возвращаем тру
-        }
-
-        return true;
-    }
 }
