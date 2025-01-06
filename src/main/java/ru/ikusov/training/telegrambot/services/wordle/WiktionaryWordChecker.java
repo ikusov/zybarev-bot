@@ -14,7 +14,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-//@Component
 public class WiktionaryWordChecker implements WordChecker {
     private final String URL = "https://ru.wiktionary.org/wiki/";
 
@@ -33,9 +32,7 @@ public class WiktionaryWordChecker implements WordChecker {
             if (isDocumentForNoun(document, word) && isDocumentForSingularSubjective(document, word)) {
                 return true;
             }
-        } catch (HttpStatusException e) {
-            log.debug("Существительное '{}' не найдено на ресурсе '{}'", word, url);
-            return false;
+        } catch (HttpStatusException ignored) {
         } catch (IOException e) {
             log.error("Ошибка при отправке запроса на URL '{}'", url);
             throw e;
@@ -75,7 +72,7 @@ public class WiktionaryWordChecker implements WordChecker {
 
             String secondRowSecondColumnText = secondRowColumns.get(1).text();
             boolean isSecondRowSecondColumnTextDiffersNoMoreThanOneSymbol =
-                    MyString.differsNoMoreThanSymbols(word, secondRowSecondColumnText, 1);
+                    MyString.areEqualRussianWords(word, secondRowSecondColumnText);
 
             if (isHeaderContainsCase && isSecondRowFirstColumnContainsSubjective) {
                 log.debug("С ресурса wiktionary.org получены данные о том, что '{}' - сущ им. п. ед. ч.!", word);

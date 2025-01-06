@@ -1,6 +1,5 @@
 package ru.ikusov.training.telegrambot.utils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -9,7 +8,7 @@ import static ru.ikusov.training.telegrambot.MainClass.RUS_LOCALE;
 
 public final class MyString {
 
-    private static final int EMPHASIS_UNICODE_CODE = 769;
+    private static final List<Integer> RUSSIAN_ALPHABET_CODEPOINTS = "абвгдеёжзиклмнопрстуфхцчшщъыьэюя".codePoints().boxed().toList();
 
     private MyString() {
     }
@@ -130,37 +129,36 @@ public final class MyString {
     }
 
     /**
-     * Возвращает признак того, что строки отличаются не более, чем на maxDifferentSymbols символов юникода.
+     * Возвращает признак того, что строки являются одинаковыми русскими словами.
      */
-    public static boolean differsNoMoreThanSymbols(String string1, String string2, int maxDifferentSymbols) {
+    public static boolean areEqualRussianWords(String string1, String string2) {
         if (string1 == null || string2 == null) {
             return false;
         }
 
-        List<Integer> codepoints1 = getCodepointsExcludeSpecified(string1, EMPHASIS_UNICODE_CODE);
-        List<Integer> codepoints2 = getCodepointsExcludeSpecified(string2, EMPHASIS_UNICODE_CODE);
+        List<Integer> codepoints1 = getCodepointsFiltered(string1, RUSSIAN_ALPHABET_CODEPOINTS);
+        List<Integer> codepoints2 = getCodepointsFiltered(string2, RUSSIAN_ALPHABET_CODEPOINTS);
 
         if (codepoints1.size() != codepoints2.size()) {
             return false;
         }
 
-        int differSymbols = 0;
-        for (int i = 0; i < codepoints1.size() && differSymbols <= maxDifferentSymbols; i++) {
+        for (int i = 0; i < codepoints1.size(); i++) {
             var char1 = codepoints1.get(i);
             var char2 = codepoints2.get(i);
 
             if (!Objects.equals(char1, char2)) {
-                differSymbols++;
+                return false;
             }
         }
 
-        return differSymbols <= maxDifferentSymbols;
+        return true;
     }
 
-    private static List<Integer> getCodepointsExcludeSpecified(String string, Integer... codepointsToExclude) {
+    private static List<Integer> getCodepointsFiltered(String string, List<Integer> filter) {
         return string.codePoints()
                 .boxed()
-                .filter(codepoint -> !Arrays.asList(codepointsToExclude).contains(codepoint))
+                .filter(filter::contains)
                 .toList();
     }
 
