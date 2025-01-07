@@ -1,12 +1,15 @@
 package ru.ikusov.training.telegrambot.botservices;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.model.CommandType;
 import ru.ikusov.training.telegrambot.model.MyBotCommand;
-import ru.ikusov.training.telegrambot.utils.MessageType;
+import ru.ikusov.training.telegrambot.services.GreetingService;
 
 @Component
+@RequiredArgsConstructor
 public class GreetingCommandMessageHandler extends CommandMessageHandler {
+    private final GreetingService greetingService;
 
     @Override
     protected CommandType getSupportedCommandType() {
@@ -19,7 +22,7 @@ public class GreetingCommandMessageHandler extends CommandMessageHandler {
 
         String textAnswer =
                 String.format(
-                    MessageType.HNY_GREETING_MESSAGE.getRandomMessage(),
+                    greetingService.greetingMessage(),
                     userName);
 
         return new BotMessageSender(command.chatId(), command.topicId(), textAnswer);
