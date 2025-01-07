@@ -1,9 +1,12 @@
 package ru.ikusov.training.telegrambot.utitilies;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.wordle.WordEntity;
+import ru.ikusov.training.telegrambot.model.wordle.WordleChatWordListEntity;
 import ru.ikusov.training.telegrambot.services.wordle.WiktionaryWordChecker;
 
 import java.io.IOException;
@@ -17,6 +20,7 @@ import static ru.ikusov.training.telegrambot.TestUtils.delayRandomTime;
  * Набор временных утилит разработчика для манипуляций на БД, проверок и т.п.
  */
 
+@Slf4j
 public class Utilities {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -34,6 +38,7 @@ public class Utilities {
     }
 
     @Test
+    @Disabled
     void checkWords() {
         var wordEntityList = databaseConnector.getByQuery(WordEntity.class, "from WordEntity");
         System.out.printf("%n%nВыбрано %d записей из таблицы wordle_word%n", wordEntityList.size());
@@ -66,6 +71,38 @@ public class Utilities {
         System.out.println("\nСписок слов, которые не прочекались в Wiktionary:\n" + unsuitableWords);
     }
 
+    @Test
+    @Disabled
+    void deleteDuplicates() {
+        List<WordleChatWordListEntity> chatWordListEntities =
+                databaseConnector.getByQuery(WordleChatWordListEntity.class, "from WordleChatWordListEntity");
+
+        log.debug("Получено {} списков слов для чатов!", chatWordListEntities.size());
+
+        for (WordleChatWordListEntity wordListEntity : chatWordListEntities) {
+            var chatId = wordListEntity.getChatId();
+            List<String> wordList = wordListEntity.getWordList();
+            int initialSize = wordList.size();
+
+            log.debug("Исходный список слов для чата '{}' содержит {} слов!", chatId, colorString(initialSize, ANSI_RED));
+
+            List<String> wordListFiltered = deleteDuplicatesSavingOrder(wordList);
+            int filteredSize = wordListFiltered.size();
+            log.debug(
+                    "Фильтрация от дубликатов прошла успешно! Теперь содержит {} слов! (удалено {} дубликатов)",
+                    colorString(filteredSize, ANSI_GREEN),
+                    colorString(initialSize - filteredSize, ANSI_YELLOW)
+            );
+
+            if (filteredSize < initialSize) {
+                log.debug("Список слов изменился, сохраняем список слов для чата '{}'...", chatId);
+                wordListEntity.setWordList(wordListFiltered);
+                databaseConnector.saveOrUpdate(wordListEntity);
+                log.debug("Сохранено!");
+            }
+        }
+    }
+
     void print(String word, String color, int count, long spentMillis, List<String> unsuitableWords) {
         System.out.print(colorString(word, color) + " ");
 
@@ -82,7 +119,18 @@ public class Utilities {
         System.out.flush();
     }
 
-    String colorString(String source, String color) {
+    List<String> deleteDuplicatesSavingOrder(List<String> initialList) {
+        List<String> resultList = new ArrayList<>();
+        for (String element : initialList) {
+            if (!resultList.contains(element)) {
+                resultList.add(element);
+            }
+        }
+
+        return resultList;
+    }
+
+    String colorString(Object source, String color) {
         return color + source + ANSI_RESET;
     }
 }
