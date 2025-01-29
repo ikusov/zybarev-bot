@@ -1,5 +1,6 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -7,6 +8,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.Selector;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import ru.ikusov.training.telegrambot.services.wordle.cache.ExistingWordsCache;
 import ru.ikusov.training.telegrambot.utils.MyString;
 
 import java.io.IOException;
@@ -14,7 +18,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
+@Order(20)
+@Component
+@RequiredArgsConstructor
 public class WiktionaryWordChecker implements WordChecker {
+
+    private final ExistingWordsCache wordsCache;
+
     private final String URL = "https://ru.wiktionary.org/wiki/";
 
     @Override
@@ -30,6 +40,7 @@ public class WiktionaryWordChecker implements WordChecker {
             log.debug("Подключаемся к ресурсу '{}' для проверки существования существительного '{}'", URL, word);
             document = Jsoup.connect(url).get();
             if (isDocumentForNoun(document, word) && isDocumentForSingularSubjective(document, word)) {
+                wordsCache.add(word);
                 return true;
             }
         } catch (HttpStatusException ignored) {

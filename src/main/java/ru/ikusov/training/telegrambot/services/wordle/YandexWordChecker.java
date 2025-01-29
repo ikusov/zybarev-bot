@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.ikusov.training.telegrambot.services.HttpConnector;
+import ru.ikusov.training.telegrambot.services.wordle.cache.ExistingWordsCache;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -15,9 +17,13 @@ import java.nio.charset.StandardCharsets;
 
 import static ru.ikusov.training.telegrambot.MainClass.DICTIONARY_API_KEY;
 
+@Slf4j
+@Order(30)
 @Component
+@RequiredArgsConstructor
 public class YandexWordChecker implements WordChecker {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private final ExistingWordsCache wordsCache;
 
     private final String URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=" + DICTIONARY_API_KEY + "&lang=ru-ru&text=";
 
@@ -40,6 +46,7 @@ public class YandexWordChecker implements WordChecker {
                 JsonNode pos = wordDef.get("pos");
                 if (pos != null && NOUN_TEXT.equals(pos.asText())) {
                     log.debug("Существительное '{}' надено на ресурсе '{}'", word, URL);
+                    wordsCache.add(word);
                     return true;
                 }
             }
