@@ -8,5 +8,14 @@ import java.io.IOException;
 @Component
 public interface WordChecker {
     String getName();
+
+    /**
+     * Проверяет, является ли слово существительным в именительном падеже.
+     *
+     * @param word русское слово в нижнем регистре.
+     * @return признак того, что слово является существительным в именительном падеже.
+     * todo: выпилить выброс исключения отсюда
+     * @throws IOException в случае ошибки ввода-вывода при подключении к ресурсу
+     */
     boolean check(String word) throws IOException;
 }
