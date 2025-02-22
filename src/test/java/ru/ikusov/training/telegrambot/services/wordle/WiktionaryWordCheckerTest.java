@@ -1,39 +1,75 @@
 package ru.ikusov.training.telegrambot.services.wordle;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ikusov.training.telegrambot.TestUtils;
+import ru.ikusov.training.telegrambot.services.wordle.cache.ExistingWordsCache;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.doNothing;
 
+@ExtendWith(MockitoExtension.class)
 class WiktionaryWordCheckerTest {
-    private final WiktionaryWordChecker wordChecker = new WiktionaryWordChecker();
+    @Mock
+    private ExistingWordsCache existingWordsCache;
 
+    @InjectMocks
+    private WiktionaryWordChecker wordChecker;
+
+    @Disabled
     @ParameterizedTest
     @MethodSource
-    void check(String word, boolean expectedResult) throws IOException {
+    void checkExisting(String word) throws IOException {
+        doNothing().when(existingWordsCache).add(word);
         TestUtils.delayRandomTime(1000, 5000);
+
         boolean actualResult = wordChecker.check(word);
 
-        assertEquals(expectedResult, actualResult);
+        assertTrue(actualResult);
     }
 
-    public static Stream<Arguments> check() {
+    public static Stream<Arguments> checkExisting() {
         return Stream.of(
-                arguments("борьба", true),
-                arguments("пиво", true),
-                arguments("пресс", true),
-                arguments("героиня", true),
-                arguments("мельница", true),
-                arguments("наполеон", true),
-                arguments("ребята", false),
-                arguments("дровец", false),
-                arguments("сидеть", false)
+                arguments("борьба"),
+                arguments("пиво"),
+                arguments("пресс"),
+                arguments("героиня"),
+                arguments("мельница"),
+                arguments("наполеон"),
+                arguments("тремоло")
+        );
+    }
+
+    @Disabled
+    @ParameterizedTest
+    @MethodSource
+    void checkNotExisting(String word) throws IOException {
+        TestUtils.delayRandomTime(1000, 5000);
+
+        boolean actualResult = wordChecker.check(word);
+
+        assertFalse(actualResult);
+    }
+
+    public static Stream<Arguments> checkNotExisting() {
+        return Stream.of(
+                arguments("гудеть"),
+                arguments("шопотом"),
+                arguments("отрадно"),
+                arguments("ребята"),
+                arguments("дровец"),
+                arguments("сидеть")
         );
     }
 

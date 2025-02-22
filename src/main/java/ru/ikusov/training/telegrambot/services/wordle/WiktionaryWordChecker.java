@@ -23,9 +23,9 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class WiktionaryWordChecker implements WordChecker {
 
-    private final ExistingWordsCache wordsCache;
+    private static final String URL = "https://ru.wiktionary.org/wiki/";
 
-    private final String URL = "https://ru.wiktionary.org/wiki/";
+    private final ExistingWordsCache wordsCache;
 
     @Override
     public String getName() {
@@ -43,7 +43,8 @@ public class WiktionaryWordChecker implements WordChecker {
                 wordsCache.add(word);
                 return true;
             }
-        } catch (HttpStatusException ignored) {
+        } catch (HttpStatusException e) {
+            log.error("Сервер '{}' вернул ошибочный HTTP-статус!", getName(), e);
         } catch (IOException e) {
             log.error("Ошибка при отправке запроса на URL '{}'", url);
             throw e;
@@ -59,7 +60,7 @@ public class WiktionaryWordChecker implements WordChecker {
     private boolean isDocumentForNoun(Document document, String word) {
         final String NOUN_TEXT = "Существительное";
 
-        Elements elements = document.select("div.mw-parser-output > p > a");
+        Elements elements = document.select("a[rel=mw:WikiLink]");
         for (Element element : elements) {
             if (element.text().equals(NOUN_TEXT)) {
                 log.debug("Слово {} является существительным!", word);

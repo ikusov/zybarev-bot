@@ -8,6 +8,7 @@ import ru.ikusov.training.telegrambot.dao.DatabaseConnector;
 import ru.ikusov.training.telegrambot.model.wordle.WordEntity;
 import ru.ikusov.training.telegrambot.model.wordle.WordleChatWordListEntity;
 import ru.ikusov.training.telegrambot.services.wordle.WiktionaryWordChecker;
+import ru.ikusov.training.telegrambot.services.wordle.cache.ExistingWordsCache;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,7 @@ import static ru.ikusov.training.telegrambot.TestUtils.delayRandomTime;
  */
 
 @Slf4j
-public class Utilities {
+public class UtilitiesTest {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -34,7 +35,7 @@ public class Utilities {
     @BeforeEach
     void setUp() throws URISyntaxException {
         databaseConnector = new DatabaseConnector();
-        wordChecker = new WiktionaryWordChecker();
+        wordChecker = new WiktionaryWordChecker(new ExistingWordsCache(databaseConnector));
     }
 
     @Test
@@ -48,8 +49,7 @@ public class Utilities {
         List<String> unsuitableWords = new ArrayList<>();
         long startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < wordEntityList.size(); i++) {
-            var wordEntity = wordEntityList.get(i);
+        for (WordEntity wordEntity : wordEntityList) {
             var word = wordEntity.getWord();
             String color = ANSI_GREEN;
 
